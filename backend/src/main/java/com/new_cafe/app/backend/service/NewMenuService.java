@@ -49,7 +49,7 @@ public class NewMenuService implements MenuService {
                             .findById(menu.getCategoryId()).getName();
                     List<MenuImage> images = menuImageRepository.findAllByMenuId(menu.getId());
                     // images의 개수가 0개라면 placeholder 사용하도록하고
-                    String imageSrc = "https://placehold.co/600x400?text=No+Image";
+                    String imageSrc = "blank.png";
                     // images의 개수가 1개라면 SrcUrl을 사용하도록하고
                     if (images.size() > 0) {
                         imageSrc = images.get(0).getSrcUrl();
