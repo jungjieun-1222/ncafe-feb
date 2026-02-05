@@ -1,0 +1,201 @@
+.header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-8);
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    z-index: 50;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex: 1;
+}
+
+.mobileMenuButton {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    padding: var(--space-1);
+}
+
+.logoMobile {
+    display: none;
+    font-size: var(--text-xl);
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+    font-weight: 500;
+    margin-top: -2px;
+}
+
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--color-gray-200);
+}
+
+.userSection {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
+}
+
+.userSection:hover {
+    background-color: var(--color-gray-50);
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.cafeName {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.userName {
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-primary-200);
+}
+
+/* Mobile Nav Styles */
+.mobileNavOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+.mobileNavContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background-color: white;
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.mobileNavHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logoText {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--color-gray-900);
+}
+
+.mobileNav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.mobileNav a {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    color: var(--color-gray-600);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.mobileNav a:hover {
+    background-color: var(--color-gray-50);
+    color: var(--color-primary-600);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .header {
+        padding: var(--space-4) var(--space-4);
+    }
+
+    .mobileMenuButton {
+        display: block;
+    }
+
+    .logoMobile {
+        display: block;
+    }
+
+    .userInfo {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .title {
+        font-size: var(--text-base);
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    .divider {
+        display: none;
+    }
+}

@@ -1,0 +1,35 @@
+.layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-secondary);
+}
+
+.content {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 260px);
+}
+
+.main {
+    flex: 1;
+    padding: var(--space-8);
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding: var(--space-4);
+    }
+}

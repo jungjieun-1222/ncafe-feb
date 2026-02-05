@@ -1,0 +1,140 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background-color: var(--bg-primary);
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.03);
+}
+
+.logo {
+    padding: var(--space-8) var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.logoText {
+    font-size: var(--text-lg);
+    font-weight: 800;
+    color: var(--color-gray-900);
+    letter-spacing: -0.02em;
+}
+
+.nav {
+    flex: 1;
+    padding: var(--space-6);
+    overflow-y: auto;
+}
+
+.navGroup {
+    margin-bottom: var(--space-8);
+}
+
+.navGroupLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-1);
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    color: var(--color-gray-500);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.navItem:hover {
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-900);
+    transform: translateX(2px);
+}
+
+.navItemActive {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-700);
+    font-weight: 600;
+}
+
+.navItemActive:hover {
+    background-color: var(--color-primary-100);
+}
+
+.navIcon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.navItemActive .navIcon {
+    opacity: 1;
+    color: var(--color-primary-600);
+}
+
+.footer {
+    padding: var(--space-6);
+}
+
+.cafeInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-xl);
+    background-color: var(--bg-tertiary);
+    transition: background-color var(--transition-fast);
+    cursor: pointer;
+}
+
+.cafeInfo:hover {
+    background-color: var(--color-gray-100);
+}
+
+.cafeAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: white;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-600);
+    font-weight: 700;
+    font-size: var(--text-md);
+}
+
+.cafeName {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    line-height: 1.2;
+}
+
+.cafeRole {
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+    margin-top: 2px;
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        display: none;
+    }
+}
