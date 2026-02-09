@@ -16,7 +16,7 @@ export default function MenuListPage() {
 
     return (
         <main>
-            <PageHeader />
+            <PageHeader title="메뉴 관리" />
             {/* callback property */}
             <CategoryTabs
                 setSearchQuery={setSearchQuery}

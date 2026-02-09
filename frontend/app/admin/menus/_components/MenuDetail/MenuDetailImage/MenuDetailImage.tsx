@@ -5,33 +5,46 @@ import { useParams } from 'next/navigation';
 import { useMenuDetail } from '../MenuDetailInfo/useMenuDetail';
 import { useMenuImages } from './useMenuImages';
 import styles from './MenuDetailImage.module.css';
-import { use } from 'react';
+import { useState } from 'react';
+
 
 export default function MenuDetailImage({ menuId }: { menuId: number }) {
     const { id } = useParams();
     const menu = useMenuDetail(id as string);
     const { images, isLoading } = useMenuImages(id as string);
 
-    if (isLoading || !menu) return null;
+    const [activeIndex, setActiveIndex] = useState(0);
 
-    const primaryImage = images[0]; // Assuming the first image is primary
+    if (isLoading || !menu || !images || images.length === 0) return null;
 
     return (
-        <div className={styles.imageSection}>
-            {primaryImage ? (
+        <div className={styles.container}>
+            <div className={styles.mainImageWrapper}>
                 <Image
-                    src={`http://localhost:8080/${primaryImage.srcUrl}`}
-                    alt={primaryImage.altText || menu.korName}
+                    src={`http://localhost:8080/${images[activeIndex].srcUrl}`}
+                    alt={images[activeIndex].altText || menu.korName}
                     fill
-                    className={styles.image}
-                    sizes="(max-width: 768px) 100vw, 800px"
+                    className={styles.mainImage}
                     priority
                 />
-            ) : (
-                <div className={styles.image} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc' }}>
-                    이미지 없음
-                </div>
-            )}
+            </div>
+
+            <div className={styles.thumbnailList}>
+                {images.map((img, index) => (
+                    <div
+                        key={img.id}
+                        className={`${styles.thumbnailWrapper} ${index === activeIndex ? styles.active : ''}`}
+                        onClick={() => setActiveIndex(index)}
+                    >
+                        <Image
+                            src={`http://localhost:8080/${img.srcUrl}`}
+                            alt={img.altText || menu.korName}
+                            fill
+                            className={styles.thumbnailImage}
+                        />
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

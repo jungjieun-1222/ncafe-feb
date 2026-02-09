@@ -14,14 +14,15 @@ export default function MenuDetailPage({ params }: { params: Promise<{ id: strin
         <main>
             <MenuDetailHeader />
 
-            <div className={styles.content}>
-                {/* MenuDetailImage 컴포넌트에 menuId를 전달해야함 */}
-                <MenuDetailImage menuId={Number(id)} />
+            <div className={styles.pageContainer}>
+                <section className={styles.imageSection}>
+                    <MenuDetailImage menuId={Number(id)} />
+                </section>
 
-                <div className={styles.infoSection}>
+                <section className={styles.infoSection}>
                     <MenuDetailInfo id={Number(id)} />
                     <MenuDetailOptions />
-                </div>
+                </section>
             </div>
 
             <div style={{ marginTop: 'var(--space-8)' }}>
