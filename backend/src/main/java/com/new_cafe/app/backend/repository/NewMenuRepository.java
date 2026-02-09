@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.new_cafe.app.backend.entity.Menu;
 
+import java.util.Optional;
+
 @Repository
 public class NewMenuRepository implements MenuRepository {
 
@@ -53,8 +55,7 @@ public class NewMenuRepository implements MenuRepository {
                         rs.getInt("category_id"),
                         rs.getBoolean("is_available"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
-                        rs.getTimestamp("updated_at").toLocalDateTime(),
-                        null));
+                        rs.getTimestamp("updated_at").toLocalDateTime()));
             }
 
         } catch (SQLException e) {
@@ -88,8 +89,7 @@ public class NewMenuRepository implements MenuRepository {
                             rs.getInt("category_id"),
                             rs.getBoolean("is_available"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime(),
-                            null));
+                            rs.getTimestamp("updated_at").toLocalDateTime()));
                 }
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -125,8 +125,7 @@ public class NewMenuRepository implements MenuRepository {
                             rs.getInt("category_id"),
                             rs.getBoolean("is_available"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime(),
-                            null));
+                            rs.getTimestamp("updated_at").toLocalDateTime()));
                 }
             }
         } catch (SQLException e) {
@@ -134,6 +133,35 @@ public class NewMenuRepository implements MenuRepository {
         }
 
         return list;
+    }
+
+    @Override
+    public Optional<Menu> findById(Long id) {
+        String sql = "SELECT * FROM menus WHERE id = " + id;
+
+        try (Connection conn = dataSource.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                Menu menu = new Menu(
+                        rs.getLong("id"),
+                        rs.getString("kor_name"),
+                        rs.getString("eng_name"),
+                        rs.getString("description"),
+                        rs.getInt("price"),
+                        rs.getInt("category_id"),
+                        rs.getBoolean("is_available"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        rs.getTimestamp("updated_at").toLocalDateTime());
+                return Optional.of(menu);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
     }
 
 }

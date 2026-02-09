@@ -19,6 +19,7 @@ export interface Menu {
 export interface MenuImage {
     id: string;
     url: string;
+    altText?: string;
     isPrimary: boolean;
     sortOrder: number;
 }

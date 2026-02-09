@@ -19,7 +19,7 @@ export const menus: Menu[] = [
         price: 4500,
         category: categories[0],
         images: [
-            { id: '1-1', url: '/images/menu/americano.jpg', isPrimary: true, sortOrder: 1 },
+            { id: '1-1', url: '/images/menu/americano.jpg', altText: '따뜻한 아메리카노 이미지', isPrimary: true, sortOrder: 1 },
         ],
         isAvailable: true,
         isSoldOut: false,
@@ -67,7 +67,7 @@ export const menus: Menu[] = [
         price: 5000,
         category: categories[0],
         images: [
-            { id: '2-1', url: '/images/menu/latte.jpg', isPrimary: true, sortOrder: 1 },
+            { id: '2-1', url: '/images/menu/latte.jpg', altText: '부드러운 카페라떼 이미지', isPrimary: true, sortOrder: 1 },
         ],
         isAvailable: true,
         isSoldOut: false,

@@ -25,5 +25,4 @@ public class Menu {
     private boolean isAvailable; // 판매 가능 여부
     private LocalDateTime createdAt; // 생성 시간
     private LocalDateTime updatedAt; // 수정 시간
-    private Category category; // 카테고리
 }

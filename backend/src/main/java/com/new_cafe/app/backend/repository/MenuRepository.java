@@ -1,6 +1,8 @@
 package com.new_cafe.app.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import com.new_cafe.app.backend.entity.Menu;
 
 /**
@@ -14,5 +16,7 @@ public interface MenuRepository {
     List<Menu> findAllByCategoryId(Integer categoryId); // "카테고리 ID가 1번인 것만 가져와!" (카테고리별 조회)
 
     List<Menu> findAllByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery);
+
+    Optional<Menu> findById(Long id);
 
 }

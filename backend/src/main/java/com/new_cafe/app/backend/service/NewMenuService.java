@@ -15,6 +15,8 @@ import com.new_cafe.app.backend.controller.dto.MenuCreateResponse;
 import com.new_cafe.app.backend.controller.dto.MenuUpdateResponse;
 import com.new_cafe.app.backend.controller.dto.MenuUpdateRequest;
 import com.new_cafe.app.backend.controller.dto.MenuCreateRequest;
+import com.new_cafe.app.backend.controller.dto.MenuImageListResponse;
+import com.new_cafe.app.backend.controller.dto.MenuImageResponse;
 
 /**
  * MenuService의 실제 구현체
@@ -78,7 +80,22 @@ public class NewMenuService implements MenuService {
 
     @Override
     public MenuDetailResponse getMenu(Long id) {
-        throw new UnsupportedOperationException("Unimplemented method 'getMenu'");
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu not found"));
+
+        String categoryName = categoryRepository.findById(menu.getCategoryId()).getName();
+
+        return MenuDetailResponse.builder()
+                .id(menu.getId())
+                .korName(menu.getKorName())
+                .engName(menu.getEngName())
+                .description(menu.getDescription())
+                .price(menu.getPrice())
+                .categoryId(menu.getCategoryId())
+                .categoryName(categoryName)
+                .isAvailable(menu.isAvailable())
+                .createdAt(menu.getCreatedAt())
+                .updatedAt(menu.getUpdatedAt())
+                .build();
     }
 
     @Override
@@ -94,5 +111,24 @@ public class NewMenuService implements MenuService {
     @Override
     public MenuUpdateResponse updateMenu(MenuUpdateRequest request) {
         throw new UnsupportedOperationException("Unimplemented method 'updateMenu'");
+    }
+
+    @Override
+    public MenuImageListResponse getMenuImages(Long id) {
+        List<MenuImage> menuImages = menuImageRepository.findAllByMenuId(id);
+        List<MenuImageResponse> menuImageResponses = menuImages
+                .stream()
+                .map(menuImage -> MenuImageResponse.builder()
+                        .id(menuImage.getId())
+                        .menuId(menuImage.getMenuId())
+                        .srcUrl(menuImage.getSrcUrl())
+                        .altText(menuImage.getAltText())
+                        .sortOrder(menuImage.getSortOrder())
+                        .build())
+                .toList();
+
+        return MenuImageListResponse.builder()
+                .menuImages(menuImageResponses)
+                .build();
     }
 }

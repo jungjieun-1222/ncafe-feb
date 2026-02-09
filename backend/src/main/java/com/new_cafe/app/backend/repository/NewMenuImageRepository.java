@@ -35,7 +35,6 @@ public class NewMenuImageRepository implements MenuImageRepository {
                             .id(rs.getLong("id"))
                             .menuId(rs.getLong("menu_id"))
                             .srcUrl(rs.getString("src_url"))
-                            .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
                             .sortOrder(rs.getInt("sort_order"))
                             .build();
                     list.add(image);

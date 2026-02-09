@@ -1,4 +1,4 @@
-package com.new_cafe.app.backend.entity;
+package com.new_cafe.app.backend.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MenuImage {
+public class MenuImageResponse {
     private Long id;
     private Long menuId;
     private String srcUrl;
