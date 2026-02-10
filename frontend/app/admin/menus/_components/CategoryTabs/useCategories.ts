@@ -27,7 +27,7 @@ export function useCategories() {
         const fetchCategories = async () => {
             try {
                 setIsLoading(true);
-                const res = await fetch('http://localhost:8080/admin/categories');
+                const res = await fetch('/api/v1/admin/categories');
 
                 if (!res.ok) {
                     throw new Error('Failed to fetch categories');

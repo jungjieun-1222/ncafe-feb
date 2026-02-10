@@ -21,7 +21,7 @@ export default function MenuDetailImage({ menuId }: { menuId: number }) {
         <div className={styles.container}>
             <div className={styles.mainImageWrapper}>
                 <Image
-                    src={`http://localhost:8080/${images[activeIndex].srcUrl}`}
+                    src={`/images/${images[activeIndex].srcUrl}`}
                     alt={images[activeIndex].altText || menu.korName}
                     fill
                     className={styles.mainImage}
@@ -37,7 +37,7 @@ export default function MenuDetailImage({ menuId }: { menuId: number }) {
                         onClick={() => setActiveIndex(index)}
                     >
                         <Image
-                            src={`http://localhost:8080/${img.srcUrl}`}
+                            src={`/images/${img.srcUrl}`}
                             alt={img.altText || menu.korName}
                             fill
                             className={styles.thumbnailImage}

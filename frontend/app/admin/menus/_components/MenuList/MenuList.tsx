@@ -14,7 +14,7 @@ interface MenuListProps {
 
 export default function MenuList({ selectedCategory, searchQuery }: MenuListProps) {
 
-    //http://localhost:8080/admin/menus?category=1&searchQuery=&page=1&size=8
+    //${baseUrl}/admin/menus?category=1&searchQuery=&page=1&size=8
 
     const { menus, isLoading } = useMenus(selectedCategory, searchQuery);
     const [currentPage, setCurrentPage] = useState(1);

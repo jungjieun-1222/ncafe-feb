@@ -27,7 +27,7 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
             <div className={styles.imageWrapper}>
                 {(menu.imageSrc && !imgError) ? (
                     <Image
-                        src={`http://localhost:8080/${menu.imageSrc}`}
+                        src={`/images/${menu.imageSrc}`}
                         alt={menu.korName}
                         fill
                         className={styles.image}

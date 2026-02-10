@@ -16,9 +16,8 @@ export default function MenusPage() {
     console.log('MenusPage');
 
     useEffect(() => {
-        // http://localhost:8080/admin/menus
         const fetchMenus = async () => {
-            const url = new URL('http://localhost:8080/admin/menus');
+            const url = new URL('/api/v1/admin/menus', window.location.origin);
             const params = url.searchParams;
             if (categoryId) {
                 params.set('cid', categoryId);

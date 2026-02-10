@@ -17,7 +17,7 @@ export function useMenuImages(menuId: number | string | undefined) {
 
         const fetchImages = async () => {
             try {
-                const res = await fetch(`http://localhost:8080/admin/menus/${menuId}/menu-images`);
+                const res = await fetch(`/api/v1/admin/menus/${menuId}/menu-images`);
                 if (!res.ok) {
                     throw new Error('Failed to fetch menu images');
                 }
