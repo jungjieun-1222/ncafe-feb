@@ -21,7 +21,7 @@ export function useMenuDetail(id: number | string | undefined) {
 
         const fetchMenu = async () => {
             try {
-                const res = await fetch(`/api/v1/admin/menus/${id}`);
+                const res = await fetch(`/api/admin/menus/${id}`);
                 if (!res.ok) {
                     throw new Error('Failed to fetch menu detail');
                 }

@@ -5,7 +5,7 @@ export default function CategoryList({ onCategoryChange }) {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const response = await fetch('/api/v1/admin/categories');
+            const response = await fetch('/api/admin/categories');
             const data = await response.json();
             setCategories(data);
         };

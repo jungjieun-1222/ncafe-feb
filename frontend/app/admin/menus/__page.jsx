@@ -17,7 +17,7 @@ export default function MenusPage() {
 
     useEffect(() => {
         const fetchMenus = async () => {
-            const url = new URL('/api/v1/admin/menus', window.location.origin);
+            const url = new URL('/api/admin/menus', window.location.origin);
             const params = url.searchParams;
             if (categoryId) {
                 params.set('cid', categoryId);

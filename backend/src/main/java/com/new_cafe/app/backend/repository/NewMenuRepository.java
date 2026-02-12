@@ -55,7 +55,8 @@ public class NewMenuRepository implements MenuRepository {
                         rs.getInt("category_id"),
                         rs.getBoolean("is_available"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
-                        rs.getTimestamp("updated_at").toLocalDateTime()));
+                        rs.getTimestamp("updated_at").toLocalDateTime(),
+                        rs.getString("alt_text")));
             }
 
         } catch (SQLException e) {
@@ -89,7 +90,8 @@ public class NewMenuRepository implements MenuRepository {
                             rs.getInt("category_id"),
                             rs.getBoolean("is_available"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime()));
+                            rs.getTimestamp("updated_at").toLocalDateTime(),
+                            rs.getString("alt_text")));
                 }
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -125,7 +127,8 @@ public class NewMenuRepository implements MenuRepository {
                             rs.getInt("category_id"),
                             rs.getBoolean("is_available"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime()));
+                            rs.getTimestamp("updated_at").toLocalDateTime(),
+                            rs.getString("alt_text")));
                 }
             }
         } catch (SQLException e) {
@@ -153,7 +156,8 @@ public class NewMenuRepository implements MenuRepository {
                         rs.getInt("category_id"),
                         rs.getBoolean("is_available"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
-                        rs.getTimestamp("updated_at").toLocalDateTime());
+                        rs.getTimestamp("updated_at").toLocalDateTime(),
+                        rs.getString("alt_text"));
                 return Optional.of(menu);
             }
 
