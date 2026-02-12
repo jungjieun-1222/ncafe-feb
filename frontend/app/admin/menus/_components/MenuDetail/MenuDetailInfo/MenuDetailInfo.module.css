@@ -45,17 +45,23 @@
 }
 
 .badgeCategory {
-    background-color: var(--color-primary-100);
-    color: var(--color-primary-700);
-}
-
-.badgeStatus {
-    background-color: var(--color-success);
+    background-color: var(--color-primary-700);
+    /* 진한 갈색 */
     color: white;
 }
 
+.badgeStatus {
+    background-color: #fef3c7;
+    /* 노란색 계열 배경 */
+    color: #92400e;
+    /* 진한 호박색 글자 */
+    border: 1px solid #fde68a;
+}
+
 .badgeStatus.soldOut {
-    background-color: var(--color-gray-500);
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-500);
+    border: 1px solid var(--color-gray-200);
 }
 
 .price {
@@ -78,7 +84,7 @@
     flex-direction: column;
     gap: var(--space-1);
     font-size: var(--text-xs);
-    color: var(--color-gray-400);
+    color: var(--color-gray-800);
     padding-top: var(--space-4);
     border-top: 1px solid var(--color-gray-100);
 }

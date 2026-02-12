@@ -7,8 +7,9 @@
 .mainImageWrapper {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
-    border-radius: 12px;
+    aspect-ratio: 1 / 1.2;
+    /* 세로로 더 길게 수정 */
+    border-radius: 16px;
     overflow: hidden;
 }
 

@@ -33,13 +33,9 @@ public class NewCategoryRepository implements CategoryRepository {
             while (rs.next()) {
                 Category category = new Category(
                         rs.getLong("id"),
-                        rs.getString("name"));
-
-                // Category category = Category.builder()
-                // .id(rs.getInt("id"))
-                // .name(rs.getString("name"))
-                // .build();
-
+                        rs.getString("name"),
+                        rs.getString("icon"),
+                        rs.getInt("sort_order"));
                 list.add(category);
             }
         } catch (SQLException e) {
@@ -62,7 +58,9 @@ public class NewCategoryRepository implements CategoryRepository {
                 if (rs.next()) {
                     category = new Category(
                             rs.getLong("id"),
-                            rs.getString("name"));
+                            rs.getString("name"),
+                            rs.getString("icon"),
+                            rs.getInt("sort_order"));
                 }
             }
         } catch (SQLException e) {

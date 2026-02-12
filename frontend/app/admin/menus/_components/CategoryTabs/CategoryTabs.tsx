@@ -17,12 +17,26 @@ interface CategoryTabsProps {
 export default function CategoryTabs({ selectedCategory, onCategoryChange, searchQuery, setSearchQuery }: CategoryTabsProps) {
     const { categories } = useCategories();
 
+    const getIcon = (id: string | number) => {
+        const categoryId = Number(id);
+        switch (categoryId) {
+            case 1: return <Coffee className={styles.tabIcon} />;    // 커피
+            case 2: return <Croissant className={styles.tabIcon} />; // 샌드위치
+            case 3: return <Leaf className={styles.tabIcon} />;      // 디저트
+            case 4: return <Cake className={styles.tabIcon} />;      // 쿠키
+            case 5: return <CupSoda className={styles.tabIcon} />;   // 논커피
+            case 9: return <LayoutGrid className={styles.tabIcon} />;// 기타
+            default: return <Coffee className={styles.tabIcon} />;
+        }
+    };
+
     return (
         <div className={styles.toolbar}>
             <div className={styles.filterSection}>
                 <div className={styles.tabs}>
                     <button
                         className={`${styles.tab} ${selectedCategory === undefined ? styles.tabActive : ''}`}
+                        onClick={() => onCategoryChange(undefined as any)}
                     >
                         <LayoutGrid className={styles.tabIcon} />
                         전체
@@ -32,10 +46,10 @@ export default function CategoryTabs({ selectedCategory, onCategoryChange, searc
                         return (
                             <button
                                 key={category.id}
-                                className={`${styles.tab} ${selectedCategory === category.id ? styles.tabActive : ''}`}
-                                onClick={() => onCategoryChange(category.id)}
+                                className={`${styles.tab} ${selectedCategory === Number(category.id) ? styles.tabActive : ''}`}
+                                onClick={() => onCategoryChange(Number(category.id))}
                             >
-                                <span className={styles.tabIcon}>{category.icon}</span>
+                                {getIcon(category.id)}
                                 {category.name}
                             </button>
                         );

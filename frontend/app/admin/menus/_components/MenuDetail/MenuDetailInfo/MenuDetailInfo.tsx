@@ -34,9 +34,9 @@ export default function MenuDetailInfo({ id }: { id: number }) {
                 </div>
                 <div className={styles.actions}>
                     <Link href={`/admin/menus/${id}/edit`}>
-                        <Button variant="secondary" size="sm">수정</Button>
+                        <Button variant="secondary" size="md">수정</Button>
                     </Link>
-                    <Button variant="danger" size="sm">삭제</Button>
+                    <Button variant="danger" size="md">삭제</Button>
                 </div>
             </div>
 

@@ -5,6 +5,8 @@ import PageHeader from './_components/MenuList/PageHeader';
 import CategoryTabs from './_components/CategoryTabs';
 import MenuList from './_components/MenuList';
 
+import styles from './page.module.css';
+
 export default function MenuListPage() {
     //상태 Lifting State Up
     const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +17,7 @@ export default function MenuListPage() {
     //};
 
     return (
-        <main>
+        <div className={styles.container}>
             <PageHeader title="메뉴 관리" />
             {/* callback property */}
             <CategoryTabs
@@ -30,6 +32,6 @@ export default function MenuListPage() {
                 selectedCategory={selectedCategory}
                 searchQuery={searchQuery}
             />
-        </main>
+        </div>
     );
 }

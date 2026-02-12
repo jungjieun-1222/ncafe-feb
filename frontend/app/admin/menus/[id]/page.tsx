@@ -14,18 +14,24 @@ export default function MenuDetailPage({ params }: { params: Promise<{ id: strin
         <main>
             <MenuDetailHeader />
 
-            <div className={styles.pageContainer}>
-                <section className={styles.imageSection}>
-                    <MenuDetailImage menuId={Number(id)} />
-                </section>
+            <div className={styles.detailGrid}>
+                <aside className={styles.imageColumn}>
+                    <section className={styles.imageSection}>
+                        <MenuDetailImage menuId={Number(id)} />
+                    </section>
+                </aside>
 
-                <section className={styles.infoSection}>
-                    <MenuDetailInfo id={Number(id)} />
-                    <MenuDetailOptions />
-                </section>
+                <div className={styles.infoColumn}>
+                    <section className={styles.infoSection}>
+                        <MenuDetailInfo id={Number(id)} />
+                    </section>
+                    <section className={styles.optionsSection}>
+                        <MenuDetailOptions />
+                    </section>
+                </div>
             </div>
 
-            <div style={{ marginTop: 'var(--space-8)' }}>
+            <div className={styles.footerActions}>
                 <Link href="/admin/menus">
                     <Button variant="ghost">목록으로 돌아가기</Button>
                 </Link>
