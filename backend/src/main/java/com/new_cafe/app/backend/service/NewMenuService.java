@@ -115,6 +115,10 @@ public class NewMenuService implements MenuService {
 
     @Override
     public MenuImageListResponse getMenuImages(Long id) {
+        // 부모 메뉴 정보를 먼저 조회 (altText를 가져오기 위함)
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+
         List<MenuImage> menuImages = menuImageRepository.findAllByMenuId(id);
         List<MenuImageResponse> menuImageResponses = menuImages
                 .stream()
@@ -122,7 +126,7 @@ public class NewMenuService implements MenuService {
                         .id(menuImage.getId())
                         .menuId(menuImage.getMenuId())
                         .srcUrl(menuImage.getSrcUrl())
-                        .altText(menuImage.getAltText())
+                        .altText(menu.getAltText()) // 부모 Menu의 altText 사용
                         .sortOrder(menuImage.getSortOrder())
                         .build())
                 .toList();
