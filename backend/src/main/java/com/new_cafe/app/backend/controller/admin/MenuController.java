@@ -20,7 +20,7 @@ import com.new_cafe.app.backend.controller.dto.MenuListResponse;
  * 메뉴와 관련된 HTTP 요청(API)을 처리하는 컨트롤러
  */
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/api/admin/menus")
+@RequestMapping("/admin/menus")
 @RestController
 
 public class MenuController {
