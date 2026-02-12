@@ -46,9 +46,10 @@ public class NewMenuRepository implements MenuRepository {
                 ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+                String korName = rs.getString("kor_name");
                 list.add(new Menu(
                         rs.getLong("id"),
-                        rs.getString("kor_name"),
+                        korName,
                         rs.getString("eng_name"),
                         rs.getString("description"),
                         rs.getInt("price"),
@@ -56,7 +57,7 @@ public class NewMenuRepository implements MenuRepository {
                         rs.getBoolean("is_available"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
                         rs.getTimestamp("updated_at").toLocalDateTime(),
-                        rs.getString("alt_text")));
+                        korName));
             }
 
         } catch (SQLException e) {
@@ -81,9 +82,10 @@ public class NewMenuRepository implements MenuRepository {
                     ResultSet rs = stmt.executeQuery(sql)) {
 
                 while (rs.next()) {
+                    String korName = rs.getString("kor_name");
                     list.add(new Menu(
                             rs.getLong("id"),
-                            rs.getString("kor_name"),
+                            korName,
                             rs.getString("eng_name"),
                             rs.getString("description"),
                             rs.getInt("price"),
@@ -91,7 +93,7 @@ public class NewMenuRepository implements MenuRepository {
                             rs.getBoolean("is_available"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
                             rs.getTimestamp("updated_at").toLocalDateTime(),
-                            rs.getString("alt_text")));
+                            korName));
                 }
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -118,9 +120,10 @@ public class NewMenuRepository implements MenuRepository {
                     ResultSet rs = stmt.executeQuery(sql)) {
 
                 while (rs.next()) {
+                    String korName = rs.getString("kor_name");
                     list.add(new Menu(
                             rs.getLong("id"),
-                            rs.getString("kor_name"),
+                            korName,
                             rs.getString("eng_name"),
                             rs.getString("description"),
                             rs.getInt("price"),
@@ -128,7 +131,7 @@ public class NewMenuRepository implements MenuRepository {
                             rs.getBoolean("is_available"),
                             rs.getTimestamp("created_at").toLocalDateTime(),
                             rs.getTimestamp("updated_at").toLocalDateTime(),
-                            rs.getString("alt_text")));
+                            korName));
                 }
             }
         } catch (SQLException e) {
@@ -147,9 +150,10 @@ public class NewMenuRepository implements MenuRepository {
                 ResultSet rs = stmt.executeQuery(sql)) {
 
             if (rs.next()) {
+                String korName = rs.getString("kor_name");
                 Menu menu = new Menu(
                         rs.getLong("id"),
-                        rs.getString("kor_name"),
+                        korName,
                         rs.getString("eng_name"),
                         rs.getString("description"),
                         rs.getInt("price"),
@@ -157,7 +161,7 @@ public class NewMenuRepository implements MenuRepository {
                         rs.getBoolean("is_available"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
                         rs.getTimestamp("updated_at").toLocalDateTime(),
-                        rs.getString("alt_text"));
+                        korName);
                 return Optional.of(menu);
             }
 
