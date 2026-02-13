@@ -1,0 +1,83 @@
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.logo {
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: #2A2622;
+    letter-spacing: -0.05em;
+    font-family: var(--font-calligraphy);
+}
+
+.dot {
+    color: var(--k-gold);
+}
+
+.links {
+    display: flex;
+    gap: 56px;
+}
+
+.link {
+    font-family: var(--font-myeongjo);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #4A443F;
+    letter-spacing: 0.05em;
+    position: relative;
+}
+
+.link::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--k-gold);
+    transition: all 0.5s ease;
+}
+
+.link:hover::after {
+    width: 100%;
+}
+
+.reserveBtn {
+    background: var(--k-crimson);
+    color: white;
+    padding: 12px 32px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: all 0.5s ease;
+    box-shadow: 0 4px 12px rgba(139, 17, 11, 0.15);
+}
+
+.reserveBtn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+    .links {
+        display: none;
+    }
+}

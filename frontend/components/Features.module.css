@@ -1,0 +1,117 @@
+.section {
+    padding: 140px 24px;
+    background-color: var(--k-ivory);
+    position: relative;
+    overflow: hidden;
+}
+
+.section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--pattern-k);
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.label {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--k-gold);
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    color: var(--k-clay);
+    line-height: 1.4;
+    font-family: var(--font-serif);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.card {
+    background: #fff;
+    padding: 60px 40px;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(74, 68, 63, 0.05);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    border-bottom: 3px solid transparent;
+}
+
+.card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 40px 80px rgba(74, 68, 63, 0.12);
+    border-bottom: 3px solid var(--k-gold);
+}
+
+.iconWrapper {
+    width: 64px;
+    height: 64px;
+    background: var(--k-ivory);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--k-gold);
+    margin-bottom: 32px;
+    transition: all 0.5s ease;
+}
+
+.card:hover .iconWrapper {
+    background: var(--k-gold);
+    color: #fff;
+    transform: rotateY(360deg);
+}
+
+.cardTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--k-clay);
+    margin-bottom: 20px;
+    font-family: var(--font-serif);
+}
+
+.cardDescription {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    font-family: var(--font-myeongjo);
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 100px 24px;
+    }
+}
