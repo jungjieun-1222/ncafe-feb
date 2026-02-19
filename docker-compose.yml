@@ -6,7 +6,7 @@ services:
     ports:
       - "8012:8012"
     volumes:
-      - /home/mochijj/ncafe_upload:/app/upload
+      - /home/mochijj/dist/ncafe/upload:/app/upload
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db.newlecture.com:5432/ncafedb?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=ncafe
