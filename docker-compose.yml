@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8012:8012"
+    volumes:
+      - /home/mochijj/ncafe_upload:/app/upload
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db.newlecture.com:5432/ncafedb?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=ncafe
+      - SPRING_DATASOURCE_PASSWORD=new_ibm2
+      - SERVER_PORT=8012
+    networks:
+      - ncafe-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_URL=http://backend:8012
+    depends_on:
+      - backend
+    networks:
+      - ncafe-network
+
+networks:
+  ncafe-network:
+    driver: bridge

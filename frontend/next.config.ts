@@ -2,19 +2,21 @@ import type { NextConfig } from "next";
 
 const nextConfig = {
   async rewrites() {
-    if (process.env.NODE_ENV === 'development') {
-      return [
-        {
-          source: '/api/:path*',
-          destination: 'http://localhost:8080/:path*',
-        },
-        {
-          source: '/images/:path*',
-          destination: 'http://localhost:8080/:path*',
-        },
-      ];
-    }
-    return [];
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080';
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/:path*`,
+      },
+      {
+        source: '/images/:path*',
+        destination: `${backendUrl}/:path*`,
+      },
+      {
+        source: '/upload/:path*', // Adding upload path just in case, based on static resources config
+        destination: `${backendUrl}/upload/:path*`,
+      }
+    ];
   },
   images: {
     remotePatterns: [
