@@ -20,9 +20,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3012:3012"
     environment:
       - BACKEND_URL=http://backend:8012
+      - PORT=3012
     depends_on:
       - backend
     networks:
