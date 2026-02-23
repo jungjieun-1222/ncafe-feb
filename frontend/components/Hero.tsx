@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
+import Link from 'next/link';
 import { ArrowRight, Coffee } from 'lucide-react';
 
 const HERO_IMAGE_URL = "https://images.unsplash.com/photo-1647168585205-e56ebb24a669?q=80&w=2070&auto=format&fit=crop";
@@ -51,9 +52,9 @@ const Hero = () => {
                 </p>
 
                 <div className={`${styles.actions} animate-in`}>
-                    <button className={styles.primaryBtn}>
+                    <Link href="/menus" className={styles.primaryBtn}>
                         오늘의 음료 주문하기 <ArrowRight size={18} />
-                    </button>
+                    </Link>
                     <button className={styles.secondaryBtn}>
                         한옥 공간 둘러보기
                     </button>

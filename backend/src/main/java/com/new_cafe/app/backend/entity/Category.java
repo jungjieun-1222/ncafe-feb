@@ -1,20 +1,27 @@
 package com.new_cafe.app.backend.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 
-/**
- * 카테고리 정보를 담는 엔티티 클래스
- */
+@Entity
+@Table(name = "categories")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
     private String icon;
+
+    @Column(name = "sort_order")
     private int sortOrder;
 }

@@ -13,7 +13,7 @@ const Navbar = () => {
                 </div>
 
                 <div className={styles.links}>
-                    <Link href="/admin/menus" className={styles.link}>차림표</Link>
+                    <Link href="/menus" className={styles.link}>차림표</Link>
                     <Link href="/story" className={styles.link}>이야기</Link>
                     <Link href="/locations" className={styles.link}>오시는 길</Link>
                 </div>

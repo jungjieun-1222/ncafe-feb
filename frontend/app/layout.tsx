@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   description: "가장 한국적인 공간에서 즐기는 평온한 순간",
 };
 
+import { Toaster } from "react-hot-toast";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
+        <Toaster position="top-right" />
       </body>
     </html>
   );
