@@ -62,7 +62,7 @@ WHERE NOT EXISTS (
   WHERE m.kor_name = v.menu_name AND mi.sort_order = 1
 );
 
--- 4) admin user
+-- 4) admin user (password is '1234' hashed with BCrypt)
 INSERT INTO users (id, nickname, password, role)
-SELECT 'admin-uuid-001', 'admin', '$2a$10$8.UnVuG9HHgffUDAlk8q2OuVGkqBKzVxeuL9jlW6dB890wBPlK.S.', 'ROLE_ADMIN'
+SELECT 'admin-uuid-001', 'admin', '$2a$10$DNV6l/b40T9vT/nyn8E28.8KInW0Ew195i9pE3CEnPiz6jFqyX0M6', 'ROLE_ADMIN'
 WHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.nickname = 'admin');
