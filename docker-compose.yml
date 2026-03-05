@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: ${USER_ID:-mochijj}-backend
     # ports:
-    #   - "${BACKEND_PORT:-8012}:8080"
+    #   - "${BACKEND_PORT:-8012}:8081"
     volumes:
       - ./upload:/app/upload
     environment:
@@ -30,7 +30,7 @@ services:
     ports:
       - "${FRONTEND_PORT:-3012}:3001"
     environment:
-      - API_BASE_URL=http://mochijj-backend:8080
+      - API_BASE_URL=http://mochijj-backend:8081
       - SESSION_SECRET=${SESSION_SECRET}
     depends_on:
       - backend
