@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/app/lib/session';
 
-const API_BASE = process.env.API_BASE_URL || 'http://localhost:8012';
+const API_BASE = process.env.API_BASE_URL || 'http://backend:8081';
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
 
     // 1. Spring Boot 로그인 API 호출 (서버 -> 서버)
-    const loginRes = await fetch(`${API_BASE}/api/auth/login`, {
+    const loginRes = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -19,12 +19,10 @@ export async function POST(req: NextRequest) {
     }
 
     const tokenData = await loginRes.json();
-    // We'll normalize this. Backend currently returns 'username' and 'message'.
-    // I will update backend to return 'token'.
-    const token = tokenData.token || 'mock-jwt-token-for-now';
+    const token = tokenData.token || 'mock-jwt-token';
 
-    // 2. 사용자 정보 조회 (BFF는 JWT를 헤더에 넣어서 정보를 가져올 수 있어야 함)
-    const meRes = await fetch(`${API_BASE}/api/auth/me`, {
+    // 2. 사용자 정보 조회
+    const meRes = await fetch(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -8,8 +8,8 @@ async function proxyRequest(req: NextRequest) {
     const path = req.nextUrl.pathname;
     const search = req.nextUrl.search;
 
-    // Forward the path as-is (including /api) to match the updated backend controllers
-    const targetPath = path;
+    // Remove /api prefix for forwarding to backend
+    const targetPath = path.replace(/^\/api/, '');
     const targetUrl = `${API_BASE}${targetPath}${search}`;
 
     const headers: Record<string, string> = {};
