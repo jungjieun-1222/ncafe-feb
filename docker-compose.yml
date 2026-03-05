@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ${BACKEND_IMAGE:-ncafe-backend:latest}
+    image: ${BACKEND_IMAGE:-mochijj-backend:latest}
     build:
       context: ./backend
       dockerfile: Dockerfile
