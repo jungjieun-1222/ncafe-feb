@@ -27,7 +27,12 @@ public class JwtTokenProvider {
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        byte[] keyBytes;
+        try {
+            keyBytes = Decoders.BASE64.decode(secret);
+        } catch (Exception e) {
+            keyBytes = secret.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        }
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }

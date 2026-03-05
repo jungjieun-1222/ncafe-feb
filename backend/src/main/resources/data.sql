@@ -45,5 +45,5 @@ INSERT INTO menu_images (alt_text, menu_id, sort_order, src_url) VALUES
   ('홍시 수정과 소르베 이미지', 13, 1, '/images/persimmon-sorbet.png');
 
 -- users (password is '1234' hashed with BCrypt)
-INSERT INTO users (nickname, password, role) VALUES
-  ('admin', '$2a$10$8.UnVuG9HHgffUDAlk8q2OuVGkqBKzVxeuL9jlW6dB890wBPlK.S.', 'ROLE_ADMIN');
+INSERT INTO users (id, nickname, password, role) VALUES
+  ('admin-uuid-001', 'admin', '$2a$10$8.UnVuG9HHgffUDAlk8q2OuVGkqBKzVxeuL9jlW6dB890wBPlK.S.', 'ROLE_ADMIN');
