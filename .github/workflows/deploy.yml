@@ -54,12 +54,20 @@ jobs:
 
       - name: Verify deployment
         run: |
+          echo "=== Waiting for containers to stabilize (30s) ==="
+          sleep 30
+          echo ""
           echo "=== Container Status ==="
           docker compose ps
           echo ""
+          echo "=== Environment Check (Sanitized) ==="
+          grep -v "PASSWORD\|SECRET" .env || true
+          echo ""
           echo "=== Backend Logs ==="
-          docker compose logs backend | tail -n 20
-          sleep 15
+          docker compose logs backend --tail 20
+          echo ""
+          echo "=== Database Logs ==="
+          docker compose logs db --tail 10
           echo ""
           echo "=== Health Check ==="
           curl -sf --max-time 10 -o /dev/null -w "Frontend : HTTP %{http_code}\n" http://localhost:${FRONTEND_PORT:-3012} || echo "Frontend : not responding"
