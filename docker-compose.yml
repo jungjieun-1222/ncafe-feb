@@ -30,7 +30,7 @@ services:
     ports:
       - "${FRONTEND_PORT:-3012}:3001"
     environment:
-      - API_BASE_URL=http://backend:8080
+      - API_BASE_URL=http://mochijj-backend:8080
       - SESSION_SECRET=${SESSION_SECRET}
     depends_on:
       - backend
