@@ -65,4 +65,4 @@ WHERE NOT EXISTS (
 -- 4) admin user (idempotent update: delete first if exists to ensure fresh password hash)
 DELETE FROM users WHERE nickname = 'admin';
 INSERT INTO users (id, nickname, password, role)
-VALUES ('admin-uuid-001', 'admin', '$2a$10$DNV6l/b40T9vT/nyn8E28.8KInW0Ew195i9pE3CEnPiz6jFqyX0M6', 'ROLE_ADMIN');
+VALUES ('00000000-0000-0000-0000-000000000001', 'admin', '$2a$10$DNV6l/b40T9vT/nyn8E28.8KInW0Ew195i9pE3CEnPiz6jFqyX0M6', 'ROLE_ADMIN');

@@ -62,9 +62,9 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(DataSource dataSource) {
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         manager.setUsersByUsernameQuery(
-            "SELECT nickname as username, password, true as enabled FROM public.users WHERE nickname = ?");
+            "SELECT nickname as username, password, true as enabled FROM users WHERE nickname = ?");
         manager.setAuthoritiesByUsernameQuery(
-            "select nickname username, role authority from public.users where nickname = ?");
+            "select nickname username, role authority from users where nickname = ?");
         return manager;
     }
 
