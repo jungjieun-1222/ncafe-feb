@@ -9,12 +9,14 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Fix workspace permissions
+      - name: Pre-cleanup and Fix permissions
         run: |
-          cd "$GITHUB_WORKSPACE" || true
-          docker compose down 2>/dev/null || true
-          sudo rm -rf data upload 2>/dev/null || true
-          sudo chown -R $(whoami) "$GITHUB_WORKSPACE" 2>/dev/null || true
+          echo "Cleaning up workspace before checkout..."
+          sudo chown -R $(whoami):$(whoami) . || true
+          # docker compose가 떠있으면 파일이 잠길 수 있으니 미리 내립니다.
+          docker compose down || true
+          # 권한 문제로 안 지워지던 data 폴더 등을 강제 삭제
+          sudo rm -rf data 2>/dev/null || true
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -79,3 +81,9 @@ jobs:
 
       - name: Clean up old images
         run: docker image prune -f
+      
+      - name: Post-cleanup Fix permissions
+        if: always()
+        run: |
+          echo "Restoring workspace ownership..."
+          sudo chown -R $(whoami):$(whoami) .
