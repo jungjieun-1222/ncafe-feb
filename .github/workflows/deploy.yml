@@ -26,6 +26,7 @@ jobs:
           echo "BACKEND_PORT=${BACKEND_PORT}" >> .env
           echo "FRONTEND_PORT=${FRONTEND_PORT}" >> .env
           echo "DB_PORT=${DB_PORT}" >> .env
+          echo "API_BASE_URL=http://backend:8081" >> .env
           echo "SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}" >> .env
           echo "SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}" >> .env
           echo "SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}" >> .env
