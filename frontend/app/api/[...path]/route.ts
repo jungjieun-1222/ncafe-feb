@@ -8,11 +8,8 @@ async function proxyRequest(req: NextRequest) {
     const path = req.nextUrl.pathname;
     const search = req.nextUrl.search;
 
-    // Remove /api prefix for forwarding to backend which doesn't use /api prefix
-    // Current backend paths are like /auth/login, /menus, etc. 
-    // Let's see... the user's frontend uses /api/... to call BFF.
-    // BFF should strip /api and forward.
-    const targetPath = path.replace(/^\/api/, '');
+    // Forward the path as-is (including /api) to match the updated backend controllers
+    const targetPath = path;
     const targetUrl = `${API_BASE}${targetPath}${search}`;
 
     const headers: Record<string, string> = {};

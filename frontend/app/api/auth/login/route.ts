@@ -7,8 +7,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     // 1. Spring Boot 로그인 API 호출 (서버 -> 서버)
-    // Backend expects 'username' and 'password'
-    const loginRes = await fetch(`${API_BASE}/auth/login`, {
+    const loginRes = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -24,9 +23,8 @@ export async function POST(req: NextRequest) {
     // I will update backend to return 'token'.
     const token = tokenData.token || 'mock-jwt-token-for-now';
 
-    // 2. 사용자 정보 조회 (Backend에서 /auth/me 가 세션 기반이면 곤란함)
-    // BFF는 JWT를 헤더에 넣어서 정보를 가져올 수 있어야 함.
-    const meRes = await fetch(`${API_BASE}/auth/me`, {
+    // 2. 사용자 정보 조회 (BFF는 JWT를 헤더에 넣어서 정보를 가져올 수 있어야 함)
+    const meRes = await fetch(`${API_BASE}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 

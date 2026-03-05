@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/menus")
+@RequestMapping("/api/menus")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserMenuController {

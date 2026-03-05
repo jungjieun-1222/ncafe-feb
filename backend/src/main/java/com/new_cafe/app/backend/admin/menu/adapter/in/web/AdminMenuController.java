@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin/menus")
+@RequestMapping("/api/admin/menus")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminMenuController {
