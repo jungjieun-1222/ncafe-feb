@@ -56,6 +56,9 @@ jobs:
         run: |
           echo "=== Container Status ==="
           docker compose ps
+          echo ""
+          echo "=== Backend Logs ==="
+          docker compose logs backend | tail -n 20
           sleep 15
           echo ""
           echo "=== Health Check ==="
