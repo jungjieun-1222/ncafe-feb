@@ -3,33 +3,48 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-primary-50);
-  padding: var(--space-4);
+  background-color: transparent;
+  padding: 2rem;
 }
 
 .loginCard {
   width: 100%;
-  max-width: 400px;
-  background: var(--bg-primary);
-  padding: var(--space-8);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-primary-100);
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  padding: 4.5rem 3.5rem;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(181, 155, 109, 0.15);
 }
 
 .titleArea {
   text-align: center;
-  margin-bottom: var(--space-8);
+  margin-bottom: 3.5rem;
 }
 
 .titleArea h1 {
-  font-family: var(--font-serif);
-  color: var(--color-primary-700);
-  font-size: var(--text-3xl);
-  margin-bottom: var(--space-2);
+  /* font-family: var(--font-calligraphy) !important; */
+  font-family: inherit;
+  color: var(--k-clay);
+  font-size: 4.2rem;
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot {
+  color: var(--k-gold);
 }
 
 .titleArea p {
-  color: var(--color-gray-500);
-  font-size: var(--text-sm);
+  color: var(--k-clay);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: -0.02em;
 }

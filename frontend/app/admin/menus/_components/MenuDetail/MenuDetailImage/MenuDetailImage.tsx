@@ -15,36 +15,50 @@ export default function MenuDetailImage({ menuId }: { menuId: number }) {
 
     const [activeIndex, setActiveIndex] = useState(0);
 
-    if (isLoading || !menu || !images || images.length === 0) return null;
+    if (isLoading || !menu) return <div className={styles.loading}>이미지를 불러오는 중...</div>;
+
+    // Use menu.imageSrc as fallback if no specific images are found
+    const displayImages = images.length > 0 ? images : [
+        { id: 0, menuId: Number(id), srcUrl: menu.imageSrc, sortOrder: 0 } as any
+    ];
+
+    const getImageUrl = (url: string) => {
+        if (!url) return '/images/blank.png';
+        if (url.startsWith('/images/')) return url;
+        if (url.startsWith('http')) return url;
+        return `/images/${url}`;
+    };
 
     return (
         <div className={styles.container}>
             <div className={styles.mainImageWrapper}>
                 <Image
-                    src={`/images/${images[activeIndex].srcUrl}`}
-                    alt={images[activeIndex].altText || menu.korName}
+                    src={getImageUrl(displayImages[activeIndex].srcUrl)}
+                    alt={displayImages[activeIndex].altText || menu.korName}
                     fill
                     className={styles.mainImage}
                     priority
                 />
             </div>
 
-            <div className={styles.thumbnailList}>
-                {images.map((img, index) => (
-                    <div
-                        key={img.id}
-                        className={`${styles.thumbnailWrapper} ${index === activeIndex ? styles.active : ''}`}
-                        onClick={() => setActiveIndex(index)}
-                    >
-                        <Image
-                            src={`/images/${img.srcUrl}`}
-                            alt={img.altText || menu.korName}
-                            fill
-                            className={styles.thumbnailImage}
-                        />
-                    </div>
-                ))}
-            </div>
+            {displayImages.length > 1 && (
+                <div className={styles.thumbnailList}>
+                    {displayImages.map((img, index) => (
+                        <div
+                            key={img.id || index}
+                            className={`${styles.thumbnailWrapper} ${index === activeIndex ? styles.active : ''}`}
+                            onClick={() => setActiveIndex(index)}
+                        >
+                            <Image
+                                src={getImageUrl(img.srcUrl)}
+                                alt={img.altText || menu.korName}
+                                fill
+                                className={styles.thumbnailImage}
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

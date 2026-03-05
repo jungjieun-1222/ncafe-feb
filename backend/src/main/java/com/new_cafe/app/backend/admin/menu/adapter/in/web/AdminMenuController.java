@@ -45,6 +45,13 @@ public class AdminMenuController {
         return mapDetailToWebModel(getMenuUseCase.getMenu(id));
     }
 
+    @GetMapping("/{id}/menu-images")
+    public java.util.Map<String, Object> getMenuImages(@PathVariable Long id) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("menuImages", getMenuUseCase.getMenuImages(id));
+        return response;
+    }
+
     @PostMapping
     public void createMenu(@RequestBody AdminMenuWebRequest request) {
         createMenuUseCase.createMenu(mapToCreateCommand(request));

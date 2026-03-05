@@ -6,15 +6,11 @@ const nextConfig = {
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:8012';
     return [
       {
-        source: '/api/:path*',
-        destination: `${backendUrl}/:path*`,
-      },
-      {
         source: '/images/:path*',
         destination: `${backendUrl}/:path*`,
       },
       {
-        source: '/upload/:path*', // Adding upload path just in case, based on static resources config
+        source: '/upload/:path*',
         destination: `${backendUrl}/upload/:path*`,
       }
     ];

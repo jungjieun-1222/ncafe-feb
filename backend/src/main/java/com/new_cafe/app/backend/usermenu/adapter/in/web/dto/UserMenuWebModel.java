@@ -15,4 +15,5 @@ public class UserMenuWebModel {
     private String categoryName;
     private String imageSrc;
     private boolean isAvailable;
+    private String allergyInfo;
 }

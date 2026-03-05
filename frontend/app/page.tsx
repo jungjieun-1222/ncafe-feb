@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
 import Gallery from "../components/Gallery";
@@ -6,8 +5,7 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={`${styles.page} heritage-theme`}>
-      <Navbar />
+    <div className={styles.page}>
       <main>
         <Hero />
         <Features />
@@ -22,18 +20,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerContent}>
-          <div className={styles.footerBrand}>
-            <h3>엔카페 <span>.</span></h3>
-            <p>한 잔의 커피에 정성을 담아, 당신의 일상에 쉼표를 찍습니다.</p>
-          </div>
-          <div className={styles.footerInfo}>
-            <p>© 2026 NCafe Heritage. 모든 권리는 엔카페(NCafe)에 있습니다.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -1,33 +1,49 @@
 'use client';
 
 import { useState } from 'react';
-import PageHeader from './_components/MenuList/PageHeader';
+import Link from 'next/link';
+import { Plus, Search } from 'lucide-react';
+import Button from '@/components/common/Button';
+import PageHeader from './_components/MenuList/PageHeader/PageHeader';
 import CategoryTabs from './_components/CategoryTabs';
 import MenuList from './_components/MenuList';
 
 import styles from './page.module.css';
+import tabStyles from './_components/CategoryTabs/CategoryTabs.module.css';
 
 export default function MenuListPage() {
-    //상태 Lifting State Up
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined);
-    //선택된 카테고리 변경
-    //const handleCategoryChange = (Id: number) => {
-    //    setSelectedCategory(Id);
-    //};
 
     return (
         <div className={styles.container}>
-            <PageHeader title="메뉴 관리" />
-            {/* callback property */}
+            <PageHeader title="메뉴 관리" subtitle="카페의 소중한 메뉴들을 관리하는 공간입니다.">
+                <div className={tabStyles.actionSection}>
+                    <div className={tabStyles.searchWrapper}>
+                        <Search size={18} className={tabStyles.searchIcon} />
+                        <input
+                            type="text"
+                            placeholder="메뉴 검색..."
+                            className={tabStyles.searchInput}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    <Link href="/admin/menus/new">
+                        <Button className={tabStyles.addBtn}>
+                            <Plus size={18} />
+                            <span>메뉴 추가</span>
+                        </Button>
+                    </Link>
+                </div>
+            </PageHeader>
+
             <CategoryTabs
-                setSearchQuery={setSearchQuery}
-                searchQuery={searchQuery}
                 selectedCategory={selectedCategory}
                 onCategoryChange={setSelectedCategory}
             />
 
-            {/* selectedCategory property */}
             <MenuList
                 selectedCategory={selectedCategory}
                 searchQuery={searchQuery}

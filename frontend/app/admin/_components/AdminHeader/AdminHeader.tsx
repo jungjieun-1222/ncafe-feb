@@ -4,13 +4,26 @@ import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import styles from './AdminHeader.module.css';
 import { useAdminHeaderStore } from '@/stores/useAdminHeaderStore';
-import { User, Menu as MenuIcon, X } from 'lucide-react';
+import { User, Menu as MenuIcon, X, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function AdminHeader() {
     const pathname = usePathname();
+    const router = useRouter();
+    const { user, logout } = useAuthStore();
     const { title, subtitle, actions } = useAdminHeaderStore();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const handleLogout = async () => {
+        if (confirm('로그아웃 하시겠습니까?')) {
+            await logout();
+            toast.success('로그아웃 되었습니다.');
+            router.push('/');
+        }
+    };
 
     // URL 경로에 따른 기본 제목 매핑
     const getPathTitle = (path: string) => {
@@ -38,9 +51,10 @@ export default function AdminHeader() {
                     <MenuIcon size={24} />
                 </button>
 
-                <div className={styles.logoMobile}>
-                    <span className={styles.logoText}>☕</span>
-                </div>
+                <Link href="/" className={styles.logo}>
+                    <span className={styles.logoIcon}>🍵</span>
+                    <span className={`${styles.logoText} calligraphy`}>엔카페</span>
+                </Link>
 
                 <div className={styles.titleSection}>
                     <h1 className={styles.title}>{displayTitle}</h1>
@@ -55,12 +69,19 @@ export default function AdminHeader() {
 
                 <div className={styles.userSection}>
                     <div className={styles.userInfo}>
-                        <span className={styles.cafeName}>마이카페</span>
-                        <span className={styles.userName}>사장님</span>
+                        <span className={styles.cafeName}>관리자 모드</span>
+                        <span className={styles.userName}>{user?.username || '관리자'}님</span>
                     </div>
                     <div className={styles.avatar}>
                         <User size={20} />
                     </div>
+                    <button
+                        className={styles.logoutButton}
+                        onClick={handleLogout}
+                        title="로그아웃"
+                    >
+                        <LogOut size={18} />
+                    </button>
                 </div>
             </div>
 
@@ -69,7 +90,7 @@ export default function AdminHeader() {
                 <div className={styles.mobileNavOverlay}>
                     <div className={styles.mobileNavContent}>
                         <div className={styles.mobileNavHeader}>
-                            <span className={styles.logoText}>☕ NCafe</span>
+                            <span className={`${styles.logoText} calligraphy`}>🍵 엔카페</span>
                             <button onClick={() => setIsMobileMenuOpen(false)}>
                                 <X size={24} />
                             </button>

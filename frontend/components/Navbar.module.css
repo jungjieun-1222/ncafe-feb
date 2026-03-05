@@ -1,12 +1,20 @@
+/* Header updated for a more premium ivory glass feel */
 .nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 90px;
-    z-index: 100;
+    height: 95px;
+    /* Slightly more spacious */
+    z-index: 200;
     display: flex;
     align-items: center;
+    background: rgba(247, 243, 238, 0.95);
+    /* Heritage Ivory with slight glass */
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(181, 155, 109, 0.15);
+    /* Heritage gold border */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .container {
@@ -16,19 +24,31 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
+    padding: 0 60px;
+    /* More horizontal padding */
 }
 
 .logo {
-    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.logoLink {
+    font-size: 2.85rem;
     font-weight: 400;
-    color: #2A2622;
-    letter-spacing: -0.05em;
-    font-family: var(--font-calligraphy);
+    color: var(--k-clay);
+    letter-spacing: -0.01em;
+    /* font-family: var(--font-calligraphy), cursive !important; */
+    font-family: inherit;
+    /* Let global .calligraphy class handle this */
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+    display: inline-flex;
+    align-items: center;
 }
 
 .dot {
     color: var(--k-gold);
+    margin-left: 2px;
 }
 
 .links {
@@ -37,7 +57,6 @@
 }
 
 .link {
-    font-family: var(--font-myeongjo);
     font-size: 1.05rem;
     font-weight: 700;
     color: #4A443F;
@@ -60,24 +79,119 @@
     width: 100%;
 }
 
+.actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Base button style for consistency */
+.btnBase {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    /* Fixed height for consistency */
+    padding: 0 28px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.loginBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 0 28px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    background: transparent;
+    color: var(--k-gold);
+    border: 1.5px solid var(--k-gold);
+}
+
+.loginBtn:hover {
+    background: rgba(181, 155, 109, 0.05);
+    transform: translateY(-2px);
+}
+
 .reserveBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 0 28px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
     background: var(--k-crimson);
     color: white;
-    padding: 12px 32px;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    transition: all 0.5s ease;
-    box-shadow: 0 4px 12px rgba(139, 17, 11, 0.15);
+    box-shadow: 0 4px 12px rgba(139, 17, 11, 0.2);
 }
 
 .reserveBtn:hover {
     transform: translateY(-2px);
     filter: brightness(1.1);
+    box-shadow: 0 6px 15px rgba(139, 17, 11, 0.3);
+}
+
+.userInfo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4A443F;
+    margin-right: 8px;
+    font-family: var(--font-serif);
 }
 
 @media (max-width: 768px) {
     .links {
         display: none;
     }
+}
+
+/* when login page is active we reuse the hero button styles so they
+   remain visible on the white background. duplicate relevant rules */
+.primaryBtn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 36px;
+    background: #fff;
+    color: #2A2622;
+    font-weight: 800;
+    border-radius: 4px;
+    transition: all 0.4s ease;
+    font-size: 1.05rem;
+    /* edges for visibility on light backgrounds */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.primaryBtn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.secondaryBtn {
+    padding: 18px 36px;
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 4px;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(8px);
+    font-size: 1.05rem;
+}
+
+.secondaryBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
 }

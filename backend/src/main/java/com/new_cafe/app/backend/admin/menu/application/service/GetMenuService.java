@@ -39,6 +39,11 @@ public class GetMenuService implements GetMenuUseCase {
         return GetMenuDetailResult.from(menu);
     }
 
+    @Override
+    public List<com.new_cafe.app.backend.usermenu.adapter.out.persistence.entity.MenuImageEntity> getMenuImages(Long id) {
+        return loadMenuImagePort.loadAllEntitiesByMenuId(id);
+    }
+
     private void enrichAdminMenu(AdminMenu menu) {
         menu.setCategoryName(loadCategoryPort.getNameById(menu.getCategoryId().intValue()));
         List<String> images = loadMenuImagePort.getImageUrlsByMenuId(menu.getId());

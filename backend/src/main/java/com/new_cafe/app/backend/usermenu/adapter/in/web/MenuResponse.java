@@ -13,4 +13,5 @@ public class MenuResponse {
     private int price;
     private int categoryId;
     private boolean isAvailable;
+    private String allergyInfo;
 }

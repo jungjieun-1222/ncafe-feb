@@ -34,9 +34,10 @@ export default function AdminSidebar() {
 
     return (
         <aside className={styles.sidebar}>
-            <div className={styles.logo}>
-                <span className={styles.logoText}>☕ NCafe</span>
-            </div>
+            <Link href="/" className={styles.logo}>
+                <span className={styles.logoIcon}>🍵</span>
+                <span className={`${styles.logoText} calligraphy`}>엔카페</span>
+            </Link>
 
             <nav className={styles.nav}>
                 {navItems.map((group) => (
@@ -59,15 +60,6 @@ export default function AdminSidebar() {
                 ))}
             </nav>
 
-            <div className={styles.footer}>
-                <div className={styles.cafeInfo}>
-                    <div className={styles.cafeAvatar}>M</div>
-                    <div>
-                        <div className={styles.cafeName}>마이카페</div>
-                        <div className={styles.cafeRole}>사장님</div>
-                    </div>
-                </div>
-            </div>
         </aside>
     );
 }

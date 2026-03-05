@@ -8,6 +8,7 @@ export interface MenuDetail {
     price: number;
     categoryName: string;
     categoryId: number;
+    imageSrc: string;
     createdAt: string;
     updatedAt: string;
     available: boolean;

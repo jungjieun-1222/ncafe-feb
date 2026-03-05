@@ -5,10 +5,10 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--space-4) var(--space-8);
-    background-color: var(--color-primary-50);
+    background-color: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(12px);
     z-index: 50;
-    border-bottom: 2px solid var(--color-primary-100);
+    border-bottom: 1px solid var(--cafe-soft);
 }
 
 .leftSection {
@@ -20,16 +20,27 @@
 
 .mobileMenuButton {
     display: none;
-    background: none;
-    border: none;
-    color: var(--color-gray-600);
-    cursor: pointer;
-    padding: var(--space-1);
+    color: var(--cafe-wood);
+}
+
+.logo {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.logoIcon {
+    font-size: 1.2rem;
+}
+
+.logoText {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--cafe-wood);
 }
 
 .logoMobile {
     display: none;
-    font-size: var(--text-xl);
 }
 
 .titleSection {
@@ -38,23 +49,23 @@
 }
 
 .title {
-    font-size: var(--text-xl);
+    font-size: 1.25rem;
     font-weight: 700;
-    color: var(--color-gray-900);
-    letter-spacing: -0.02em;
+    font-family: var(--font-serif);
+    color: var(--cafe-wood);
+    letter-spacing: -0.01em;
 }
 
 .subtitle {
-    font-size: var(--text-xs);
-    color: var(--color-gray-500);
+    font-size: 0.75rem;
+    color: var(--color-gray-400);
     font-weight: 500;
-    margin-top: -2px;
 }
 
 .rightSection {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-6);
 }
 
 .actions {
@@ -65,22 +76,15 @@
 
 .divider {
     width: 1px;
-    height: 24px;
-    background-color: var(--color-gray-200);
+    height: 16px;
+    background-color: var(--cafe-soft);
 }
 
 .userSection {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    cursor: pointer;
     padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-md);
-    transition: background-color var(--transition-fast);
-}
-
-.userSection:hover {
-    background-color: var(--color-gray-50);
 }
 
 .userInfo {
@@ -91,94 +95,60 @@
 
 .cafeName {
     font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-gray-900);
+    font-weight: 700;
+    color: var(--cafe-clay);
 }
 
 .userName {
-    font-size: var(--text-xs);
-    color: var(--color-gray-500);
+    font-size: 0.7rem;
+    color: var(--color-gray-400);
 }
 
 .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-full);
-    background-color: var(--color-primary-100);
-    color: var(--color-primary-600);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--cafe-bg);
+    color: var(--cafe-wood);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--color-primary-200);
+    border: 1px solid var(--cafe-soft);
 }
 
-/* Mobile Nav Styles */
-.mobileNavOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-}
-
-.mobileNavContent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 280px;
-    height: 100%;
-    background-color: white;
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-}
-
-.mobileNavHeader {
+.logoutButton {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--cafe-soft);
+    background-color: transparent;
+    color: var(--color-gray-400);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: var(--space-2);
 }
 
-.logoText {
-    font-size: var(--text-xl);
-    font-weight: 800;
-    color: var(--color-gray-900);
+.logoutButton:hover {
+    background-color: var(--cafe-bg);
+    color: var(--cafe-clay);
+    border-color: var(--cafe-clay);
+    transform: translateY(-1px);
 }
 
-.mobileNav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
-.mobileNav a {
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
-    color: var(--color-gray-600);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.mobileNav a:hover {
-    background-color: var(--color-gray-50);
-    color: var(--color-primary-600);
-}
-
-/* Responsive */
 @media (max-width: 1024px) {
     .header {
-        padding: var(--space-4) var(--space-4);
+        padding: var(--space-4);
     }
 
     .mobileMenuButton {
         display: block;
     }
 
-    .logoMobile {
-        display: block;
+    .logo {
+        display: flex;
     }
 
     .userInfo {
@@ -188,7 +158,7 @@
 
 @media (max-width: 640px) {
     .title {
-        font-size: var(--text-base);
+        font-size: 1.1rem;
     }
 
     .subtitle {

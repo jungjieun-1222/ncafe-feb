@@ -4,12 +4,15 @@ import { useState } from 'react';
 import styles from './LoginForm.module.css';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
+import Link from 'next/link';
 
 export default function LoginForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const setUser = useAuthStore(state => state.setUser);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,8 +28,13 @@ export default function LoginForm() {
             const data = await response.json();
 
             if (response.ok) {
-                toast.success(data.message || '로그인 성공');
-                router.push('/admin'); // 로그인 성공 시 어드민으로 이동
+                toast.success('로그인 성공');
+                setUser({
+                    username: data.user.nickname,
+                    role: data.user.role || 'ROLE_USER'
+                });
+                window.dispatchEvent(new Event('login'));
+                router.push('/admin');
             } else {
                 toast.error(data.message || '로그인 실패');
             }
@@ -64,6 +72,10 @@ export default function LoginForm() {
             <button type="submit" className={styles.submitBtn} disabled={isLoading}>
                 {isLoading ? '로그인 중...' : '로그인'}
             </button>
+            <div className={styles.links}>
+                <span>계정이 없으신가요? </span>
+                <Link href="/signup" className={styles.link}>회원가입</Link>
+            </div>
         </form>
     );
 }

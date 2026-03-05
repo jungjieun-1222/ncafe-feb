@@ -1,21 +1,39 @@
 package com.new_cafe.app.backend.auth.adapter.out.persistence;
 
+import com.new_cafe.app.backend.auth.adapter.out.persistence.entity.UserEntity;
+import com.new_cafe.app.backend.auth.adapter.out.persistence.repository.UserRepository;
 import com.new_cafe.app.backend.auth.application.port.out.LoadAccountPort;
+import com.new_cafe.app.backend.auth.application.port.out.SaveAccountPort;
 import com.new_cafe.app.backend.auth.domain.Account;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
-public class AccountPersistenceAdapter implements LoadAccountPort {
+@RequiredArgsConstructor
+public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPort {
+
+    private final UserRepository userRepository;
 
     @Override
     public Optional<Account> loadAccount(String username) {
-        // 실제 구현 시 JPA Repository 등을 호출
-        // 현재는 구조 파악을 위해 Mock 데이터를 반환하거나 빈 값을 반환
-        if ("admin".equals(username)) {
-            return Optional.of(Account.of("admin", "1234", "관리자"));
-        }
-        return Optional.empty();
+        return userRepository.findByNickname(username)
+                .map(user -> Account.of(
+                        user.getNickname(),
+                        user.getPassword(),
+                        user.getNickname()
+                ));
+    }
+
+    @Override
+    public void saveAccount(Account account) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(UUID.randomUUID().toString());
+        userEntity.setNickname(account.getUsername());
+        userEntity.setPassword(account.getPassword());
+        userEntity.setRole("ROLE_USER"); // Default role
+        userRepository.save(userEntity);
     }
 }

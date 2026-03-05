@@ -1,52 +1,92 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: 1.8rem;
 }
 
 .inputGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 0.6rem;
 }
 
 .inputGroup label {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-gray-700);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--k-clay);
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
 }
 
 .inputGroup input {
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-gray-200);
-    border-radius: var(--radius-md);
-    font-size: var(--text-base);
-    transition: var(--transition-fast);
+    padding: 1rem 1.25rem;
+    border: 1.5px solid rgba(181, 155, 109, 0.2);
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    transition: all 0.3s ease;
+    color: var(--k-clay);
+    width: 100%;
+}
+
+.inputGroup input::placeholder {
+    color: #b59b6d;
+    opacity: 0.4;
 }
 
 .inputGroup input:focus {
     outline: none;
-    border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 3px rgba(168, 123, 93, 0.1);
+    border-color: var(--k-gold);
+    box-shadow: 0 0 0 4px rgba(181, 155, 109, 0.08);
+    background-color: #fff;
 }
 
 .submitBtn {
-    margin-top: var(--space-2);
-    padding: var(--space-4);
-    background-color: var(--color-primary-700);
+    margin-top: 1.2rem;
+    padding: 1rem;
+    background-color: var(--k-crimson);
     color: white;
-    border-radius: var(--radius-md);
-    font-weight: 700;
-    font-size: var(--text-base);
-    transition: var(--transition-normal);
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(139, 17, 11, 0.15);
+    cursor: pointer;
+    border: none;
 }
 
 .submitBtn:hover:not(:disabled) {
-    background-color: var(--color-primary-600);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(139, 17, 11, 0.25);
+    filter: brightness(1.1);
+}
+
+.submitBtn:active:not(:disabled) {
     transform: translateY(-1px);
 }
 
 .submitBtn:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    background-color: #a3a3a3;
+}
+
+.links {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--k-clay);
+}
+
+.link {
+    color: var(--k-crimson);
+    font-weight: 700;
+    margin-left: 0.5rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
 }

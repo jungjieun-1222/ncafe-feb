@@ -4,31 +4,34 @@
     left: 0;
     width: 260px;
     height: 100vh;
-    background-color: var(--bg-primary);
-    border-right: none;
+    background-color: var(--cafe-surface);
+    border-right: 1px solid var(--cafe-soft);
     display: flex;
     flex-direction: column;
     z-index: 100;
-    box-shadow: 1px 0 0 rgba(0, 0, 0, 0.03);
 }
 
 .logo {
-    padding: var(--space-8) var(--space-6);
+    padding: var(--space-10) var(--space-8);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
+}
+
+.logoIcon {
+    font-size: 1.5rem;
 }
 
 .logoText {
-    font-size: var(--text-lg);
+    font-size: 1.8rem;
     font-weight: 800;
-    color: var(--color-gray-900);
-    letter-spacing: -0.02em;
+    color: var(--cafe-wood);
+    letter-spacing: -0.01em;
 }
 
 .nav {
     flex: 1;
-    padding: var(--space-6);
+    padding: 0 var(--space-4);
     overflow-y: auto;
 }
 
@@ -37,19 +40,19 @@
 }
 
 .navGroupLabel {
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     color: var(--color-gray-400);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: var(--space-2) var(--space-3);
-    margin-bottom: var(--space-1);
+    letter-spacing: 0.1em;
+    padding: 0 var(--space-4);
+    margin-bottom: var(--space-2);
 }
 
 .navItem {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-4);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-lg);
     color: var(--color-gray-500);
@@ -61,76 +64,63 @@
 }
 
 .navItem:hover {
-    background-color: var(--color-gray-50);
-    color: var(--color-gray-900);
-    transform: translateX(2px);
+    background-color: var(--color-primary-50);
+    color: var(--cafe-wood);
 }
 
 .navItemActive {
-    background-color: var(--color-primary-50);
-    color: var(--color-primary-700);
-    font-weight: 600;
-}
-
-.navItemActive:hover {
-    background-color: var(--color-primary-100);
+    background-color: var(--cafe-wood);
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(93, 64, 55, 0.15);
 }
 
 .navIcon {
     width: 20px;
     height: 20px;
-    opacity: 0.8;
+    transition: transform var(--transition-fast);
 }
 
 .navItemActive .navIcon {
-    opacity: 1;
-    color: var(--color-primary-600);
+    color: var(--cafe-accent);
 }
 
 .footer {
     padding: var(--space-6);
+    background-color: var(--cafe-bg);
 }
 
 .cafeInfo {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-3);
-    border-radius: var(--radius-xl);
-    background-color: var(--bg-tertiary);
-    transition: background-color var(--transition-fast);
-    cursor: pointer;
-}
-
-.cafeInfo:hover {
-    background-color: var(--color-gray-100);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background-color: white;
+    border: 1px solid var(--cafe-soft);
+    box-shadow: var(--shadow-sm);
 }
 
 .cafeAvatar {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    background: white;
-    box-shadow: var(--shadow-sm);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--cafe-wood);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-primary-600);
     font-weight: 700;
-    font-size: var(--text-md);
 }
 
 .cafeName {
     font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-gray-900);
-    line-height: 1.2;
+    font-weight: 700;
+    color: var(--cafe-clay);
 }
 
 .cafeRole {
-    font-size: var(--text-xs);
-    color: var(--color-gray-500);
-    margin-top: 2px;
+    font-size: 0.7rem;
+    color: var(--color-gray-400);
 }
 
 @media (max-width: 1024px) {

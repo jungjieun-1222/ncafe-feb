@@ -2,42 +2,40 @@
     position: relative;
     background: white;
     border-radius: var(--radius-xl);
-    /* 테두리 제거 */
-    border: none;
+    border: 1px solid var(--cafe-soft);
     overflow: hidden;
     transition: all var(--transition-normal);
-    /* 부드러운 그림자 */
     box-shadow: var(--shadow-sm);
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    /* 호버 시 위로 떠오르는 효과 */
+    transform: translateY(-6px);
     box-shadow: var(--shadow-float);
-    /* 그림자 깊게 */
+    border-color: var(--cafe-accent);
+}
+
+.cardLink {
+    display: block;
+    cursor: pointer;
 }
 
 .imageWrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 1;
-    /* 정사각형 비율로 변경하여 모던함 강조 */
-    background-color: var(--color-gray-50);
+    background-color: var(--cafe-bg);
     overflow: hidden;
-    display: block;
-    /* 중요: fill 사용시 부모 요소는 블록이어야 함 */
 }
 
 .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform var(--transition-slow);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover .image {
-    transform: scale(1.05);
-    /* 이미지 살짝 확대 */
+    transform: scale(1.08);
 }
 
 .placeholder {
@@ -46,29 +44,31 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    color: var(--color-gray-300);
-    background-color: var(--color-gray-50);
+    color: var(--cafe-soft);
+    background-color: var(--cafe-bg);
 }
 
 .soldOutOverlay {
     position: absolute;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(93, 64, 55, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(4px);
+    z-index: 10;
 }
 
 .soldOutBadge {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--text-sm);
-    font-weight: 700;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 800;
     color: white;
-    background-color: var(--color-error);
-    border-radius: var(--radius-full);
+    background-color: var(--cafe-clay);
+    border-radius: var(--radius-sm);
     box-shadow: var(--shadow-md);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .body {
@@ -78,25 +78,26 @@
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-2);
+    align-items: center;
+    margin-bottom: var(--space-3);
 }
 
 .category {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    color: var(--color-primary-600);
+    color: white;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background-color: var(--color-primary-50);
-    padding: 4px 8px;
+    background-color: var(--cafe-accent);
+    padding: 2px 8px;
     border-radius: var(--radius-sm);
 }
 
 .price {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     font-weight: 700;
-    color: var(--color-gray-900);
+    color: var(--cafe-clay);
+    font-family: var(--font-myeongjo);
 }
 
 .nameGroup {
@@ -104,17 +105,18 @@
 }
 
 .name {
-    font-size: var(--text-lg);
+    font-size: 1.1rem;
     font-weight: 700;
-    color: var(--color-gray-900);
-    line-height: 1.3;
-    margin-bottom: 2px;
+    color: var(--cafe-wood);
+    font-family: var(--font-serif);
+    line-height: 1.4;
+    margin-bottom: 4px;
 }
 
 .engName {
-    font-size: var(--text-sm);
-    color: var(--color-gray-500);
-    font-weight: 500;
+    font-size: 0.75rem;
+    color: var(--color-gray-400);
+    font-weight: 400;
 }
 
 .footer {
@@ -122,11 +124,9 @@
     align-items: center;
     justify-content: space-between;
     padding-top: var(--space-4);
-    border-top: 1px solid var(--color-gray-100);
-    /* 아주 연한 구분선 */
+    border-top: 1px solid var(--cafe-soft);
 }
 
-/* Toggle Switch Styling */
 .toggle {
     display: flex;
     align-items: center;
@@ -135,28 +135,23 @@
 }
 
 .toggleLabel {
-    font-size: var(--text-xs);
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     color: var(--color-gray-400);
-    transition: color var(--transition-fast);
-}
-
-.toggle:hover .toggleLabel {
-    color: var(--color-gray-600);
+    text-transform: uppercase;
 }
 
 .toggleSwitch {
     position: relative;
-    width: 40px;
-    height: 22px;
+    width: 36px;
+    height: 20px;
     background-color: var(--color-gray-200);
     border-radius: var(--radius-full);
     transition: all var(--transition-normal);
 }
 
 .toggleSwitch.active {
-    background-color: var(--color-error);
-    /* 품절일 때 빨간색 */
+    background-color: var(--cafe-clay);
 }
 
 .toggleSwitch::after {
@@ -164,41 +159,41 @@
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background-color: white;
     border-radius: 50%;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     transition: transform var(--transition-normal);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .toggleSwitch.active::after {
-    transform: translateX(18px);
+    transform: translateX(16px);
 }
 
 .actions {
     display: flex;
-    gap: var(--space-2);
+    gap: var(--space-1);
 }
 
 .actionBtn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-full);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
     color: var(--color-gray-400);
     background-color: transparent;
     transition: all var(--transition-fast);
 }
 
 .actionBtn:hover {
-    background-color: var(--color-gray-100);
-    color: var(--color-primary-600);
+    background-color: var(--cafe-bg);
+    color: var(--cafe-wood);
 }
 
 .actionBtn.delete:hover {
-    background-color: #fee2e2;
-    color: var(--color-error);
+    background-color: #FFF5F5;
+    color: var(--cafe-error);
 }

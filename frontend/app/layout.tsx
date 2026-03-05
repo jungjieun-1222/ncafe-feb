@@ -21,6 +21,8 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from "react-hot-toast";
+import AuthInitializer from '@/components/auth/AuthInitializer';
+import LayoutWrapper from '@/components/LayoutWrapper';
 
 export default function RootLayout({
   children,
@@ -29,8 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} heritage-theme`}>
+        <AuthInitializer />
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
         <Toaster position="top-right" />
       </body>
     </html>

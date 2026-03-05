@@ -2,29 +2,48 @@ package com.new_cafe.app.backend.auth.application.service;
 
 import com.new_cafe.app.backend.auth.application.command.LoginCommand;
 import com.new_cafe.app.backend.auth.application.port.in.LoginUseCase;
+import com.new_cafe.app.backend.auth.application.port.in.SignupUseCase;
 import com.new_cafe.app.backend.auth.application.port.out.LoadAccountPort;
+import com.new_cafe.app.backend.auth.application.port.out.SaveAccountPort;
 import com.new_cafe.app.backend.auth.domain.Account;
+import com.new_cafe.app.backend.auth.adapter.in.web.dto.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements LoginUseCase {
+@Transactional
+public class AuthService implements LoginUseCase, SignupUseCase {
 
     private final LoadAccountPort loadAccountPort;
+    private final SaveAccountPort saveAccountPort;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public boolean login(LoginCommand command) {
-        Optional<Account> account = loadAccountPort.loadAccount(command.getUsername());
+        java.util.Optional<Account> account = loadAccountPort.loadAccount(command.getUsername());
         
         if (account.isEmpty()) {
             return false;
         }
 
-        // 유저가 직접 구현할 인증 로직 (예: BCrypt 패스워드 체크 등)
-        // 현재는 단순 비교 및 구조 제공
-        return account.get().getPassword().equals(command.getPassword());
+        return passwordEncoder.matches(command.getPassword(), account.get().getPassword());
+    }
+
+    @Override
+    public void signup(SignupRequest request) {
+        // Check if user already exists
+        if (loadAccountPort.loadAccount(request.getUsername()).isPresent()) {
+            throw new RuntimeException("User already exists");
+        }
+
+        Account account = Account.of(
+                request.getUsername(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getUsername()
+        );
+
+        saveAccountPort.saveAccount(account);
     }
 }

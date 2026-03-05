@@ -22,6 +22,13 @@ dependencies {
 	implementation("org.postgresql:postgresql:42.7.9")
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	// Spring Security for authentication/authorization
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	
+	// JWT dependencies
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 	
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
