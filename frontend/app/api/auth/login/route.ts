@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/app/lib/session';
 
-const API_BASE = process.env.API_BASE_URL || 'http://mochijj-backend:8081';
+const API_BASE = process.env.API_BASE_URL || 'http://mochijj-backend:8080';
 
 export async function POST(req: NextRequest) {
     const body = await req.json();

@@ -26,7 +26,7 @@ jobs:
           echo "BACKEND_PORT=${BACKEND_PORT}" >> .env
           echo "FRONTEND_PORT=${FRONTEND_PORT}" >> .env
           echo "DB_PORT=${DB_PORT}" >> .env
-          echo "API_BASE_URL=http://mochijj-backend:8081" >> .env
+          echo "API_BASE_URL=http://mochijj-backend:8080" >> .env
           echo "DATABASE_NAME=${POSTGRES_DB:-ncafedb}" >> .env
           echo "SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-ncafedb}" >> .env
           echo "SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}" >> .env
