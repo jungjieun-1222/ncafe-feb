@@ -49,10 +49,13 @@ services:
     ports:
       - "${DB_PORT:-5412}:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ncafe-db-data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - ncafe-network
+
+volumes:
+  ncafe-db-data:
 
 networks:
   ncafe-network:
