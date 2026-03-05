@@ -34,20 +34,33 @@ public class AuthController {
         }
     }
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AuthController.class);
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+        log.info("Login attempt for user: {}", request.getUsername());
+        
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
 
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.createToken(authentication);
+            String jwt = tokenProvider.createToken(authentication);
 
-        return ResponseEntity.ok(Map.of(
-            "token", jwt,
-            "username", authentication.getName()
-        ));
+            log.info("Login success for user: {}", request.getUsername());
+            return ResponseEntity.ok(Map.of(
+                "token", jwt,
+                "username", authentication.getName()
+            ));
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            log.warn("Login failed for user {}: {}", request.getUsername(), e.getMessage());
+            return ResponseEntity.status(401).body(Map.of("message", "아이디 또는 비밀번호가 올바르지 않습니다."));
+        } catch (Exception e) {
+            log.error("Unexpected error during login: ", e);
+            return ResponseEntity.status(500).body(Map.of("message", "서버 오류가 발생했습니다."));
+        }
     }
 
     @GetMapping("/me")
