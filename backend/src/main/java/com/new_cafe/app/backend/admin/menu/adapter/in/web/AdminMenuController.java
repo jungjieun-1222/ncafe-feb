@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/admin/menus")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class AdminMenuController {
 
     private final GetMenuUseCase getMenuUseCase;

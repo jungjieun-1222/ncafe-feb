@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/menus")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserMenuController {
 
     private final BrowseMenuUseCase browseMenuUseCase;
