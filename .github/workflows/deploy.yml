@@ -9,13 +9,13 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Force Fix Permissions
+      - name: Pre-cleanup and Fix permissions
         run: |
-          # Checkout 전에 미리 공간을 확보하고 권한을 가져옵니다.
+          # 소스 폴더 내부의 잔여물만 정리 (이제 외부 ncafe-upload는 건드리지 않음)
           sudo chown -R $(whoami):$(whoami) . || true
           docker compose down || true
-          # 특히 문제가 되는 data 폴더를 sudo로 미리 밀어버립니다.
-          sudo rm -rf data 2>/dev/null || true
+          # 혹시 남아있을지 모르는 소스 내부의 upload/data 폴더만 삭제
+          sudo rm -rf backend/upload data 2>/dev/null || true
 
       - name: Checkout
         uses: actions/checkout@v4

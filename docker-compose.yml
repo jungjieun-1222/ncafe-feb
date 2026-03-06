@@ -8,7 +8,7 @@ services:
     # ports:
     #   - "${BACKEND_PORT:-8012}:8081"
     volumes:
-      - /home/jungjieun-1222/dist/ncafe-feb/backend/upload:/app/upload
+      - /home/jungjieun-1222/dist/ncafe-upload:/app/upload
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
