@@ -85,4 +85,4 @@ jobs:
         if: always()
         run: |
           echo "Restoring workspace ownership..."
-          sudo chown -R $(whoami):$(whoami) .
+          sudo chown -R $(whoami):$(whoami) . || true
