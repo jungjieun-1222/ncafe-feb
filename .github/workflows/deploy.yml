@@ -37,6 +37,10 @@ jobs:
           echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
           echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
           echo "COMPOSE_PROFILES=with-db" >> .env
+          echo "AGENT_SERVER_PORT=${AGENT_SERVER_PORT}" >> .env
+          echo "AGENT_SERVER_IMAGE=${AGENT_SERVER_IMAGE}" >> .env
+          echo "REDIS_HOST=redis" >> .env
+          echo "REDIS_PORT=6379" >> .env
         env:
           COMPOSE_PROJECT_NAME: ${{ vars.COMPOSE_PROJECT_NAME }}
           USER_ID: ${{ vars.USER_ID }}
@@ -50,6 +54,10 @@ jobs:
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           POSTGRES_DB: ${{ vars.POSTGRES_DB }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          AGENT_SERVER_PORT: ${{ vars.AGENT_SERVER_PORT }}
+          AGENT_SERVER_IMAGE: ${{ vars.AGENT_SERVER_IMAGE }}
+          REDIS_HOST: ${{ vars.REDIS_HOST }}
+          REDIS_PORT: ${{ vars.REDIS_PORT }}
 
       - name: Deploy with Docker Compose
         run: |

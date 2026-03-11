@@ -14,14 +14,16 @@ public class GetMenuDetailResult {
     private String engName;
     private String description;
     private Integer price;
-    private Long categoryId;
+    private Integer categoryId;
     private String categoryName;
     private boolean isAvailable;
+    private boolean isSoldOut;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String altText;
     private String primaryImageSrc;
-    private String supplierInfo;
+    private Integer costPrice;
+    private String adminMemo;
 
     public static GetMenuDetailResult from(AdminMenu menu) {
         return GetMenuDetailResult.builder()
@@ -33,11 +35,13 @@ public class GetMenuDetailResult {
                 .categoryId(menu.getCategoryId())
                 .categoryName(menu.getCategoryName())
                 .isAvailable(menu.isAvailable())
+                .isSoldOut(menu.isSoldOut())
                 .createdAt(menu.getCreatedAt())
                 .updatedAt(menu.getUpdatedAt())
                 .altText(menu.getAltText())
                 .primaryImageSrc(menu.getPrimaryImageSrc())
-                .supplierInfo(menu.getSupplierInfo())
+                .costPrice(menu.getCostPrice())
+                .adminMemo(menu.getAdminMemo())
                 .build();
     }
 }

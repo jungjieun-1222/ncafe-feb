@@ -43,6 +43,7 @@ public class UserMenuController {
                 .imageSrc(menu.getPrimaryImageSrc())
                 .isAvailable(menu.isAvailable())
                 .allergyInfo(menu.getAllergyInfo())
+                .images(menu.getImages())
                 .build();
     }
 }

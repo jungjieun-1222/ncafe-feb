@@ -1,7 +1,3 @@
+// This interface has been replaced by CartUseCase.
+// You can safely delete this file.
 package com.new_cafe.app.backend.cart.application.port.in;
-
-import com.new_cafe.app.backend.cart.application.result.CartResult;
-
-public interface GetCartUseCase {
-    CartResult getCart(Long userId);
-}

@@ -7,11 +7,11 @@ const nextConfig = {
     return [
       {
         source: '/images/:path*',
-        destination: `${backendUrl}/:path*`,
+        destination: '/api/:path*',
       },
       {
         source: '/upload/:path*',
-        destination: `${backendUrl}/upload/:path*`,
+        destination: '/api/upload/:path*',
       }
     ];
   },

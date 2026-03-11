@@ -26,11 +26,13 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
                 .engName(menu.getEngName())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
-                .categoryId(menu.getCategoryId() != null ? menu.getCategoryId().intValue() : 0)
+                .categoryId(menu.getCategoryId())
                 .isAvailable(menu.isAvailable())
                 .createdAt(menu.getCreatedAt())
                 .updatedAt(menu.getUpdatedAt())
                 .altText(menu.getAltText())
+                .costPrice(menu.getCostPrice())
+                .adminMemo(menu.getAdminMemo())
                 .build();
         adminMenuRepository.save(entity);
     }
@@ -53,17 +55,21 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
     }
 
     private AdminMenu mapToAdminDomain(AdminMenuEntity entity) {
+        boolean available = entity.getIsAvailable() != null ? entity.getIsAvailable() : false;
         return AdminMenu.builder()
                 .id(entity.getId())
                 .korName(entity.getKorName())
                 .engName(entity.getEngName())
                 .description(entity.getDescription())
                 .price(entity.getPrice() != null ? entity.getPrice() : 0)
-                .categoryId(entity.getCategoryId() != null ? (long) entity.getCategoryId() : 0L)
-                .isAvailable(entity.getIsAvailable() != null ? entity.getIsAvailable() : false)
+                .categoryId(entity.getCategoryId())
+                .isAvailable(available)
+                .isSoldOut(!available) // Derive isSoldOut
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .altText(entity.getAltText())
+                .costPrice(entity.getCostPrice())
+                .adminMemo(entity.getAdminMemo())
                 .build();
     }
 }

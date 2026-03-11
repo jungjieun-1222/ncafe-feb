@@ -1,8 +1,7 @@
 package com.new_cafe.app.backend.cart.application.port.out;
 
-import com.new_cafe.app.backend.cart.domain.CartItem;
-import java.util.List;
+import com.new_cafe.app.backend.cart.domain.Cart;
 
 public interface LoadCartPort {
-    List<CartItem> loadCartItems(Long userId);
+    Cart loadCart(String cartId);
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Coffee, ClipboardList, Settings } from 'lucide-react';
+import { LayoutDashboard, Coffee, ClipboardList, Settings, LibraryBig } from 'lucide-react';
 import styles from './AdminSidebar.module.css';
 
 const navItems = [
@@ -12,6 +12,7 @@ const navItems = [
             { href: '/admin', label: '대시보드', icon: LayoutDashboard },
             { href: '/admin/menus', label: '메뉴 관리', icon: Coffee },
             { href: '/admin/orders', label: '주문 관리', icon: ClipboardList },
+            { href: '/admin/knowledge', label: '지식 관리 (RAG)', icon: LibraryBig },
         ],
     },
     {

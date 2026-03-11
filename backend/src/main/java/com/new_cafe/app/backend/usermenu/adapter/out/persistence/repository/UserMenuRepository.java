@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserMenuRepository extends JpaRepository<UserMenuEntity, Long> {
 
-    @Query("SELECT m FROM UserMenuEntity m WHERE m.isAvailable = true AND " +
+    @Query("SELECT m FROM UserMenuEntity m WHERE " +
            "(:categoryId IS NULL OR m.categoryId = :categoryId) AND " +
            "(:searchQuery IS NULL OR m.korName LIKE %:searchQuery% OR m.engName LIKE %:searchQuery%)")
     List<UserMenuEntity> findAllByCategoryIdAndSearchQuery(

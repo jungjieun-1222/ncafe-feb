@@ -1,7 +1,3 @@
+// This interface has been replaced by CartUseCase.
+// You can safely delete this file.
 package com.new_cafe.app.backend.cart.application.port.in;
-
-import com.new_cafe.app.backend.cart.application.port.in.command.AddCartItemCommand;
-
-public interface AddCartItemUseCase {
-    void addCartItem(AddCartItemCommand command);
-}

@@ -55,9 +55,9 @@ const Hero = () => {
                     <Link href="/menus" className={styles.primaryBtn}>
                         오늘의 음료 주문하기 <ArrowRight size={18} />
                     </Link>
-                    <button className={styles.secondaryBtn}>
+                    <Link href="#gallery" className={styles.secondaryBtn}>
                         한옥 공간 둘러보기
-                    </button>
+                    </Link>
                 </div>
             </div>
 

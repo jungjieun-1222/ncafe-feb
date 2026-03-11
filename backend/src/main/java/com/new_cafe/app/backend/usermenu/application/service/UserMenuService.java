@@ -41,6 +41,7 @@ public class UserMenuService implements BrowseMenuUseCase {
     private void enrichUserMenu(UserMenu menu) {
         menu.setCategoryName(loadCategoryPort.getNameById(menu.getCategoryId().intValue()));
         List<String> images = loadMenuImagePort.getImageUrlsByMenuId(menu.getId());
+        menu.setImages(images);
         menu.setPrimaryImageSrc(images.isEmpty() ? "blank.png" : images.get(0));
     }
 }

@@ -1,60 +1,64 @@
 package com.new_cafe.app.backend.cart.application.service;
 
-import com.new_cafe.app.backend.cart.application.port.in.AddCartItemUseCase;
-import com.new_cafe.app.backend.cart.application.port.in.GetCartUseCase;
-import com.new_cafe.app.backend.cart.application.port.in.command.AddCartItemCommand;
+import com.new_cafe.app.backend.cart.application.port.in.CartUseCase;
+import com.new_cafe.app.backend.cart.application.port.out.DeleteCartPort;
 import com.new_cafe.app.backend.cart.application.port.out.LoadCartPort;
 import com.new_cafe.app.backend.cart.application.port.out.SaveCartPort;
-import com.new_cafe.app.backend.cart.application.result.CartResult;
+import com.new_cafe.app.backend.cart.domain.Cart;
 import com.new_cafe.app.backend.cart.domain.CartItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class CartService implements AddCartItemUseCase, GetCartUseCase {
-
+public class CartService implements CartUseCase {
     private final LoadCartPort loadCartPort;
     private final SaveCartPort saveCartPort;
+    private final DeleteCartPort deleteCartPort;
 
     @Override
-    public void addCartItem(AddCartItemCommand command) {
-        // 실제로는 메뉴 가격 등을 조회해야 함 (단순화를 위해 일단 구현생략)
-        CartItem item = CartItem.builder()
-                .menuId(command.getMenuId())
-                .quantity(command.getQuantity())
-                .build();
-        
-        // 현재는 userId 1로 가정
-        saveCartPort.saveCartItem(1L, item);
+    public Cart getCart(String cartId) {
+        return loadCartPort.loadCart(cartId);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public CartResult getCart(Long userId) {
-        List<CartItem> items = loadCartPort.loadCartItems(userId);
-        
-        List<CartResult.CartItemResult> itemResults = items.stream()
-                .map(item -> CartResult.CartItemResult.builder()
-                        .id(item.getId())
-                        .menuId(item.getMenuId())
-                        .menuName(item.getMenuName())
-                        .price(item.getPrice())
-                        .quantity(item.getQuantity())
-                        .totalPrice(item.getTotalPrice())
-                        .build())
-                .collect(Collectors.toList());
+    public Cart addCartItem(String cartId, CartItem item) {
+        Cart cart = loadCartPort.loadCart(cartId);
+        cart.addOrUpdateItem(item);
+        saveCartPort.saveCart(cart);
+        return cart;
+    }
 
-        int totalPrice = itemResults.stream().mapToInt(CartResult.CartItemResult::getTotalPrice).sum();
+    @Override
+    public Cart updateQuantity(String cartId, String cartItemId, int quantity) {
+        Cart cart = loadCartPort.loadCart(cartId);
+        cart.updateQuantity(cartItemId, quantity);
+        saveCartPort.saveCart(cart);
+        return cart;
+    }
 
-        return CartResult.builder()
-                .items(itemResults)
-                .totalPrice(totalPrice)
-                .build();
+    @Override
+    public Cart removeCartItem(String cartId, String cartItemId) {
+        Cart cart = loadCartPort.loadCart(cartId);
+        cart.removeItem(cartItemId);
+        saveCartPort.saveCart(cart);
+        return cart;
+    }
+
+    @Override
+    public Cart mergeCart(String guestCartId, String userCartId) {
+        Cart guestCart = loadCartPort.loadCart(guestCartId);
+        Cart userCart = loadCartPort.loadCart(userCartId);
+
+        userCart.mergeFrom(guestCart);
+        saveCartPort.saveCart(userCart);
+        deleteCartPort.deleteCart(guestCartId);
+
+        return userCart;
+    }
+
+    @Override
+    public void clearCart(String cartId) {
+        deleteCartPort.deleteCart(cartId);
     }
 }

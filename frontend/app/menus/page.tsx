@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import styles from './page.module.css';
-
-import { Search, Coffee, Beer, Utensils, IceCream } from 'lucide-react';
+import { Search } from 'lucide-react';
 import Link from 'next/link';
+import { useCartStore } from '@/stores/useCartStore';
 
 interface Menu {
     id: number;
@@ -25,11 +25,58 @@ interface Category {
 }
 
 export default function UserMenuPage() {
+    const { openCart, triggerRefresh } = useCartStore();
     const [menus, setMenus] = useState<Menu[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [addingMenuId, setAddingMenuId] = useState<number | null>(null);
+
+    const handleAddToCart = async (e: React.MouseEvent, menu: Menu) => {
+        e.preventDefault();
+        setAddingMenuId(menu.id);
+        
+        try {
+            let cartId = localStorage.getItem('cartId');
+            if (!cartId) {
+                cartId = 'guest_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9);
+                localStorage.setItem('cartId', cartId);
+            }
+            
+            const mockOptions = [];
+            // Mocking options to utilize Option.java and show UI design
+            if (menu.categoryName === '커피&음료' || menu.categoryName === '전통차') {
+                mockOptions.push({ name: '옵션', value: '샷 추가', price: 500 });
+            } else if (menu.categoryName === '디저트') {
+                mockOptions.push({ name: '포장', value: '개별 포장', price: 0 });
+            }
+            
+            const res = await fetch(`/api/v1/carts/${cartId}/items`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    menuId: menu.id,
+                    menuName: menu.korName,
+                    basePrice: menu.price,
+                    quantity: 1,
+                    options: mockOptions
+                })
+            });
+            
+            if (!res.ok) throw new Error('장바구니 추가 실패');
+            
+            triggerRefresh(); // Sync drawer
+            openCart(); // Show drawer
+        } catch (err) {
+            console.error(err);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            setAddingMenuId(null);
+        }
+    };
 
     // 카테고리 로드
     useEffect(() => {
@@ -113,24 +160,31 @@ export default function UserMenuPage() {
                     <div className={styles.grid}>
                         {menus.length > 0 ? menus.map((menu) => (
                             <Link href={`/menus/${menu.id}`} key={menu.id} className={styles.cardLink}>
-                                <div className={styles.card}>
+                                <div className={`${styles.card} ${!menu.isAvailable ? styles.soldOut : ''}`}>
                                     <div className={styles.imageWrapper}>
                                         <img
-                                            src={menu.imageSrc && !menu.imageSrc.includes('blank') ? `/images/${menu.imageSrc}` : 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=400&auto=format&fit=crop'}
+                                            src={menu.imageSrc && !menu.imageSrc.includes('blank') ? `/images/${menu.imageSrc}` : '/images/blank.png'}
                                             alt={menu.korName}
                                             className={styles.image}
+                                            onError={(e) => { e.currentTarget.src = '/images/blank.png'; }}
                                         />
+                                        {!menu.isAvailable && (
+                                            <div className={styles.soldOutOverlay}>
+                                                <span>SOLD OUT</span>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className={styles.info}>
                                         <div className={styles.category}>{menu.categoryName}</div>
                                         <h3 className={styles.menuName}>{menu.korName}</h3>
                                         <p className={styles.description}>{menu.description}</p>
                                         <div className={styles.price}>{menu.price.toLocaleString()}원</div>
-                                        <button className={styles.addBtn} onClick={(e) => {
-                                            e.preventDefault();
-                                            alert('장바구니 기능은 곧 업데이트됩니다!');
-                                        }}>
-                                            담기
+                                        <button 
+                                            className={styles.addBtn} 
+                                            onClick={(e) => handleAddToCart(e, menu)}
+                                            disabled={addingMenuId === menu.id || !menu.isAvailable}
+                                        >
+                                            {!menu.isAvailable ? '품절' : addingMenuId === menu.id ? '담는 중...' : '담기'}
                                         </button>
                                     </div>
                                 </div>

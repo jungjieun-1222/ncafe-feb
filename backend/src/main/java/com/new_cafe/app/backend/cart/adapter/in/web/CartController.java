@@ -1,41 +1,66 @@
 package com.new_cafe.app.backend.cart.adapter.in.web;
 
-import com.new_cafe.app.backend.cart.application.port.in.AddCartItemUseCase;
-import com.new_cafe.app.backend.cart.application.port.in.GetCartUseCase;
-import com.new_cafe.app.backend.cart.application.port.in.command.AddCartItemCommand;
-import com.new_cafe.app.backend.cart.application.result.CartResult;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.new_cafe.app.backend.cart.adapter.in.web.dto.AddCartItemRequest;
+import com.new_cafe.app.backend.cart.application.port.in.CartUseCase;
+import com.new_cafe.app.backend.cart.domain.Cart;
+import com.new_cafe.app.backend.cart.domain.CartItem;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/v1/carts")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
 
-    private final AddCartItemUseCase addCartItemUseCase;
-    private final GetCartUseCase getCartUseCase;
+    private final CartUseCase cartUseCase;
 
-    @GetMapping
-    public CartResult getCart() {
-        // 현재는 하드코딩된 userId 1 사용
-        return getCartUseCase.getCart(1L);
+    @GetMapping("/{cartId}")
+    public ResponseEntity<Cart> getCart(@PathVariable String cartId) {
+        return ResponseEntity.ok(cartUseCase.getCart(cartId));
     }
 
-    @PostMapping("/items")
-    public void addCartItem(@RequestBody AddCartItemRequest request) {
-        addCartItemUseCase.addCartItem(AddCartItemCommand.builder()
+    @PostMapping("/{cartId}/items")
+    public ResponseEntity<Cart> addCartItem(
+            @PathVariable String cartId,
+            @RequestBody AddCartItemRequest request) {
+        
+        CartItem cartItem = CartItem.builder()
                 .menuId(request.getMenuId())
+                .menuName(request.getMenuName())
+                .basePrice(request.getBasePrice())
                 .quantity(request.getQuantity())
-                .build());
+                .options(request.getOptions())
+                .build();
+                
+        return ResponseEntity.ok(cartUseCase.addCartItem(cartId, cartItem));
     }
 
-    @Getter
-    @NoArgsConstructor
-    public static class AddCartItemRequest {
-        private Long menuId;
-        private int quantity;
+    @PatchMapping("/{cartId}/items/{itemId}")
+    public ResponseEntity<Cart> updateQuantity(
+            @PathVariable String cartId,
+            @PathVariable String itemId,
+            @RequestParam int quantity) {
+        return ResponseEntity.ok(cartUseCase.updateQuantity(cartId, itemId, quantity));
+    }
+
+    @DeleteMapping("/{cartId}/items/{itemId}")
+    public ResponseEntity<Cart> removeCartItem(
+            @PathVariable String cartId,
+            @PathVariable String itemId) {
+        return ResponseEntity.ok(cartUseCase.removeCartItem(cartId, itemId));
+    }
+
+    @PostMapping("/merge")
+    public ResponseEntity<Cart> mergeCart(
+            @RequestParam String guestCartId,
+            @RequestParam String userCartId) {
+        return ResponseEntity.ok(cartUseCase.mergeCart(guestCartId, userCartId));
+    }
+
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<Void> clearCart(@PathVariable String cartId) {
+        cartUseCase.clearCart(cartId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,5 +1,6 @@
 package com.new_cafe.app.backend.admin.menu.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -14,14 +15,21 @@ public class AdminMenu {
     private String engName;
     private String description;
     private Integer price;
-    private Long categoryId;
+    private Integer categoryId;
     private String categoryName;
+    
+    @JsonProperty("isAvailable")
     private boolean isAvailable;
+    
+    @JsonProperty("isSoldOut")
+    private boolean isSoldOut;
+    
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String altText;
     private String primaryImageSrc;
     
-    // 관리자 전용 필드 (미래 확장 예시)
-    private String supplierInfo; 
+    // 관리자 전용 필드
+    private Integer costPrice;
+    private String adminMemo;
 }

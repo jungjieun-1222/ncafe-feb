@@ -30,12 +30,27 @@ public class UpdateMenuService implements UpdateMenuUseCase {
                 .engName(command.getEngName())
                 .description(command.getDescription())
                 .price(command.getPrice())
-                .categoryId((long) command.getCategoryId())
+                .categoryId(command.getCategoryId())
                 .isAvailable(command.isAvailable())
+                .isSoldOut(!command.isAvailable())
                 .altText(command.getAltText())
+                .costPrice(command.getCostPrice())
+                .adminMemo(command.getAdminMemo())
                 .createdAt(existingMenu.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .build();
         saveAdminMenuPort.save(updatedMenu);
+    }
+
+    @Override
+    public void updateMenuAvailability(Long id, boolean isAvailable) {
+        AdminMenu existingMenu = loadAdminMenuPort.loadAdminMenuById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found with id: " + id));
+
+        existingMenu.setAvailable(isAvailable);
+        existingMenu.setSoldOut(!isAvailable);
+        existingMenu.setUpdatedAt(LocalDateTime.now());
+        
+        saveAdminMenuPort.save(existingMenu);
     }
 }

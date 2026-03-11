@@ -26,7 +26,7 @@ const Gallery = () => {
     ];
 
     return (
-        <section className={styles.section}>
+        <section id="gallery" className={styles.section}>
             <div className={styles.container}>
                 <div className={styles.header}>
                     <span className={styles.label}>GALLERY</span>

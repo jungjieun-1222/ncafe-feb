@@ -1,33 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/app/lib/session';
 
-const API_BASE = process.env.API_BASE_URL || 'http://mochijj-backend:8081';
+const API_BASE = process.env.API_BASE_URL || 'http://backend:8081';
 
 async function proxyRequest(req: NextRequest) {
     const session = await getSession();
     const path = req.nextUrl.pathname;
     const search = req.nextUrl.search;
 
-    // Remove /api prefix for forwarding to backend
-    const targetPath = path.replace(/^\/api/, '');
+    // Remove /api and /images prefix for forwarding to backend
+    const targetPath = path.replace(/^\/(api|images)/, '');
     const targetUrl = `${API_BASE}${targetPath}${search}`;
 
     const headers: Record<string, string> = {};
+    const excludedHeaders = ['host', 'connection', 'content-length', 'transfer-encoding'];
+    
+    req.headers.forEach((value, key) => {
+        if (!excludedHeaders.includes(key.toLowerCase())) {
+            headers[key] = value;
+        }
+    });
 
-    // Copy standard headers
-    const contentType = req.headers.get('content-type');
-    if (contentType) headers['Content-Type'] = contentType;
-
-    const accept = req.headers.get('accept');
-    if (accept) headers['Accept'] = accept;
-
-    // Add Authorization header from session
-    if (session.token) {
+    // Add Authorization header from session if not already present
+    if (session.token && !headers['authorization']) {
         headers['Authorization'] = `Bearer ${session.token}`;
     }
 
     let body: BodyInit | null = null;
     if (req.method !== 'GET' && req.method !== 'HEAD') {
+        const contentType = req.headers.get('content-type');
         if (contentType?.includes('multipart/form-data')) {
             body = await req.blob();
         } else {
@@ -59,9 +60,9 @@ async function proxyRequest(req: NextRequest) {
             statusText: proxyRes.statusText,
             headers: responseHeaders,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('[BFF Proxy Error]', error);
-        return NextResponse.json({ message: 'Internal Server Error (Proxy)' }, { status: 500 });
+        return NextResponse.json({ message: 'Internal Server Error (Proxy)', error: error.message || String(error) }, { status: 500 });
     }
 }
 

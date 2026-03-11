@@ -1,9 +1,7 @@
 package com.new_cafe.app.backend.cart.application.port.out;
 
-import com.new_cafe.app.backend.cart.domain.CartItem;
+import com.new_cafe.app.backend.cart.domain.Cart;
 
 public interface SaveCartPort {
-    void saveCartItem(Long userId, CartItem item);
-    void removeCartItem(Long itemId);
-    void clearCart(Long userId);
+    void saveCart(Cart cart);
 }

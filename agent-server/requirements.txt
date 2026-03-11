@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+google-genai
+python-dotenv
+sse-starlette
+httpx
+sentence-transformers
+sqlalchemy
+psycopg2-binary
+pgvector

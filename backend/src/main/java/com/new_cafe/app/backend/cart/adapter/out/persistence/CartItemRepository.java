@@ -1,8 +1,3 @@
+// This repository has been replaced by Redis-based Cart storage.
+// You can safely delete this file.
 package com.new_cafe.app.backend.cart.adapter.out.persistence;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
-
-public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> {
-    List<CartItemEntity> findAllByUserId(Long userId);
-}

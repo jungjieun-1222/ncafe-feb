@@ -20,4 +20,5 @@ public class UserMenu {
     
     // 유저 전용 필드 (미래 확장 예시)
     private String allergyInfo;
+    private java.util.List<String> images;
 }

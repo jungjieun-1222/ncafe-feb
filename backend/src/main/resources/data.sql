@@ -20,6 +20,21 @@ SELECT v.kor_name, v.eng_name, v.description, v.price,
        (SELECT c.id FROM categories c WHERE c.name = v.cat_name LIMIT 1),
        true, v.alt_text, v.admin_memo, v.allergy_info, NOW(), NOW()
 FROM (VALUES
+  ('햄 치즈 샌드위치', 'ham cheese sandwich', '햄과 치즈가 들어간 샌드위치', 6000, '샌드위치&브런치', '햄 치즈 샌드위치', '기본 메뉴', '밀, 계란, 우유'),
+  ('베이글 크림 치즈', 'bagel cream cheese', '베이글에 크림 치즈를 바른 샌드위치', 5000, '샌드위치&브런치', '베이글 크림 치즈', '기본 메뉴', '밀, 계란, 우유'),
+  ('스크램블 에그 샌드위치', 'scrambled egg sandwich', '스크램블 에그가 들어간 샌드위치', 7000, '샌드위치&브런치', '스크램블 에그 샌드위치', '기본 메뉴', '밀, 계란, 우유'),
+  ('두바이 쫀득 쿠키', 'dubai zzondeuk cookie', '쫀득한 식감의 쿠키', 2000, '디저트', '두바이 쫀득 쿠키', '기본 메뉴', '밀, 계란, 우유'),
+  ('초콜릿 무스', 'chocolate mousse', '진한 초콜릿 무스', 4000, '디저트', '초콜릿 무스', '기본 메뉴', '밀, 계란, 우유'),
+  ('초콜릿 크로와상', 'chocolate croissant', '초콜릿이 들어간 크로와상', 4000, '디저트', '초콜릿 크로와상', '기본 메뉴', '밀, 계란, 우유'),
+  ('초코칩 쿠키', 'choco chip cookie', '초코칩이 들어간 쿠키', 2000, '디저트', '초코칩 쿠키', '기본 메뉴', '밀, 계란, 우유'),
+  ('버터 쿠키', 'butter cookie', '버터가 들어간 쿠키', 2000, '디저트', '버터 쿠키', '기본 메뉴', '밀, 계란, 우유'),
+  ('아몬드 쿠키', 'almond cookie', '아몬드가 들어간 쿠키', 2000, '디저트', '아몬드 쿠키', '기본 메뉴', '밀, 계란, 우유'),
+  ('바나나 라떼', 'banana latte', '바나나와 우유가 들어간 라떼', 5000, '커피&음료', '바나나 라떼', '기본 메뉴', '우유'),
+  ('에스프레소', 'espresso', '진한 에스프레소', 3500, '커피&음료', '에스프레소', '기본 메뉴', '없음'),
+  ('아메리카노', 'Americano', '진한 에스프레소와 물의 조화', 4500, '커피&음료', '아메리카노', '기본 메뉴', '없음'),
+  ('카페 라떼', 'Caffè Latte', '부드러운 우유와 에스프레소의 조화', 5000, '커피&음료', '카페 라떼', '기본 메뉴', '우유'),
+  ('카라멜 마키아또', 'Caramel Macchiato', '달콤한 카라멜 시럽과 에스프레소의 조화', 5500, '커피&음료', '카라멜 마키아또', '기본 메뉴', '우유, 대두'),
+  ('카푸치노', 'Cappuccino', '부드러운 우유 거품과 에스프레소의 조화', 5000, '커피&음료', '카푸치노', '기본 메뉴', '우유'),
   ('명품 대추차',       'jujube tea',                      '정성껏 우린 대추차',                    5000, '전통차',          '대추차',             '인기 메뉴',     '대추'),
   ('인절미 토스트',     'injeolmi toast',                  '쫀득한 인절미가 올라간 토스트',          7500, '디저트',          '인절미 토스트',      '디저트 베스트', '우유, 밀, 콩'),
   ('흑임자 크림 라떼',  'black sesame latte',              '고소한 흑임자 크림 라떼',                6500, '커피&음료',       '흑임자 크림 라떼',   'MZ세대 타겟',   '우유, 깨'),
@@ -32,7 +47,8 @@ FROM (VALUES
   ('샤인머스캣 에이드', 'shine muscat ade',                '달콤한 샤인머스캣 에이드',               7000, '에이드&스무디',   '샤인머스캣 에이드',  '',              ''),
   ('자몽 허니 블랙티',  'grapefruit honey black tea',     '자몽과 꿀이 들어간 블랙티',              6800, '에이드&스무디',   '자몽 허니 블랙티',   '',              ''),
   ('쑥 인절미 마카롱',  'mugwort injeolmi macaron',       '쑥 향과 인절미가 들어간 마카롱',         6000, '디저트',          '쑥 인절미 마카롱',   '',              ''),
-  ('홍시 수정과 소르베','persimmon sorbet with sujeonggwa','홍시 소르베 위에 수정과 소스',           7200, '아이스크림&빙수', '홍시 수정과 소르베', '',              '')
+  ('홍시 수정과 소르베','persimmon sorbet with sujeonggwa','홍시 소르베 위에 수정과 소스',           7200, '아이스크림&빙수', '홍시 수정과 소르베', '',              ''),
+  ('이미지 준비중 메뉴', 'Image Pending Menu', '현재 이미지를 준비 중인 메뉴입니다.', 3000, '기획 상품', '이미지 준비중', '테스트용', '없음')
 ) AS v(kor_name, eng_name, description, price, cat_name, alt_text, admin_memo, allergy_info)
 WHERE NOT EXISTS (SELECT 1 FROM menus m WHERE m.kor_name = v.kor_name);
 
@@ -42,6 +58,21 @@ SELECT v.alt_text,
        (SELECT m.id FROM menus m WHERE m.kor_name = v.menu_name LIMIT 1),
        1, v.src_url
 FROM (VALUES
+  ('햄 치즈 샌드위치 이미지', '햄 치즈 샌드위치', '/images/ham-cheese-sandwich.png'),
+  ('베이글 크림 치즈 이미지', '베이글 크림 치즈', '/images/bagel-cream-cheese.png'),
+  ('스크램블 에그 샌드위치 이미지', '스크램블 에그 샌드위치', '/images/scrambled-egg-sandwich.png'),
+  ('두바이 쫀득 쿠키 이미지', '두바이 쫀득 쿠키', '/images/dubai-zzondeuk-cookie.png'),
+  ('초콜릿 무스 이미지', '초콜릿 무스', '/images/chocolate-mousse.png'),
+  ('초콜릿 크로와상 이미지', '초콜릿 크로와상', '/images/chocolate-croissant.png'),
+  ('초코칩 쿠키 이미지', '초코칩 쿠키', '/images/choco-chip-cookie.png'),
+  ('버터 쿠키 이미지', '버터 쿠키', '/images/butter-cookie.png'),
+  ('아몬드 쿠키 이미지', '아몬드 쿠키', '/images/almond-cookie.png'),
+  ('바나나 라떼 이미지', '바나나 라떼', '/images/bananalatte.png'),
+  ('에스프레소 이미지', '에스프레소', '/images/espresso.png'),
+  ('아메리카노 이미지', '아메리카노', '/images/americano.png'),
+  ('카페 라떼 이미지', '카페 라떼', '/images/cafelatte.png'),
+  ('카라멜 마키아또 이미지', '카라멜 마키아또', '/images/caramel-macchiato.png'),
+  ('카푸치노 이미지', '카푸치노', '/images/capuchino.png'),
   ('명품 대추차 상세 이미지',       '명품 대추차',       '/images/jujube-tea.png'),
   ('인절미 토스트 상세 이미지',     '인절미 토스트',     '/images/injeolmi-toast.png'),
   ('흑임자 크림 라떼 상세 이미지',  '흑임자 크림 라떼',  '/images/black-sesame.png'),
@@ -62,8 +93,32 @@ WHERE NOT EXISTS (
   WHERE m.kor_name = v.menu_name AND mi.sort_order = 1
 );
 
--- 4) admin user (idempotent update: delete first if exists to ensure fresh password hash)
-DELETE FROM users WHERE nickname = 'admin';
-INSERT INTO users (id, nickname, password, role)
-VALUES ('00000000-0000-0000-0000-000000000001', 'admin', '...', 'ROLE_ADMIN')
-ON CONFLICT (id) DO UPDATE SET password = EXCLUDED.password;
+-- 4) additional menu images (sort_order = 2)
+INSERT INTO menu_images (alt_text, menu_id, sort_order, src_url)
+SELECT v.alt_text,
+       (SELECT m.id FROM menus m WHERE m.kor_name = v.menu_name LIMIT 1),
+       2, v.src_url
+FROM (VALUES
+  ('햄 치즈 샌드위치 상세 이미지', '햄 치즈 샌드위치', '/images/ham-cheese-sandwich1.png'),
+  ('베이글 크림 치즈 상세 이미지', '베이글 크림 치즈', '/images/bagel-cream-cheese1.png'),
+  ('스크램블 에그 샌드위치 상세 이미지', '스크램블 에그 샌드위치', '/images/scrambled-egg-sandwich1.png'),
+  ('두바이 쫀득 쿠키 상세 이미지', '두바이 쫀득 쿠키', '/images/dubai-zzondeuk-cookie1.png'),
+  ('초콜릿 무스 상세 이미지', '초콜릿 무스', '/images/chocolate-mousse1.png'),
+  ('초콜릿 크로와상 상세 이미지', '초콜릿 크로와상', '/images/chocolate- croissant1.png'),
+  ('초코칩 쿠키 상세 이미지', '초코칩 쿠키', '/images/choco-chip-cookie1.png'),
+  ('버터 쿠키 상세 이미지', '버터 쿠키', '/images/butter-cookie1.png'),
+  ('아몬드 쿠키 상세 이미지', '아몬드 쿠키', '/images/almond-cookie1.png'),
+  ('바나나 라떼 상세 이미지', '바나나 라떼', '/images/bananalatte1.png'),
+  ('에스프레소 상세 이미지', '에스프레소', '/images/espresso1.png'),
+  ('아메리카노 상세 이미지', '아메리카노', '/images/americano1.png'),
+  ('카페 라떼 상세 이미지', '카페 라떼', '/images/cafelatte1.png'),
+  ('카라멜 마키아또 상세 이미지', '카라멜 마키아또', '/images/caramel-macchiato1.png'),
+  ('카푸치노 상세 이미지', '카푸치노', '/images/capuchino1.png')
+) AS v(alt_text, menu_name, src_url)
+WHERE NOT EXISTS (
+  SELECT 1 FROM menu_images mi
+  JOIN menus m ON mi.menu_id = m.id
+  WHERE m.kor_name = v.menu_name AND mi.sort_order = 2
+);
+
+-- admin user is created by AdminInitializer.java (ensures correct BCrypt hash)

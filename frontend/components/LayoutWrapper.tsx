@@ -4,6 +4,8 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import ChatWidget from './chatbot/ChatWidget';
+import CartDrawer from './CartDrawer';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -24,6 +26,8 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                 {children}
             </main>
             <Footer />
+            <ChatWidget />
+            <CartDrawer />
         </>
     );
 }

@@ -11,7 +11,8 @@ public interface AdminMenuRepository extends JpaRepository<AdminMenuEntity, Long
     
     @Query("SELECT m FROM AdminMenuEntity m WHERE " +
            "(:categoryId IS NULL OR m.categoryId = :categoryId) AND " +
-           "(:searchQuery IS NULL OR m.korName LIKE %:searchQuery% OR m.engName LIKE %:searchQuery%)")
+           "(:searchQuery IS NULL OR m.korName LIKE %:searchQuery% OR m.engName LIKE %:searchQuery%) " +
+           "ORDER BY m.id DESC")
     List<AdminMenuEntity> findAllByCategoryIdAndSearchQuery(
             @Param("categoryId") Integer categoryId, 
             @Param("searchQuery") String searchQuery);

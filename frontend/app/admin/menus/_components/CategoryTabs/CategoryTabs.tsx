@@ -16,14 +16,16 @@ export default function CategoryTabs({ selectedCategory, onCategoryChange }: Cat
     const { categories } = useCategories();
 
     const getIcon = (id: string | number) => {
+        console.log("들어온 카테고리 ID:", id, "타입:", typeof id);
         const categoryId = Number(id);
         switch (categoryId) {
-            case 1: return <Coffee className={styles.tabIcon} />;    // 커피
-            case 2: return <Croissant className={styles.tabIcon} />; // 샌드위치
-            case 3: return <Leaf className={styles.tabIcon} />;      // 디저트
-            case 4: return <Cake className={styles.tabIcon} />;      // 쿠키
-            case 5: return <CupSoda className={styles.tabIcon} />;   // 논커피
-            case 6: return <LayoutGrid className={styles.tabIcon} />;// 기타
+            case 1: return <Leaf className={styles.tabIcon} />;      // 전통차 (찻잎)
+            case 2: return <Cake className={styles.tabIcon} />;      // 디저트
+            case 3: return <Coffee className={styles.tabIcon} />;    // 커피&음료
+            case 4: return <Croissant className={styles.tabIcon} />; // 샌드위치&브런치
+            case 5: return <CupSoda className={styles.tabIcon} />;   // 에이드&스무디
+            case 6: return <LayoutGrid className={styles.tabIcon} />;// 아이스크림&빙수 (적절한 아이콘으로 교체 가능)
+            case 7: return <Plus className={styles.tabIcon} />;      // 기획 상품
             default: return <Coffee className={styles.tabIcon} />;
         }
     };

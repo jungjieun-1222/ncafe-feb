@@ -8,16 +8,18 @@ services:
     # ports:
     #   - "${BACKEND_PORT:-8012}:8081"
     volumes:
-      - /home/jungjieun-1222/dist/ncafe-upload:/app/upload
+      - ${UPLOAD_PATH:-./backend/upload}:/app/upload
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=redis
     restart: unless-stopped
     depends_on:
       - db
+      - redis
     networks:
       - ncafe-network
 
@@ -30,7 +32,7 @@ services:
     ports:
       - "${FRONTEND_PORT:-3012}:3000"
     environment:
-      - API_BASE_URL=http://mochijj-backend:8081
+      - API_BASE_URL=http://backend:8081
       - SESSION_SECRET=${SESSION_SECRET}
     depends_on:
       - backend
@@ -38,8 +40,29 @@ services:
     networks:
       - ncafe-network
 
+  agent-server:
+    image: ${AGENT_SERVER_IMAGE:-agent-server:latest}
+    build:
+      context: ./agent-server
+      dockerfile: Dockerfile
+    container_name: ${USER_ID:-mochijj}-agent-server
+    ports:
+      - "${AGENT_SERVER_PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BACKEND_URL=http://backend:8081
+    depends_on:
+      - backend
+      - redis
+    restart: unless-stopped
+    networks:
+      - ncafe-network
+
   db:
-    image: postgres:17
+    image: pgvector/pgvector:pg17
     profiles: [ "with-db" ]
     container_name: ${USER_ID:-mochijj}-db
     environment:
@@ -49,7 +72,16 @@ services:
     # ports:
     #   - "${DB_PORT:-5412}:5432"
     volumes:
-     - /home/jungjieun-1222/dist/ncafe-data:/var/lib/postgresql/data
+     - ${DB_DATA_PATH:-./data}:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - ncafe-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${USER_ID:-mochijj}-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
     restart: unless-stopped
     networks:
       - ncafe-network

@@ -77,9 +77,9 @@
 .tab {
     padding: 10px 24px;
     border-radius: 50px;
-    border: 1px solid #e8e2d8;
+    border: 1px solid #d5cec4;
     background: white;
-    color: #8c7b75;
+    color: #6d5b53; /* Darker than before */
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
@@ -87,12 +87,13 @@
 
 .tab:hover {
     background: #fdfaf8;
-    border-color: #c9a388;
+    border-color: #7b5944; /* Darker hover border */
+    color: #4a3e3e;
 }
 
 .activeTab {
-    background: #c9a388;
-    border-color: #c9a388;
+    background: #7b5944; /* Darker, richer brown */
+    border-color: #7b5944;
     color: white;
 }
 
@@ -118,7 +119,7 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 30px;
     animation: slideUp 1s ease-out;
 }
@@ -139,7 +140,7 @@
 
 .imageWrapper {
     width: 100%;
-    height: 200px;
+    height: 300px;
     overflow: hidden;
     background-color: #f0f0f0;
 }
@@ -239,4 +240,42 @@
     .grid {
         grid-template-columns: 1fr;
     }
+}
+
+.soldOut {
+    opacity: 0.85;
+    filter: sepia(0.2);
+}
+
+.imageWrapper {
+    position: relative;
+}
+
+.soldOutOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.soldOutOverlay span {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 800;
+    padding: 10px 20px;
+    border: 3px solid white;
+    border-radius: 4px;
+    transform: rotate(-10deg);
+}
+
+.addBtn:disabled {
+    background-color: #d1cbc4;
+    cursor: not-allowed;
+    color: #8c7b75;
 }

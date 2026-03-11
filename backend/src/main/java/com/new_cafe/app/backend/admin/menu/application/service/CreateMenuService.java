@@ -24,9 +24,12 @@ public class CreateMenuService implements CreateMenuUseCase {
                 .engName(command.getEngName())
                 .description(command.getDescription())
                 .price(command.getPrice())
-                .categoryId((long) command.getCategoryId())
+                .categoryId(command.getCategoryId())
                 .isAvailable(command.isAvailable())
+                .isSoldOut(!command.isAvailable())
                 .altText(command.getAltText())
+                .costPrice(command.getCostPrice())
+                .adminMemo(command.getAdminMemo())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

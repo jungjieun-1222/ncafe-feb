@@ -61,6 +61,11 @@ public class AdminMenuController {
         updateMenuUseCase.updateMenu(mapToUpdateCommand(id, request));
     }
 
+    @PatchMapping("/{id}/status")
+    public void updateMenuStatus(@PathVariable Long id, @RequestParam boolean isAvailable) {
+        updateMenuUseCase.updateMenuAvailability(id, isAvailable);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteMenu(@PathVariable Long id) {
         deleteMenuUseCase.deleteMenu(id);
@@ -71,11 +76,15 @@ public class AdminMenuController {
                 .id(menu.getId())
                 .korName(menu.getKorName())
                 .engName(menu.getEngName())
-                .price(menu.getPrice())
-                .categoryId(menu.getCategoryId() != null ? menu.getCategoryId().intValue() : 0)
+                .description(menu.getDescription())
+                .price(menu.getPrice() != null ? menu.getPrice() : 0)
+                .categoryId(menu.getCategoryId() != null ? menu.getCategoryId() : 0)
                 .categoryName(menu.getCategoryName())
                 .imageSrc(menu.getPrimaryImageSrc())
                 .isAvailable(menu.isAvailable())
+                .isSoldOut(menu.isSoldOut())
+                .createdAt(menu.getCreatedAt())
+                .updatedAt(menu.getUpdatedAt())
                 .build();
     }
 
@@ -86,13 +95,15 @@ public class AdminMenuController {
                 .engName(menu.getEngName())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
-                .categoryId(menu.getCategoryId() != null ? menu.getCategoryId().intValue() : 0)
+                .categoryId(menu.getCategoryId() != null ? menu.getCategoryId() : 0)
                 .categoryName(menu.getCategoryName())
                 .imageSrc(menu.getPrimaryImageSrc())
                 .isAvailable(menu.isAvailable())
+                .isSoldOut(menu.isSoldOut())
                 .createdAt(menu.getCreatedAt())
                 .updatedAt(menu.getUpdatedAt())
-                .costPrice(menu.getSupplierInfo() != null ? 0 : null) // Placeholder
+                .costPrice(menu.getCostPrice())
+                .adminMemo(menu.getAdminMemo())
                 .build();
     }
 

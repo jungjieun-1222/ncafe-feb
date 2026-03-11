@@ -124,6 +124,7 @@ body {
   background-color: var(--cafe-bg);
   color: var(--cafe-clay);
   -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
 }
 
 a {

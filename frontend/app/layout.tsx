@@ -30,7 +30,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
+      <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} heritage-theme`}>
         <AuthInitializer />
         <LayoutWrapper>

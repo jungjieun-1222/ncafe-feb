@@ -20,6 +20,9 @@ public class OrderItemEntity {
     @Column(name = "menu_id")
     private Long menuId;
 
+    @Column(name = "menu_name")
+    private String menuName;
+
     private int price;
     private int quantity;
 }

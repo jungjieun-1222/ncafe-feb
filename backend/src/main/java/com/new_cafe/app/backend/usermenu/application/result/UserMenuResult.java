@@ -17,6 +17,7 @@ public class UserMenuResult {
     private String primaryImageSrc;
     private boolean isAvailable;
     private String allergyInfo;
+    private java.util.List<String> images;
 
     public static UserMenuResult from(UserMenu menu) {
         return UserMenuResult.builder()
@@ -30,6 +31,7 @@ public class UserMenuResult {
                 .primaryImageSrc(menu.getPrimaryImageSrc())
                 .isAvailable(menu.isAvailable())
                 .allergyInfo(menu.getAllergyInfo())
+                .images(menu.getImages())
                 .build();
     }
 }

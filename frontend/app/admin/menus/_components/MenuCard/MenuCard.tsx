@@ -1,26 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ImageIcon, Pencil, Trash2 } from 'lucide-react';
-import { Menu } from '@/types/menu';
-import styles from './MenuCard.module.css';
 import { MenuResponse } from '../MenuList/useMenus';
+import styles from './MenuCard.module.css';
 
 interface MenuCardProps {
     menu: MenuResponse;
-    onToggleSoldOut: (id: number) => void;
+    onToggleSoldOut: (id: number, nextIsAvailable: boolean) => Promise<void>;
     onDelete: (id: number) => void;
 }
 
 export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardProps) {
+    const [isAvailable, setIsAvailable] = useState(menu.isAvailable);
+    const [isSoldOut, setIsSoldOut] = useState(menu.isSoldOut);
+    const [imgError, setImgError] = useState(false);
+    const [isToggling, setIsToggling] = useState(false);
+
+    // 부모로부터 받은 값이 변하면 동기화
+    useEffect(() => {
+        setIsAvailable(menu.isAvailable);
+        setIsSoldOut(menu.isSoldOut);
+    }, [menu.isAvailable, menu.isSoldOut]);
+
+    const handleToggle = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isToggling) return;
+
+        const nextIsAvailable = !isAvailable;
+        setIsToggling(true);
+        
+        try {
+            await onToggleSoldOut(menu.id, nextIsAvailable);
+            // 성공하면 로컬 상태 업데이트
+            setIsAvailable(nextIsAvailable);
+            setIsSoldOut(!nextIsAvailable);
+        } catch (error) {
+            console.error('Toggle failed:', error);
+        } finally {
+            setIsToggling(false);
+        }
+    };
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('ko-KR').format(price);
     };
-
-    const [imgError, setImgError] = useState(false);
 
     const getImageUrl = (url: string | null | undefined) => {
         if (!url) return '/images/blank.png';
@@ -30,7 +56,7 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
     };
 
     return (
-        <div className={styles.card}>
+        <div className={`${styles.card} ${isSoldOut ? styles.isSoldOutCard : ''}`}>
             <Link href={`/admin/menus/${menu.id}`} className={styles.cardLink}>
                 <div className={styles.imageWrapper}>
                     {(menu.imageSrc && !imgError) ? (
@@ -47,14 +73,14 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
                             <ImageIcon width={48} height={48} strokeWidth={1} />
                         </div>
                     )}
+                    
+                    {/* 품절 오버레이 - 이미지 영역에만 적용 */}
+                    {isSoldOut && (
+                        <div className={styles.soldOutOverlay}>
+                            <span className={styles.soldOutBadge}>SOLD OUT</span>
+                        </div>
+                    )}
                 </div>
-
-                {/* 품절 오버레이 */}
-                {menu.isSoldOut && (
-                    <div className={styles.soldOutOverlay}>
-                        <span className={styles.soldOutBadge}>SOLD OUT</span>
-                    </div>
-                )}
 
                 <div className={styles.body}>
                     <div className={styles.header}>
@@ -70,13 +96,11 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
             </Link>
 
             <div className={styles.footer}>
-                <div className={styles.toggle} onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleSoldOut(menu.id);
-                }}>
-                    {/* 토글 스위치 */}
-                    <div className={`${styles.toggleSwitch} ${menu.isSoldOut ? styles.active : ''}`} />
-                    <span className={styles.toggleLabel}>품절</span>
+                <div className={styles.toggle} onClick={handleToggle}>
+                    <div className={`${styles.toggleSwitch} ${isAvailable ? styles.active : ''} ${isToggling ? styles.loading : ''}`} />
+                    <span className={styles.toggleLabel}>
+                        {isAvailable ? '판매 중' : '품절'}
+                    </span>
                 </div>
 
                 <div className={styles.actions}>
