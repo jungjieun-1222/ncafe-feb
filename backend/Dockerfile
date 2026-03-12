@@ -1,11 +1,9 @@
 # 1단계: 빌드 스테이지
-FROM gradle:9.4.0-jdk21 AS builder
+FROM gradle:8.10-jdk21 AS builder
 WORKDIR /app
 
 # 필요한 파일들 복사
-COPY build.gradle settings.gradle ./
-COPY src src
-
+COPY . . 
 # 빌드 실행 (gradle 이미지는 이미 gradle이 설치되어 있으므로 gradlew 대신 gradle 명령어를 사용합니다)
 RUN gradle bootJar --no-daemon -x test
 
