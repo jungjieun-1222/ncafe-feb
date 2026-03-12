@@ -15,7 +15,7 @@ interface SearchResult {
     distance: number;
 }
 
-const AGENT_SERVER_URL = process.env.NEXT_PUBLIC_AGENT_SERVER_URL || 'http://localhost:8000';
+const AGENT_SERVER_URL = process.env.NEXT_PUBLIC_AGENT_SERVER_URL || 'http://localhost:8112';
 
 export default function KnowledgeManager() {
     const [knowledgeList, setKnowledgeList] = useState<KnowledgeItem[]>([]);

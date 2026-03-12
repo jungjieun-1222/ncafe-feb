@@ -8,3 +8,4 @@ sentence-transformers
 sqlalchemy
 psycopg2-binary
 pgvector
+python-multipart

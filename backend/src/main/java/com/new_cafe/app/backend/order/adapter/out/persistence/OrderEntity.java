@@ -23,6 +23,9 @@ public class OrderEntity {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "cart_id")
+    private String cartId;
+
     private int totalPrice;
 
     @Enumerated(EnumType.STRING)
@@ -30,6 +33,15 @@ public class OrderEntity {
 
     @Column(name = "ordered_at")
     private LocalDateTime orderedAt;
+
+    @Column(name = "payment_method")
+    private String paymentMethod;
+
+    @Column(name = "request_message", length = 500)
+    private String requestMessage;
+
+    @Column(name = "approval_number")
+    private String approvalNumber;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_id")

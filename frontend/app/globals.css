@@ -30,6 +30,7 @@
   --k-gold: var(--cafe-accent);
   --k-pine: var(--cafe-pine);
   --k-crimson: var(--cafe-error);
+  --text-muted: #70706B;
 
   --color-primary-50: #FAF7F2;
   --color-primary-100: #F3EBDD;

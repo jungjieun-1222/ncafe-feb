@@ -9,6 +9,8 @@ import com.new_cafe.app.backend.admin.menu.application.port.in.CreateMenuUseCase
 import com.new_cafe.app.backend.admin.menu.application.port.in.DeleteMenuUseCase;
 import com.new_cafe.app.backend.admin.menu.application.port.in.GetMenuUseCase;
 import com.new_cafe.app.backend.admin.menu.application.port.in.UpdateMenuUseCase;
+import com.new_cafe.app.backend.admin.menu.application.port.in.AddMenuImageUseCase;
+import com.new_cafe.app.backend.common.storage.application.port.in.FileStorageUseCase;
 import com.new_cafe.app.backend.admin.menu.application.result.GetMenuDetailResult;
 import com.new_cafe.app.backend.admin.menu.application.result.GetMenuListResult;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class AdminMenuController {
     private final CreateMenuUseCase createMenuUseCase;
     private final UpdateMenuUseCase updateMenuUseCase;
     private final DeleteMenuUseCase deleteMenuUseCase;
+    private final AddMenuImageUseCase addMenuImageUseCase;
+    private final FileStorageUseCase fileStorageUseCase;
 
     @GetMapping
     public AdminMenuListResponse getAllMenus(
@@ -51,14 +55,35 @@ public class AdminMenuController {
         return response;
     }
 
-    @PostMapping
-    public void createMenu(@RequestBody AdminMenuWebRequest request) {
-        createMenuUseCase.createMenu(mapToCreateCommand(request));
+    @PostMapping(consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void createMenu(
+            @RequestPart("request") AdminMenuWebRequest request,
+            @RequestPart(value = "image", required = false) org.springframework.web.multipart.MultipartFile image) {
+        
+        String imageSrc = request.getImageSrc();
+        if (image != null && !image.isEmpty()) {
+            imageSrc = fileStorageUseCase.storeFile(image);
+        }
+        
+        CreateMenuCommand command = mapToCreateCommand(request);
+        command = command.toBuilder().imageSrc(imageSrc).build();
+        createMenuUseCase.createMenu(command);
     }
 
-    @PutMapping("/{id}")
-    public void updateMenu(@PathVariable Long id, @RequestBody AdminMenuWebRequest request) {
-        updateMenuUseCase.updateMenu(mapToUpdateCommand(id, request));
+    @PutMapping(value = "/{id}", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateMenu(
+            @PathVariable Long id,
+            @RequestPart("request") AdminMenuWebRequest request,
+            @RequestPart(value = "image", required = false) org.springframework.web.multipart.MultipartFile image) {
+        
+        String imageSrc = request.getImageSrc();
+        if (image != null && !image.isEmpty()) {
+            imageSrc = fileStorageUseCase.storeFile(image);
+        }
+        
+        UpdateMenuCommand command = mapToUpdateCommand(id, request);
+        command = command.toBuilder().imageSrc(imageSrc).build();
+        updateMenuUseCase.updateMenu(command);
     }
 
     @PatchMapping("/{id}/status")
@@ -69,6 +94,34 @@ public class AdminMenuController {
     @DeleteMapping("/{id}")
     public void deleteMenu(@PathVariable Long id) {
         deleteMenuUseCase.deleteMenu(id);
+    }
+
+    @PostMapping(value = "/{id}/images", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void addImageToMenu(
+            @PathVariable Long id,
+            @RequestPart(value = "file", required = false) org.springframework.web.multipart.MultipartFile file,
+            @RequestParam(required = false) String srcUrl,
+            @RequestParam(required = false) String altText) {
+        
+        String finalUrl = srcUrl;
+        if (file != null && !file.isEmpty()) {
+            finalUrl = fileStorageUseCase.storeFile(file);
+        }
+        
+        addMenuImageUseCase.addImage(id, finalUrl, altText);
+    }
+
+    @PostMapping(value = "/upload", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public java.util.Map<String, String> uploadImage(@RequestPart("file") org.springframework.web.multipart.MultipartFile file) {
+        String url = fileStorageUseCase.storeFile(file);
+        java.util.Map<String, String> response = new java.util.HashMap<>();
+        response.put("url", url);
+        return response;
+    }
+
+    @DeleteMapping("/images/{imageId}")
+    public void deleteMenuImage(@PathVariable Long imageId) {
+        addMenuImageUseCase.deleteImage(imageId);
     }
 
     private AdminMenuWebModel mapListToWebModel(GetMenuListResult menu) {
@@ -118,6 +171,7 @@ public class AdminMenuController {
                 .altText(request.getAltText())
                 .costPrice(request.getCostPrice())
                 .adminMemo(request.getAdminMemo())
+                .imageSrc(request.getImageSrc())
                 .build();
     }
 
@@ -133,6 +187,7 @@ public class AdminMenuController {
                 .altText(request.getAltText())
                 .costPrice(request.getCostPrice())
                 .adminMemo(request.getAdminMemo())
+                .imageSrc(request.getImageSrc())
                 .build();
     }
 }

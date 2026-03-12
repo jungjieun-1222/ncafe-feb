@@ -30,6 +30,7 @@ export default function LoginForm() {
             if (response.ok) {
                 toast.success('로그인 성공');
                 setUser({
+                    id: data.user.id,
                     username: data.user.nickname,
                     role: data.user.role || 'ROLE_USER'
                 });

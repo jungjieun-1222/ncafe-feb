@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft, ShoppingCart, Info } from 'lucide-react';
+import { ChevronLeft, ShoppingCart, Minus, Plus } from 'lucide-react';
 import { useCartStore } from '@/stores/useCartStore';
+import { getOptionsByCategory, MenuOption, OptionGroup } from '@/app/cart/_constants/menuOptions';
 import styles from './page.module.css';
 
 interface MenuDetail {
@@ -14,137 +15,43 @@ interface MenuDetail {
     price: number;
     categoryName: string;
     imageSrc: string;
-    images: string[];
     isAvailable: boolean;
-    allergyInfo: string;
+    allergyInfo?: string;
 }
 
 export default function MenuDetailPage() {
     const { id } = useParams();
     const router = useRouter();
     const { openCart, triggerRefresh } = useCartStore();
+    
     const [menu, setMenu] = useState<MenuDetail | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
+    
+    // Selection state
+    const [quantity, setQuantity] = useState(1);
+    const [selectedOptions, setSelectedOptions] = useState<MenuOption[]>([]);
+    const [optionGroups, setOptionGroups] = useState<OptionGroup[]>([]);
 
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        e.currentTarget.src = '/images/blank.png';
-    };
-
-    const getImageUrl = (src: string | undefined) => {
-        if (!src || src === 'blank.png' || src.includes('blank.png')) return '/images/blank.png';
-        return `/images/${src}`;
-    };
-
-    const handleAddToCart = async () => {
-        if (!menu) return;
-        
-        setIsAdding(true);
-        try {
-            let cartId = localStorage.getItem('cartId');
-            if (!cartId) {
-                cartId = 'guest_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9);
-                localStorage.setItem('cartId', cartId);
-            }
-            
-            const mockOptions = [];
-            if (menu.categoryName === '커피&음료' || menu.categoryName === '전통차') {
-                mockOptions.push({ name: '옵션', value: '샷 추가', price: 500 });
-            } else if (menu.categoryName === '디저트') {
-                mockOptions.push({ name: '포장', value: '개별 포장', price: 0 });
-            }
-
-            const res = await fetch(`/api/v1/carts/${cartId}/items`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    menuId: Number(id),
-                    menuName: menu.korName,
-                    basePrice: menu.price,
-                    quantity: 1,
-                    options: mockOptions
-                })
-            });
-            
-            if (!res.ok) throw new Error('장바구니 추가 실패');
-            
-            triggerRefresh();
-            openCart();
-        } catch (err) {
-            console.error(err);
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
-        } finally {
-            setIsAdding(false);
-        }
-    };
-
-    const handleOrderNow = async () => {
-        if (!menu) return;
-        
-        if (!confirm('이 메뉴를 바로 주문하시겠습니까?')) return;
-
-        setIsAdding(true);
-        try {
-            // 1. Add to cart first
-            let cartId = localStorage.getItem('cartId');
-            if (!cartId) {
-                cartId = 'guest_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9);
-                localStorage.setItem('cartId', cartId);
-            }
-            
-            const mockOptions = [];
-            if (menu.categoryName === '커피&음료' || menu.categoryName === '전통차') {
-                mockOptions.push({ name: '옵션', value: '샷 추가', price: 500 });
-            } else if (menu.categoryName === '디저트') {
-                mockOptions.push({ name: '포장', value: '개별 포장', price: 0 });
-            }
-
-            const cartRes = await fetch(`/api/v1/carts/${cartId}/items`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    menuId: Number(id),
-                    menuName: menu.korName,
-                    basePrice: menu.price,
-                    quantity: 1,
-                    options: mockOptions
-                })
-            });
-            
-            if (!cartRes.ok) throw new Error('장바구니 추가 실패');
-
-            // 2. Place order immediately
-            const orderRes = await fetch('/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cartId })
-            });
-
-            if (orderRes.ok) {
-                alert('주문이 완료되었습니다!');
-                localStorage.removeItem('cartId'); // Clear cart after order
-                triggerRefresh();
-                router.push('/menus');
-            } else {
-                throw new Error('주문 실패');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('주문 중 오류가 발생했습니다.');
-        } finally {
-            setIsAdding(false);
-        }
-    };
-
+    // Load menu and relevant options
     useEffect(() => {
         const fetchMenuDetail = async () => {
             try {
                 const res = await fetch(`/api/menus/${id}`);
-                if (!res.ok) throw new Error('Failed to fetch');
+                if (!res.ok) throw new Error('Menu not found');
                 const data = await res.json();
                 setMenu(data);
+                
+                // Get pre-defined options based on category
+                const groups = getOptionsByCategory(data.categoryName);
+                setOptionGroups(groups);
+                
+                // Initial selection: pick first radio of each group
+                const initial = groups
+                    .filter(g => g.type === 'radio')
+                    .map(g => g.options[0]);
+                setSelectedOptions(initial);
+
             } catch (err) {
                 console.error(err);
             } finally {
@@ -154,26 +61,96 @@ export default function MenuDetailPage() {
         if (id) fetchMenuDetail();
     }, [id]);
 
-    if (isLoading) return <div className={styles.loading}>정보를 불러오는 중...</div>;
-    if (!menu) return <div className={styles.error}>메뉴를 찾을 수 없습니다.</div>;
+    const handleSelectOption = (group: OptionGroup, opt: MenuOption) => {
+        if (group.type === 'radio') {
+            setSelectedOptions(prev => {
+                const filtered = prev.filter(p => !group.options.some(o => o.id === p.id));
+                return [...filtered, opt];
+            });
+        } else {
+            setSelectedOptions(prev => {
+                const isSelected = prev.some(p => p.id === opt.id);
+                if (isSelected) {
+                    return prev.filter(p => p.id !== opt.id);
+                } else {
+                    return [...prev, opt];
+                }
+            });
+        }
+    };
 
-    const mainImageUrl = getImageUrl((menu.images && menu.images.length > 0) ? menu.images[0] : menu.imageSrc);
+    const isSelected = (optId: number) => selectedOptions.some(p => p.id === optId);
+
+    const calculateTotalPrice = () => {
+        if (!menu) return 0;
+        const optionsTotal = selectedOptions.reduce((acc, opt) => acc + opt.price, 0);
+        return (menu.price + optionsTotal) * quantity;
+    };
+
+    const handleAddToCart = async () => {
+        if (!menu) return;
+        
+        // Validation: Mandatory options (Radio groups usually mandatory in this logic)
+        const mandatoryGroups = optionGroups.filter(g => g.type === 'radio');
+        const allMandatorySelected = mandatoryGroups.every(g => 
+            selectedOptions.some(s => g.options.some(o => o.id === s.id))
+        );
+
+        if (!allMandatorySelected) {
+            alert('필수 옵션을 선택해주세요.');
+            return;
+        }
+
+        setIsAdding(true);
+        try {
+            let cartId = localStorage.getItem('cartId');
+            if (!cartId) {
+                cartId = 'guest_' + Date.now().toString();
+                localStorage.setItem('cartId', cartId);
+            }
+
+            const res = await fetch(`/api/v1/carts/${cartId}/items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    menuId: menu.id,
+                    quantity: quantity,
+                    optionIds: selectedOptions.map(o => o.id)
+                })
+            });
+
+            if (!res.ok) throw new Error('Failed to add cart');
+
+            triggerRefresh(); // Update cart drawer
+            openCart();      // Open cart drawer
+        } catch (err) {
+            console.error(err);
+            alert('장바구니 담기에 실패했습니다.');
+        } finally {
+            setIsAdding(false);
+        }
+    };
+
+    if (isLoading) return <div className={styles.loading}>명작을 불러오는 중...</div>;
+    if (!menu) return <div className={styles.error}>해당 메뉴를 찾을 수 없습니다.</div>;
+
+    const totalPrice = calculateTotalPrice();
 
     return (
         <div className={styles.container}>
             <main className={styles.main}>
                 <button onClick={() => router.back()} className={styles.backBtn}>
-                    <ChevronLeft size={20} /> 돌아가기
+                    <ChevronLeft size={20} /> 차림표로 돌아가기
                 </button>
 
                 <div className={styles.content}>
                     <div className={styles.imageSection}>
                         <div className={styles.mainImageWrapper}>
                             <img
-                                src={mainImageUrl}
+                                src={menu.imageSrc ? (menu.imageSrc.startsWith('http') ? menu.imageSrc : `/images/${menu.imageSrc}`) : '/images/blank.png'}
                                 alt={menu.korName}
                                 className={styles.mainImage}
-                                onError={handleImageError}
+                                onError={(e) => { e.currentTarget.src = '/images/blank.png'; }}
                             />
                         </div>
                     </div>
@@ -181,48 +158,88 @@ export default function MenuDetailPage() {
                     <div className={styles.infoSection}>
                         <div className={styles.badgeGroup}>
                             <div className={styles.badge}>{menu.categoryName}</div>
-                            {!menu.isAvailable && <div className={styles.soldOutBadge}>품절</div>}
+                            {!menu.isAvailable && <div className={styles.soldOutBadge}>SOLD OUT</div>}
                         </div>
+                        
                         <h1 className={styles.title}>{menu.korName}</h1>
                         <p className={styles.engName}>{menu.engName}</p>
-
+                        
+                        <p className={styles.description}>{menu.description}</p>
+                        
                         <div className={styles.divider}></div>
 
-                        <p className={styles.description}>{menu.description}</p>
-
-                        <div className={styles.priceSection}>
-                            <span className={styles.priceLabel}>판매가</span>
-                            <span className={styles.priceValue}>{menu.price.toLocaleString()}원</span>
+                        <div className={styles.optionsSection}>
+                            {optionGroups.map((group, gIdx) => (
+                                <div key={gIdx} className={styles.optionGroup}>
+                                    <div className={styles.groupLabel}>
+                                        {group.name} {group.type === 'radio' && <span className={styles.requiredTag}>* 필수</span>}
+                                    </div>
+                                    <div className={styles.optionList}>
+                                        {group.options.map((opt) => (
+                                            <button
+                                                key={opt.id}
+                                                className={`${styles.optionButton} ${isSelected(opt.id) ? styles.selectedOption : ''}`}
+                                                onClick={() => handleSelectOption(group, opt)}
+                                            >
+                                                <span className={styles.optionValue}>{opt.value}</span>
+                                                {opt.price > 0 && (
+                                                    <span className={styles.optionPrice}>+{opt.price.toLocaleString()}원</span>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
-                        <div className={styles.utils}>
-                            <div className={styles.utilItem}>
-                                <Info size={16} />
-                                <span>알레르기 정보: {menu.allergyInfo || '매장 문의'}</span>
-                            </div>
-                        </div>
-
-                        <div className={styles.actions}>
-                            <button 
-                                className={styles.cartBtn} 
-                                onClick={handleAddToCart}
-                                disabled={isAdding || !menu.isAvailable}
-                            >
-                                <ShoppingCart size={20} /> {!menu.isAvailable ? '품절된 상품입니다' : (isAdding ? '담는 중...' : '장바구니 담기')}
-                            </button>
-                            {menu.isAvailable && (
+                        <div className={styles.quantitySection}>
+                            <span className={styles.quantityLabel}>수량</span>
+                            <div className={styles.quantityControls}>
                                 <button 
-                                    className={styles.orderBtn} 
-                                    onClick={handleOrderNow}
-                                    disabled={isAdding}
+                                    className={styles.qBtn}
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    disabled={quantity <= 1}
                                 >
-                                    {isAdding ? '처리 중...' : '바로 주문하기'}
+                                    <Minus size={16} />
                                 </button>
-                            )}
+                                <span className={styles.qValue}>{quantity}</span>
+                                <button 
+                                    className={styles.qBtn}
+                                    onClick={() => setQuantity(quantity + 1)}
+                                >
+                                    <Plus size={16} />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </main>
+
+            <footer className={styles.bottomBar}>
+                <div className={styles.bottomBarContent}>
+                    <div className={styles.totalPriceInfo}>
+                        <div className={styles.totalLabel}>주문 금액 합계</div>
+                        <div className={styles.totalValue}>{totalPrice.toLocaleString()}원</div>
+                    </div>
+                    
+                    <button 
+                        className={styles.cartBtn}
+                        onClick={handleAddToCart}
+                        disabled={isAdding || !menu.isAvailable}
+                    >
+                        <ShoppingCart size={20} />
+                        {isAdding ? '담는 중...' : '장바구니 담기'}
+                    </button>
+                    
+                    <button 
+                        className={styles.orderBtn}
+                        onClick={() => alert('바로 주문 기능은 준비 중입니다.')}
+                        disabled={!menu.isAvailable}
+                    >
+                        바로 주문
+                    </button>
+                </div>
+            </footer>
         </div>
     );
 }

@@ -25,4 +25,7 @@ public class OrderItemEntity {
 
     private int price;
     private int quantity;
+
+    @Column(name = "options_text")
+    private String optionsText;
 }

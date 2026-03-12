@@ -31,6 +31,7 @@ public class Cart {
         return items;
     }
 
+    @com.fasterxml.jackson.annotation.JsonProperty("totalPrice")
     public int getTotalPrice() {
         return items.stream()
                 .mapToInt(CartItem::getTotalPrice)
@@ -54,6 +55,13 @@ public class Cart {
                 .filter(i -> i.getId().equals(cartItemId))
                 .findFirst()
                 .ifPresent(i -> i.updateQuantity(quantity));
+    }
+
+    public void updateOptions(String cartItemId, List<Option> options) {
+        items.stream()
+                .filter(i -> i.getId().equals(cartItemId))
+                .findFirst()
+                .ifPresent(i -> i.setOptions(options));
     }
 
     public void removeItem(String cartItemId) {

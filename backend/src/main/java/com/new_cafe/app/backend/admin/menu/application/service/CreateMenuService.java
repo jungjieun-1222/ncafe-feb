@@ -30,6 +30,7 @@ public class CreateMenuService implements CreateMenuUseCase {
                 .altText(command.getAltText())
                 .costPrice(command.getCostPrice())
                 .adminMemo(command.getAdminMemo())
+                .primaryImageSrc(command.getImageSrc())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

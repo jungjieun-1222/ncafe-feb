@@ -32,6 +32,7 @@ export default function ChatWidget() {
     const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
     const [inputValue, setInputValue] = useState('');
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
+    const [isThinking, setIsThinking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -102,9 +103,10 @@ export default function ChatWidget() {
             content: ''
         };
         setMessages(prev => [...prev, placeholderBotMsg]);
+        setIsThinking(true);
 
         try {
-            const response = await fetch('http://localhost:8000/chat', {
+            const response = await fetch('http://localhost:8112/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -140,6 +142,7 @@ export default function ChatWidget() {
                         try {
                             const data = JSON.parse(dataStr);
                             if (data.content) {
+                                setIsThinking(false);
                                 accumulatedContent += data.content;
                                 let displayContent = accumulatedContent;
                                 setMessages(prev => prev.map(msg =>
@@ -177,6 +180,7 @@ export default function ChatWidget() {
             }
         } catch (error) {
             console.error('Chat error:', error);
+            setIsThinking(false);
             setMessages(prev => prev.map(msg =>
                 msg.id === botMessageId
                     ? { ...msg, content: '죄송하오, 나리. 서역 너머의 기운이 불안정하여 대답을 드릴 수 없게 되었소. 잠시 후 다시 여쭤봐 주시겠소? (서버 연결 실패 🏮)' }
@@ -202,6 +206,11 @@ export default function ChatWidget() {
 
     const renderMessage = (msg: Message) => {
         const isBot = msg.role === 'assistant';
+
+        // 봇 메시지이고 아직 내용이 없는 경우(생각 중인 경우) 중복 표시를 막기 위해 표시하지 않음
+        if (isBot && msg.type === 'text' && !msg.content) {
+            return null;
+        }
 
         return (
             <div key={msg.id} className={`${styles.messageWrapper} ${isBot ? styles.bot : styles.user}`}>
@@ -282,6 +291,24 @@ export default function ChatWidget() {
 
                     <div className={styles.messagesContainer}>
                         {messages.map(renderMessage)}
+                        {isThinking && (
+                            <div className={`${styles.messageWrapper} ${styles.bot}`}>
+                                <img
+                                    src="/images/wolha.png"
+                                    alt="월하선생"
+                                    className={styles.botAvatarImage}
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=40px&auto=format&fit=crop';
+                                    }}
+                                />
+                                <div className={styles.thinkingBubble}>
+                                    <span className={styles.thinkingText}>월하선생님께서 생각중이오</span>
+                                    <div className={styles.dot}></div>
+                                    <div className={styles.dot}></div>
+                                    <div className={styles.dot}></div>
+                                </div>
+                            </div>
+                        )}
                         <div ref={messagesEndRef} className={styles.messagesEnd} />
                     </div>
 

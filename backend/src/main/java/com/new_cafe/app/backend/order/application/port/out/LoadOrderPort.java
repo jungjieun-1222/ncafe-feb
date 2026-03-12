@@ -7,5 +7,6 @@ import java.util.Optional;
 public interface LoadOrderPort {
     List<OrderEntity> loadAllOrders();
     List<OrderEntity> loadOrdersByUserId(Long userId);
+    List<OrderEntity> loadOrdersByCartId(String cartId);
     Optional<OrderEntity> loadOrderById(Long id);
 }

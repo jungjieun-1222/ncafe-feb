@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, Trash2, Plus, Minus } from 'lucide-react';
+import { ChevronLeft, Trash2, Plus, Minus, Settings2 } from 'lucide-react';
 import styles from './page.module.css';
+import OptionChangeModal from './_components/OptionChangeModal';
 
 interface CartItem {
     id: string;
@@ -24,6 +25,7 @@ export default function CartPage() {
     const router = useRouter();
     const [cart, setCart] = useState<Cart | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [editingItem, setEditingItem] = useState<CartItem | null>(null);
 
     const fetchCart = async () => {
         try {
@@ -90,6 +92,28 @@ export default function CartPage() {
         }
     };
 
+    const handleUpdateOptions = async (itemId: string, optionIds: number[]) => {
+        try {
+            const res = await fetch(`/api/cart/items/${itemId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ optionIds })
+            });
+            if (res.ok) {
+                // 상위에서 fetchCart를 호출하여 최신 상태 반영
+                await fetchCart();
+            } else {
+                const error = await res.json().catch(() => ({}));
+                throw new Error(error.message || '옵션 변경에 실패했습니다.');
+            }
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    };
+
     const handleClearCart = async () => {
         const cartId = localStorage.getItem('cartId');
         if (!cartId) return;
@@ -135,6 +159,13 @@ export default function CartPage() {
                                     <div className={styles.itemInfo}>
                                         <h3 className={styles.itemName}>{item.menuName}</h3>
                                         <p className={styles.itemPrice}>{item.basePrice.toLocaleString()}원</p>
+                                        <div className={styles.selectedOptions}>
+                                            {item.options && item.options.map((opt: any, idx: number) => (
+                                                <span key={idx} className={styles.optionTag}>
+                                                    {opt.value}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
                                     <div className={styles.itemActions}>
                                         <div className={styles.quantityControl}>
@@ -146,9 +177,14 @@ export default function CartPage() {
                                                 <Plus size={16} />
                                             </button>
                                         </div>
-                                        <button className={styles.removeBtn} onClick={() => handleRemoveItem(item.id)}>
-                                            <Trash2 size={18} />
-                                        </button>
+                                        <div className={styles.actionRight}>
+                                            <button className={styles.changeBtn} onClick={() => setEditingItem(item)}>
+                                                옵션 변경
+                                            </button>
+                                            <button className={styles.removeBtn} onClick={() => handleRemoveItem(item.id)}>
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -172,6 +208,14 @@ export default function CartPage() {
                     </>
                 )}
             </main>
+
+            {editingItem && (
+                <OptionChangeModal 
+                    item={editingItem}
+                    onClose={() => setEditingItem(null)}
+                    onUpdate={handleUpdateOptions}
+                />
+            )}
         </div>
     );
 }

@@ -1,0 +1,57 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 24px;
+}
+
+.card {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.2s ease;
+    border: 1px solid #EEE;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-color: var(--k-gold);
+}
+
+.iconWrapper {
+    width: 60px;
+    height: 60px;
+    background: #F8F9FA;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--k-clay);
+    transition: all 0.2s;
+}
+
+.card:hover .iconWrapper {
+    background: var(--k-clay);
+    color: white;
+}
+
+.cardTitle {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.cardDesc {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+}

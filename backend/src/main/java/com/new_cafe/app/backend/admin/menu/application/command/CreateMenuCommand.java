@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class CreateMenuCommand {
     private String korName;
     private String engName;
@@ -15,4 +15,5 @@ public class CreateMenuCommand {
     private String altText;
     private Integer costPrice;
     private String adminMemo;
+    private String imageSrc;
 }

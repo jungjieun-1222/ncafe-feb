@@ -25,6 +25,10 @@ public class CartController {
             @PathVariable String cartId,
             @RequestBody AddCartItemRequest request) {
         
+        if (request.getOptionIds() != null && !request.getOptionIds().isEmpty()) {
+            return ResponseEntity.ok(cartUseCase.addCartItemWithIds(cartId, request.getMenuId(), request.getQuantity(), request.getOptionIds()));
+        }
+
         CartItem cartItem = CartItem.builder()
                 .menuId(request.getMenuId())
                 .menuName(request.getMenuName())
@@ -42,6 +46,14 @@ public class CartController {
             @PathVariable String itemId,
             @RequestParam int quantity) {
         return ResponseEntity.ok(cartUseCase.updateQuantity(cartId, itemId, quantity));
+    }
+
+    @PatchMapping("/{cartId}/items/{itemId}/options")
+    public ResponseEntity<Cart> updateOptions(
+            @PathVariable String cartId,
+            @PathVariable String itemId,
+            @RequestBody java.util.List<com.new_cafe.app.backend.cart.domain.Option> options) {
+        return ResponseEntity.ok(cartUseCase.updateOptions(cartId, itemId, options));
     }
 
     @DeleteMapping("/{cartId}/items/{itemId}")

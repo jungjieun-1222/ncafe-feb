@@ -45,10 +45,10 @@
     transform: translateY(-2px);
 }
 
-.orderCard.pending { border-top-color: #f6ad55; }
-.orderCard.preparing { border-top-color: #4299e1; }
-.orderCard.completed { border-top-color: #48bb78; }
-.orderCard.cancelled { border-top-color: #f56565; opacity: 0.8; }
+.pending { border-top-color: #f6ad55; }
+.preparing { border-top-color: #4299e1; }
+.completed { border-top-color: #48bb78; }
+.cancelled { border-top-color: #f56565; opacity: 0.8; }
 
 .orderHeader {
     display: flex;

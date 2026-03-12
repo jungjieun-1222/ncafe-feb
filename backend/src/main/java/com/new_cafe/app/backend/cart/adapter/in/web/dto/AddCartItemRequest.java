@@ -12,4 +12,5 @@ public class AddCartItemRequest {
     private int basePrice;
     private int quantity;
     private List<Option> options;
+    private List<Long> optionIds;
 }

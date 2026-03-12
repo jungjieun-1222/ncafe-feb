@@ -1,0 +1,119 @@
+.container {
+    min-height: 100vh;
+    background-color: #fcfaf7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    max-width: 500px;
+    width: 100%;
+    padding: 60px 40px;
+    border-radius: 32px;
+    box-shadow: 0 10px 40px rgba(75, 54, 33, 0.08);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.iconWrapper {
+    color: #4B3621;
+    margin-bottom: 32px;
+    animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+.approvalBox {
+    background-color: #fdfbf9;
+    padding: 16px 24px;
+    border-radius: 12px;
+    border: 1px dashed #dcd0c5;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.approvalLabel {
+    font-size: 0.85rem;
+    color: #a68b7c;
+}
+
+.approvalValue {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4B3621;
+    letter-spacing: 1px;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #4B3621;
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #8b5e3c;
+    line-height: 1.6;
+    margin-bottom: 48px;
+}
+
+.btnGroup {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.primaryBtn {
+    flex: 1;
+    height: 56px;
+    background-color: #4B3621;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.primaryBtn:hover {
+    background-color: #5d4229;
+    transform: translateY(-2px);
+}
+
+.secondaryBtn {
+    flex: 1;
+    height: 56px;
+    background-color: transparent;
+    color: #4B3621;
+    border: 2px solid #4B3621;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.secondaryBtn:hover {
+    background-color: #fcfaf7;
+}

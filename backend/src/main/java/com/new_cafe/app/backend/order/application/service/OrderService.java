@@ -29,20 +29,38 @@ public class OrderService implements PlaceOrderUseCase, QueryOrderUseCase, Manag
     private final LoadOrderPort loadOrderPort;
 
     @Override
-    public void placeOrder(String cartId) {
+    public String placeOrder(String cartId, String paymentMethod, String requestMessage) {
         Cart cart = cartUseCase.getCart(cartId);
         
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
+        // 1) 총 결제 금액 검증
+        int calculatedTotal = cart.getItems().stream()
+                .mapToInt(CartItem::getTotalPrice)
+                .sum();
+        
+        if (calculatedTotal != cart.getTotalPrice()) {
+            throw new RuntimeException("결제 금액 검증에 실패했습니다.");
+        }
+
+        // 2) 상세 내역 복사 (주문 시점의 가격/옵션 고정)
         List<OrderItemEntity> orderItems = cart.getItems().stream()
-                .map(item -> OrderItemEntity.builder()
+                .map(item -> {
+                    String optionsText = item.getOptions() != null ? 
+                        item.getOptions().stream()
+                            .map(o -> o.getName() + ": " + o.getValue())
+                            .collect(Collectors.joining(", ")) : "";
+                    
+                    return OrderItemEntity.builder()
                         .menuId(item.getMenuId())
                         .menuName(item.getMenuName())
-                        .price(item.getTotalPrice())
+                        .price(item.getTotalPrice() / item.getQuantity()) // 옵션 포함된 개당 가격
                         .quantity(item.getQuantity())
-                        .build())
+                        .optionsText(optionsText)
+                        .build();
+                })
                 .collect(Collectors.toList());
 
         Long userId = null;
@@ -52,18 +70,28 @@ public class OrderService implements PlaceOrderUseCase, QueryOrderUseCase, Manag
             } catch (NumberFormatException ignored) {}
         }
 
+        // 가상 결제 승인 번호 생성
+        String approvalNumber = "APP-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
         OrderEntity order = OrderEntity.builder()
                 .userId(userId)
+                .cartId(cartId)
                 .items(orderItems)
                 .totalPrice(cart.getTotalPrice())
                 .status(OrderStatus.PENDING)
                 .orderedAt(LocalDateTime.now())
+                .paymentMethod(paymentMethod)
+                .requestMessage(requestMessage)
+                .approvalNumber(approvalNumber)
                 .build();
 
         saveOrderPort.saveOrder(order);
         
-        // 주문 후 장바구니 비우기
+        // 3) 주문 성공 후 장바구니 비우기
         cartUseCase.clearCart(cartId);
+
+        // 4) 승인 번호 반환
+        return approvalNumber;
     }
 
     @Override
@@ -74,6 +102,11 @@ public class OrderService implements PlaceOrderUseCase, QueryOrderUseCase, Manag
     @Override
     public List<OrderEntity> getOrdersByUserId(Long userId) {
         return loadOrderPort.loadOrdersByUserId(userId);
+    }
+
+    @Override
+    public List<OrderEntity> getOrdersByCartId(String cartId) {
+        return loadOrderPort.loadOrdersByCartId(cartId);
     }
 
     @Override

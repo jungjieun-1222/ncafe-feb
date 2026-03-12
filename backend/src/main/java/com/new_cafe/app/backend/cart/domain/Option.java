@@ -14,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Option {
+    private Long id;
     private String name; // e.g., SIZE, SHOT, SYRUP
     private String value; // e.g., GRANDE, +1, VANILLA
     private int price; // Additional price

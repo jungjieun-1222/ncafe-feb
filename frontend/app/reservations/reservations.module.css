@@ -1,0 +1,153 @@
+.container {
+    min-height: 100vh;
+    padding: 120px 20px 60px;
+    background-color: #F9F7F2; /* Soft beige background */
+    display: flex;
+    justify-content: center;
+}
+
+.formCard {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(93, 64, 55, 0.08);
+    border: 1px solid rgba(181, 155, 109, 0.15);
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #4A443F;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #8C847E;
+    margin-bottom: 40px;
+    font-size: 0.95rem;
+}
+
+.section {
+    margin-bottom: 32px;
+}
+
+.label {
+    display: block;
+    font-weight: 700;
+    color: #5D544F;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.inputGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1.5px solid #EAE5D9;
+    background: #FFFCF7;
+    font-size: 1rem;
+    color: #4A443F;
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--k-gold);
+    box-shadow: 0 0 0 4px rgba(181, 155, 109, 0.1);
+}
+
+.timeGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.timeButton {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1.5px solid #EAE5D9;
+    background: white;
+    font-weight: 600;
+    color: #5D544F;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timeButton:hover:not(.disabled) {
+    border-color: var(--k-gold);
+    color: var(--k-clay);
+}
+
+.selectedTime {
+    background: var(--k-clay) !important;
+    color: white !important;
+    border-color: var(--k-clay) !important;
+}
+
+.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #F2F0EB;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 18px;
+    background: var(--k-clay);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    box-shadow: 0 8px 20px rgba(93, 64, 55, 0.2);
+}
+
+.submitBtn:hover {
+    background: #4E342E;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(93, 64, 55, 0.25);
+}
+
+.submitBtn:disabled {
+    background: #C4BEB8;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loginPrompt {
+    padding: 40px;
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    max-width: 400px;
+    margin: 120px auto;
+}
+
+.loginBtn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: var(--k-gold);
+    color: white;
+    border-radius: 100px;
+    font-weight: 700;
+    text-decoration: none;
+}

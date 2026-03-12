@@ -20,12 +20,25 @@ public class OrderController {
     private final ManageOrderUseCase manageOrderUseCase;
  
     @PostMapping
-    public void placeOrder(@RequestBody OrderRequest request) {
-        placeOrderUseCase.placeOrder(request.getCartId());
+    public OrderResponse placeOrder(@RequestBody OrderRequest request) {
+        String approvalNumber = placeOrderUseCase.placeOrder(
+            request.getCartId(), 
+            request.getPaymentMethod(), 
+            request.getRequestMessage()
+        );
+        return new OrderResponse(approvalNumber);
     }
 
     @GetMapping
-    public List<OrderEntity> getAllOrders() {
+    public List<OrderEntity> getAllOrders(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String cartId) {
+        if (userId != null) {
+            return queryOrderUseCase.getOrdersByUserId(userId);
+        }
+        if (cartId != null && !cartId.isEmpty()) {
+            return queryOrderUseCase.getOrdersByCartId(cartId);
+        }
         return queryOrderUseCase.getAllOrders();
     }
 
@@ -42,5 +55,14 @@ public class OrderController {
     @lombok.Data
     public static class OrderRequest {
         private String cartId;
+        private String paymentMethod;
+        private String requestMessage;
+        private Integer totalPrice;
+    }
+
+    @lombok.Getter
+    @lombok.AllArgsConstructor
+    public static class OrderResponse {
+        private String approvalNumber;
     }
 }

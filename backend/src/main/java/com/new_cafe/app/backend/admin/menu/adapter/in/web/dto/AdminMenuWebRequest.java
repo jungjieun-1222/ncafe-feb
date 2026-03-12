@@ -17,4 +17,5 @@ public class AdminMenuWebRequest {
     // 관리자 전용 필드
     private Integer costPrice;
     private String adminMemo;
+    private String imageSrc;
 }

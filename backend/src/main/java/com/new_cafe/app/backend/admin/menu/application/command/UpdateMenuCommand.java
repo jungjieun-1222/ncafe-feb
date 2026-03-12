@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class UpdateMenuCommand {
     private Long id;
     private String korName;
@@ -16,4 +16,5 @@ public class UpdateMenuCommand {
     private String altText;
     private Integer costPrice;
     private String adminMemo;
+    private String imageSrc;
 }

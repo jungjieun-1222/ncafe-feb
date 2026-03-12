@@ -113,33 +113,9 @@ const CartDrawer = () => {
         }
     };
 
-    const handlePlaceOrder = async () => {
-        const cartId = localStorage.getItem('cartId');
-        if (!cartId) return;
-
-        if (confirm('주문하시겠습니까?')) {
-            try {
-                const res = await fetch('/api/orders', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cartId })
-                });
-
-                if (res.ok) {
-                    alert('주문이 완료되었습니다. 감사합니다!');
-                    setCart(null);
-                    localStorage.removeItem('cartId');
-                    triggerRefresh();
-                    closeCart();
-                    router.push('/menus');
-                } else {
-                    throw new Error('주문 실패');
-                }
-            } catch (err) {
-                console.error('Order failed:', err);
-                alert('주문 중 오류가 발생했습니다.');
-            }
-        }
+    const handlePlaceOrder = () => {
+        closeCart();
+        router.push('/checkout');
     };
 
     const totalItemsCount = cart?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
@@ -196,7 +172,7 @@ const CartDrawer = () => {
                                             <h3 className={styles.itemName}>{item.menuName}</h3>
                                             {renderOptions(item.options)}
                                             <p className={styles.itemPrice}>
-                                                {(item.basePrice * item.quantity).toLocaleString()}원
+                                                {((item.basePrice + (item.options?.reduce((sum, opt) => sum + (opt.price || 0), 0) || 0)) * item.quantity).toLocaleString()}원
                                             </p>
                                         </div>
                                         <button 

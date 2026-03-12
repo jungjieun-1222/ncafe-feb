@@ -29,6 +29,11 @@ public class OrderPersistenceAdapter implements SaveOrderPort, LoadOrderPort {
     }
 
     @Override
+    public List<OrderEntity> loadOrdersByCartId(String cartId) {
+        return orderRepository.findByCartIdOrderByOrderedAtDesc(cartId);
+    }
+
+    @Override
     public Optional<OrderEntity> loadOrderById(Long id) {
         return orderRepository.findById(id);
     }

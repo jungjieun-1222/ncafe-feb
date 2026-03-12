@@ -3,15 +3,11 @@
 const nextConfig = {
   output: 'standalone',
   async rewrites() {
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8012';
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8081';
     return [
       {
-        source: '/images/:path*',
-        destination: '/api/:path*',
-      },
-      {
-        source: '/upload/:path*',
-        destination: '/api/upload/:path*',
+        source: '/uploads/:path*',
+        destination: `${backendUrl}/uploads/:path*`,
       }
     ];
   },

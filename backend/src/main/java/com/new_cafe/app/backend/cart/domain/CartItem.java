@@ -43,6 +43,7 @@ public class CartItem {
         return options;
     }
 
+    @com.fasterxml.jackson.annotation.JsonProperty("totalPrice")
     public int getTotalPrice() {
         int optionPriceSum = options != null ? options.stream().mapToInt(Option::getPrice).sum() : 0;
         return (basePrice + optionPriceSum) * quantity;

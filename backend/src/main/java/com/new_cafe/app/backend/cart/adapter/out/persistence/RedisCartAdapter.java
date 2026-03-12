@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.TimeUnit;
 
-@Repository
+// @Repository
 @RequiredArgsConstructor
 @lombok.extern.slf4j.Slf4j
 public class RedisCartAdapter implements LoadCartPort, SaveCartPort, DeleteCartPort {

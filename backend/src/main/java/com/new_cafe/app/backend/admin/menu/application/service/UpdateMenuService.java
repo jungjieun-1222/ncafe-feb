@@ -36,6 +36,7 @@ public class UpdateMenuService implements UpdateMenuUseCase {
                 .altText(command.getAltText())
                 .costPrice(command.getCostPrice())
                 .adminMemo(command.getAdminMemo())
+                .primaryImageSrc(command.getImageSrc())
                 .createdAt(existingMenu.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .build();

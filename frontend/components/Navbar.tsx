@@ -84,11 +84,12 @@ const Navbar = () => {
                             로그인
                         </Link>
                     )}
-                    <button
+                    <Link
+                        href="/reservations"
                         className={styles.reserveBtn}
                     >
                         자리 예약
-                    </button>
+                    </Link>
                 </div>
             </div>
         </nav>

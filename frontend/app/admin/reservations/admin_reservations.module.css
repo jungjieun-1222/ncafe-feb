@@ -1,0 +1,82 @@
+.container {
+    padding: 120px 40px 60px;
+    background: #F8F9FA;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #333;
+}
+
+.tableWrapper {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #EEE;
+}
+
+.table th {
+    background: #F1F3F5;
+    font-weight: 700;
+    color: #495057;
+}
+
+.status {
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.pending { background: #FFF9DB; color: #F08C00; }
+.confirmed { background: #EBFBEE; color: #40C057; }
+.cancelled { background: #FFF5F5; color: #FA5252; }
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.actionBtn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.confirmBtn {
+    background: #40C057;
+    color: white;
+}
+
+.confirmBtn:hover { background: #37B24D; }
+
+.cancelBtn {
+    background: #FA5252;
+    color: white;
+}
+
+.cancelBtn:hover { background: #F03E3E; }

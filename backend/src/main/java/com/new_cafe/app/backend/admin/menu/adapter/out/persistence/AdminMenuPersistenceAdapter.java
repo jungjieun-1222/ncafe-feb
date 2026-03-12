@@ -11,12 +11,15 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.new_cafe.app.backend.usermenu.adapter.out.persistence.repository.MenuImageRepository;
+import com.new_cafe.app.backend.common.storage.application.port.in.FileStorageUseCase;
 
 @Component
 @RequiredArgsConstructor
 public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdminMenuPort {
-
     private final AdminMenuRepository adminMenuRepository;
+    private final MenuImageRepository menuImageRepository;
+    private final FileStorageUseCase fileStorageUseCase;
 
     @Override
     public void save(AdminMenu menu) {
@@ -34,11 +37,37 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
                 .costPrice(menu.getCostPrice())
                 .adminMemo(menu.getAdminMemo())
                 .build();
-        adminMenuRepository.save(entity);
+        AdminMenuEntity savedEntity = adminMenuRepository.save(entity);
+
+        // Handle Image
+        if (menu.getPrimaryImageSrc() != null && !menu.getPrimaryImageSrc().isEmpty()) {
+            var existingImages = menuImageRepository.findAllByMenuIdOrderBySortOrderAsc(savedEntity.getId());
+            if (existingImages.isEmpty()) {
+                menuImageRepository.save(com.new_cafe.app.backend.usermenu.adapter.out.persistence.entity.MenuImageEntity.builder()
+                        .menuId(savedEntity.getId())
+                        .srcUrl(menu.getPrimaryImageSrc())
+                        .altText(menu.getKorName())
+                        .sortOrder(1)
+                        .build());
+            } else {
+                var primary = existingImages.get(0);
+                primary.setSrcUrl(menu.getPrimaryImageSrc());
+                menuImageRepository.save(primary);
+            }
+        }
     }
 
     @Override
     public void delete(Long id) {
+        // First delete physical files and records from menu_images
+        var images = menuImageRepository.findAllByMenuIdOrderBySortOrderAsc(id);
+        if (!images.isEmpty()) {
+            for (var image : images) {
+                fileStorageUseCase.deleteFile(image.getSrcUrl());
+            }
+            menuImageRepository.deleteAll(images);
+        }
+        // Then delete menu record
         adminMenuRepository.deleteById(id);
     }
 

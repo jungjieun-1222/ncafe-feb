@@ -20,19 +20,34 @@ interface Order {
     items: OrderItem[];
 }
 
+import { useAuthStore } from '@/stores/useAuthStore';
+import toast from 'react-hot-toast';
+
 export default function UserOrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { user, isAuthenticated } = useAuthStore();
 
     const fetchMyOrders = async () => {
-        setIsLoading(true);
         try {
-            const res = await fetch('/api/orders');
+            const cartId = localStorage.getItem('cartId');
+            let url = '/api/orders?';
+            
+            if (isAuthenticated && user?.id) {
+                url += `userId=${user.id}`;
+            } else if (cartId) {
+                url += `cartId=${cartId}`;
+            } else {
+                // No criteria to fetch orders
+                setOrders([]);
+                setIsLoading(false);
+                return;
+            }
+
+            const res = await fetch(url);
             if (res.ok) {
                 const data = await res.json();
                 setOrders(data);
-            } else {
-                console.error('Failed to fetch orders:', res.status, res.statusText);
             }
         } catch (error) {
             console.error('Failed to fetch orders:', error);
@@ -43,7 +58,11 @@ export default function UserOrdersPage() {
 
     useEffect(() => {
         fetchMyOrders();
-    }, []);
+        
+        // Poll for status updates every 10 seconds
+        const timer = setInterval(fetchMyOrders, 10000);
+        return () => clearInterval(timer);
+    }, [isAuthenticated, user]);
 
     const handleCancelOrder = async (orderId: number) => {
         if (!confirm('정말로 주문을 취소하시겠습니까?')) return;

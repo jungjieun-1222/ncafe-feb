@@ -122,3 +122,19 @@ WHERE NOT EXISTS (
 );
 
 -- admin user is created by AdminInitializer.java (ensures correct BCrypt hash)
+
+-- 5) menu_options
+INSERT INTO menu_options (name, value, price)
+SELECT v.name, v.value, v.price
+FROM (VALUES
+  ('온도', 'HOT', 0),
+  ('온도', 'ICE', 0),
+  ('사이즈', 'Regular', 0),
+  ('사이즈', 'Large', 1000),
+  ('추가 선택', '샷 추가', 500),
+  ('추가 선택', '휘핑 추가', 500),
+  ('추가 선택', '시럽 추가', 500),
+  ('포장 선택', '매장 취식', 0),
+  ('포장 선택', '박스 포장', 500)
+) AS v(name, value, price)
+WHERE NOT EXISTS (SELECT 1 FROM menu_options mo WHERE mo.name = v.name AND mo.value = v.value);

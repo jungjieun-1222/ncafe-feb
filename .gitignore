@@ -7,3 +7,11 @@ build/
 .next/
 *.log
 docker-compose.override.yml
+docker-local-compose.yml
+.idea/
+.vscode/
+.agent/
+data/
+upload/
+bin/
+out/

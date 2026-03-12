@@ -44,6 +44,8 @@
 }
 
 .ctaBtn {
+  display: inline-block;
+  text-decoration: none;
   background: var(--k-gold);
   color: #2A2622;
   padding: 22px 48px;
