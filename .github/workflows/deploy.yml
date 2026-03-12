@@ -11,14 +11,17 @@ jobs:
     steps:
       - name: Pre-cleanup and Fix permissions
         run: |
-          # 소스 폴더 내부의 잔여물만 정리 (이제 외부 ncafe-upload는 건드리지 않음)
-          sudo chown -R $(whoami):$(whoami) . || true
+          # Ensure containers are down before cleanup
           docker compose down || true
-          # 혹시 남아있을지 모르는 소스 내부의 upload/data 폴더만 삭제
-          sudo rm -rf backend/upload data 2>/dev/null || true
+          # Fix ownership of the workspace (especially for folders created by Docker)
+          sudo chown -R $(whoami):$(whoami) . || true
+          # Explicitly remove directories that often cause permission issues in CI
+          sudo rm -rf data backend/upload || true
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          clean: false
 
       - name: Create .env file
         run: |
