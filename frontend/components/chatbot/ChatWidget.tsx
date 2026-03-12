@@ -12,7 +12,13 @@ interface Message {
     role: 'user' | 'assistant';
     type: 'text' | 'menu_card' | 'quick_reply' | 'gender_select';
     content: string;
-    metadata?: any;
+    metadata?: {
+        name: string;
+        price: number;
+        imageSrc: string;
+        description: string;
+        categoryName: string;
+    };
 }
 
 const INITIAL_MESSAGES: Message[] = [
@@ -39,7 +45,7 @@ export default function ChatWidget() {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
-    const handleToolCall = async (toolCall: { name: string, args: any }) => {
+    const handleToolCall = async (toolCall: { name: string, args: Record<string, any> }) => {
         console.log('🤖 AI Tool Call:', toolCall);
         
         const { name, args } = toolCall;
@@ -148,13 +154,13 @@ export default function ChatWidget() {
             content: userContent
         };
 
-        setMessages(prev => [...prev, newUserMsg]);
+        setMessages((prev: Message[]) => [...prev, newUserMsg]);
         setInputValue('');
 
         // Prepare message history for API (map 'assistant' to 'model')
         const messageHistory = messages
             .filter(m => m.type === 'text')
-            .map(msg => ({
+            .map((msg: Message) => ({
                 role: msg.role === 'assistant' ? 'model' : 'user',
                 content: msg.content
             }));
@@ -173,7 +179,7 @@ export default function ChatWidget() {
             type: 'text',
             content: ''
         };
-        setMessages(prev => [...prev, placeholderBotMsg]);
+        setMessages((prev: Message[]) => [...prev, placeholderBotMsg]);
         setIsThinking(true);
 
         try {
@@ -212,11 +218,11 @@ export default function ChatWidget() {
 
                         try {
                             const data = JSON.parse(dataStr);
-                            if (data.content) {
-                                setIsThinking(false);
-                                accumulatedContent += data.content;
-                                let displayContent = accumulatedContent;
-                                 setMessages((prev: Message[]) => prev.map(msg =>
+                             if (data.content) {
+                                 setIsThinking(false);
+                                 accumulatedContent += (data.content as string);
+                                 let displayContent = accumulatedContent;
+                                  setMessages((prev: Message[]) => prev.map((msg: Message) =>
                                      msg.id === botMessageId
                                          ? { ...msg, content: displayContent }
                                          : msg
@@ -237,14 +243,14 @@ export default function ChatWidget() {
                                     }
                                 }));
                                  setMessages((prev: Message[]) => [...prev, ...cardMessages]);
-                            } else if (data.tool_calls && data.tool_calls.length > 0) {
-                                // Process tool calls sent as full response (non-streaming final part or standalone)
-                                for (const tool of data.tool_calls) {
-                                    handleToolCall(tool);
-                                }
-                            } else if (data.function_call) {
-                                // Process streaming tool call tokens
-                                handleToolCall(data.function_call);
+                             } else if (data.tool_calls && Array.isArray(data.tool_calls) && data.tool_calls.length > 0) {
+                                 // Process tool calls sent as full response (non-streaming final part or standalone)
+                                 for (const tool of data.tool_calls) {
+                                     handleToolCall(tool as { name: string, args: Record<string, any> });
+                                 }
+                             } else if (data.function_call) {
+                                 // Process streaming tool call tokens
+                                 handleToolCall(data.function_call as { name: string, args: Record<string, any> });
                             } else if (data.error) {
                                 throw new Error(data.error);
                             }
@@ -260,11 +266,11 @@ export default function ChatWidget() {
         } catch (error) {
             console.error('Chat error:', error);
             setIsThinking(false);
-            setMessages((prev: Message[]) => prev.map(msg =>
-                msg.id === botMessageId
-                    ? { ...msg, content: '죄송하오, 나리. 서역 너머의 기운이 불안정하여 대답을 드릴 수 없게 되었소. 잠시 후 다시 여쭤봐 주시겠소? (서버 연결 실패 🏮)' }
-                    : msg
-            ));
+             setMessages((prev: Message[]) => prev.map((msg: Message) =>
+                 msg.id === botMessageId
+                     ? { ...msg, content: '죄송하오, 나리. 서역 너머의 기운이 불안정하여 대답을 드릴 수 없게 되었소. 잠시 후 다시 여쭤봐 주시겠소? (서버 연결 실패 🏮)' }
+                     : msg
+             ));
         }
     };
 
@@ -298,7 +304,7 @@ export default function ChatWidget() {
                         src={getImageUrl('wolha.png')}
                         alt="월하선생"
                         className={styles.botAvatarImage}
-                        onError={(e) => {
+                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=40px&auto=format&fit=crop';
                         }}
                     />
@@ -309,7 +315,7 @@ export default function ChatWidget() {
                         src={getImageUrl(gender === 'male' ? 'user_male.png' : 'user_female.png')}
                         alt="사용자"
                         className={styles.userAvatarImage}
-                        onError={(e) => {
+                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                             (e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=User';
                         }}
                     />
@@ -335,7 +341,7 @@ export default function ChatWidget() {
                                 src={getImageUrl(msg.metadata.imageSrc)}
                                 alt={msg.metadata.name}
                                 className={styles.cardImage}
-                                onError={(e) => {
+                                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=400&auto=format&fit=crop';
                                 }}
                             />
@@ -376,7 +382,7 @@ export default function ChatWidget() {
                                     src={getImageUrl('wolha.png')}
                                     alt="월하선생"
                                     className={styles.botAvatarImage}
-                                    onError={(e) => {
+                                     onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                         (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=40px&auto=format&fit=crop';
                                     }}
                                 />
