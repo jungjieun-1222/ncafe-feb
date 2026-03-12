@@ -4,9 +4,10 @@ const API_BASE = process.env.API_BASE_URL || 'http://backend:8081';
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { path: string[] } }
+    { params }: { params: Promise<{ path: string[] }> }
 ) {
-    const filePath = params.path.join('/');
+    const { path } = await params;
+    const filePath = path.join('/');
     const search = req.nextUrl.search;
     
     // Forward directly to the backend. 
