@@ -6,11 +6,13 @@ import styles from './page.module.css';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { useCartStore } from '@/stores/useCartStore';
+import { getImageUrl } from '@/utils/image';
 
 interface Menu {
     id: number;
     korName: string;
     engName: string;
+    slug: string;
     description: string;
     price: number;
     categoryName: string;
@@ -159,11 +161,11 @@ export default function UserMenuPage() {
                 ) : (
                     <div className={styles.grid}>
                         {menus.length > 0 ? menus.map((menu) => (
-                            <Link href={`/menus/${menu.id}`} key={menu.id} className={styles.cardLink}>
+                            <Link href={`/menus/${menu.slug}`} key={menu.id} className={styles.cardLink}>
                                 <div className={`${styles.card} ${!menu.isAvailable ? styles.soldOut : ''}`}>
                                     <div className={styles.imageWrapper}>
                                         <img
-                                            src={menu.imageSrc && !menu.imageSrc.includes('blank') ? `/images/${menu.imageSrc}` : '/images/blank.png'}
+                                            src={getImageUrl(menu.imageSrc)}
                                             alt={menu.korName}
                                             className={styles.image}
                                             onError={(e) => { e.currentTarget.src = '/images/blank.png'; }}

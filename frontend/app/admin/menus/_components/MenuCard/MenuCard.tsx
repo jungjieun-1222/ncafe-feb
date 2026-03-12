@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ImageIcon, Pencil, Trash2 } from 'lucide-react';
+import { getImageUrl } from '@/utils/image';
 import { MenuResponse } from '../MenuList/useMenus';
 import styles from './MenuCard.module.css';
 
@@ -48,16 +49,10 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
         return new Intl.NumberFormat('ko-KR').format(price);
     };
 
-    const getImageUrl = (url: string | null | undefined) => {
-        if (!url) return '/images/blank.png';
-        if (url.startsWith('/images/')) return url;
-        if (url.startsWith('http')) return url;
-        return `/images/${url}`;
-    };
 
     return (
         <div className={`${styles.card} ${isSoldOut ? styles.isSoldOutCard : ''}`}>
-            <Link href={`/admin/menus/${menu.id}`} className={styles.cardLink}>
+            <Link href={`/admin/menus/${menu.slug}`} className={styles.cardLink}>
                 <div className={styles.imageWrapper}>
                     {(menu.imageSrc && !imgError) ? (
                         <Image

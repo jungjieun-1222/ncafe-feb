@@ -8,13 +8,13 @@ export interface MenuImage {
     sortOrder: number;
 }
 
-export function useMenuImages(menuId: number | string | undefined) {
+export function useMenuImages(slug: string | undefined) {
     const [images, setImages] = useState<MenuImage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchImages = async () => {
         try {
-            const res = await fetch(`/api/admin/menus/${menuId}/menu-images`);
+            const res = await fetch(`/api/admin/menus/${slug}/menu-images`);
             if (!res.ok) {
                 throw new Error('Failed to fetch menu images');
             }
@@ -28,9 +28,9 @@ export function useMenuImages(menuId: number | string | undefined) {
     };
 
     useEffect(() => {
-        if (!menuId) return;
+        if (!slug) return;
         fetchImages();
-    }, [menuId]);
+    }, [slug]);
 
     return { images, isLoading, refresh: fetchImages };
 }

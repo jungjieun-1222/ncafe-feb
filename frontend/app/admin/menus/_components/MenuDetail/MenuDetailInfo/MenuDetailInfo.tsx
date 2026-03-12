@@ -6,8 +6,8 @@ import Button from '@/components/common/Button/Button';
 import styles from './MenuDetailInfo.module.css';
 import { useMenuDetail } from './useMenuDetail';
 
-export default function MenuDetailInfo({ id }: { id: number }) {
-    const menu = useMenuDetail(id);
+export default function MenuDetailInfo({ slug }: { slug: string }) {
+    const menu = useMenuDetail(slug);
     const router = useRouter();
 
     if (!menu) {
@@ -29,7 +29,7 @@ export default function MenuDetailInfo({ id }: { id: number }) {
     const handleDeleteMapping = async () => {
         if (!confirm('정말로 이 메뉴를 삭제하시겠습니까?')) return;
         try {
-            const res = await fetch(`/api/admin/menus/${id}`, {
+            const res = await fetch(`/api/admin/menus/${menu.id}`, {
                 method: 'DELETE',
             });
             if (!res.ok) throw new Error('삭제 실패');
@@ -53,7 +53,7 @@ export default function MenuDetailInfo({ id }: { id: number }) {
                     <span className={styles.engName}>{engName}</span>
                 </div>
                 <div className={styles.actions}>
-                    <Link href={`/admin/menus/${id}/edit`}>
+                    <Link href={`/admin/menus/${menu.id}/edit`}>
                         <Button variant="secondary" size="md">수정</Button>
                     </Link>
                     <Button 

@@ -14,15 +14,15 @@ export interface MenuDetail {
     available: boolean;
 }
 
-export function useMenuDetail(id: number | string | undefined) {
+export function useMenuDetail(slug: string | undefined) {
     const [menu, setMenu] = useState<MenuDetail | null>(null);
 
     useEffect(() => {
-        if (!id) return;
+        if (!slug) return;
 
         const fetchMenu = async () => {
             try {
-                const res = await fetch(`/api/admin/menus/${id}`);
+                const res = await fetch(`/api/admin/menus/${slug}`);
                 if (!res.ok) {
                     throw new Error('Failed to fetch menu detail');
                 }
@@ -41,7 +41,7 @@ export function useMenuDetail(id: number | string | undefined) {
         };
 
         fetchMenu();
-    }, [id]);
+    }, [slug]);
 
     return menu;
 }

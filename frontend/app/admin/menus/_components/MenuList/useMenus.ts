@@ -6,6 +6,7 @@ export interface MenuResponse {
     id: number;
     korName: string;
     engName: string;
+    slug: string;
     description: string;
     price: number;
     categoryName: string;

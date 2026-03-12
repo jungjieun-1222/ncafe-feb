@@ -6,12 +6,12 @@ import { useMenuDetail } from '../MenuDetailInfo/useMenuDetail';
 import { useMenuImages } from './useMenuImages';
 import styles from './MenuDetailImage.module.css';
 import { useState } from 'react';
+import { getImageUrl } from '@/utils/image';
 
 
-export default function MenuDetailImage({ menuId }: { menuId: number }) {
-    const { id } = useParams();
-    const menu = useMenuDetail(id as string);
-    const { images, isLoading, refresh } = useMenuImages(id as string);
+export default function MenuDetailImage({ slug }: { slug: string }) {
+    const menu = useMenuDetail(slug);
+    const { images, isLoading, refresh } = useMenuImages(slug);
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -22,12 +22,6 @@ export default function MenuDetailImage({ menuId }: { menuId: number }) {
         e.currentTarget.src = '/images/blank.png';
     };
 
-    const getImageUrl = (url: string | undefined) => {
-        if (!url || url === 'blank.png' || url.includes('blank.png')) return '/images/blank.png';
-        if (url.startsWith('/images/')) return url;
-        if (url.startsWith('http')) return url;
-        return `/images/${url}`;
-    };
 
     const handleAddImage = async () => {
         if (!selectedFile) return;
@@ -36,7 +30,7 @@ export default function MenuDetailImage({ menuId }: { menuId: number }) {
             const formData = new FormData();
             formData.append('file', selectedFile);
             
-            const res = await fetch(`/api/admin/menus/${id}/images`, {
+            const res = await fetch(`/api/admin/menus/${slug}/images`, {
                 method: 'POST',
                 body: formData
             });

@@ -8,8 +8,8 @@ import MenuDetailOptions from '@/app/admin/menus/_components/MenuDetail/MenuDeta
 import { use } from 'react';
 
 
-export default function MenuDetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
+export default function MenuDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = use(params);
     return (
         <main>
             <MenuDetailHeader />
@@ -17,13 +17,13 @@ export default function MenuDetailPage({ params }: { params: Promise<{ id: strin
             <div className={styles.detailGrid}>
                 <aside className={styles.imageColumn}>
                     <section className={styles.imageSection}>
-                        <MenuDetailImage menuId={Number(id)} />
+                        <MenuDetailImage slug={slug} />
                     </section>
                 </aside>
 
                 <div className={styles.infoColumn}>
                     <section className={styles.infoSection}>
-                        <MenuDetailInfo id={Number(id)} />
+                        <MenuDetailInfo slug={slug} />
                     </section>
                     <section className={styles.optionsSection}>
                         <MenuDetailOptions />

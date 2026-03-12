@@ -9,11 +9,17 @@ export async function POST(req: NextRequest) {
     console.log(`[Agent Proxy] POST ${req.nextUrl.pathname} -> ${targetUrl}`);
 
     try {
-        const body = await req.json();
+        const contentType = req.headers.get('content-type');
+        const headers: Record<string, string> = {};
+        if (contentType) headers['Content-Type'] = contentType;
+
+        // Use the original body (stream) directly to support multipart/form-data
         const response = await fetch(targetUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            headers,
+            body: req.body,
+            // @ts-ignore - duplex is needed for streaming body in fetch
+            duplex: 'half'
         });
 
         // For streaming responses (like chat)

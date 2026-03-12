@@ -7,6 +7,7 @@ import Button from '@/components/common/Button/Button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '@/utils/image';
 
 interface MenuFormProps {
     initialData?: Menu;
@@ -29,6 +30,7 @@ interface FormValues {
     adminMemo?: string;
     altText?: string;
     imageSrc?: string;
+    slug: string;
 }
 
 export default function MenuForm({ initialData, mode }: MenuFormProps) {
@@ -49,7 +51,8 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
             costPrice: (initialData as any)?.costPrice || 0,
             adminMemo: (initialData as any)?.adminMemo || '',
             altText: (initialData as any)?.altText || '',
-            imageSrc: (initialData as any)?.imageSrc || initialData?.images?.[0]?.url || ''
+            imageSrc: (initialData as any)?.imageSrc || initialData?.images?.[0]?.url || '',
+            slug: (initialData as any)?.slug || ''
         }
     });
 
@@ -147,6 +150,15 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
                             className={styles.input}
                             placeholder="예: Americano"
                         />
+                    </div>
+                    <div className={styles.col}>
+                        <label className={styles.label}>슬러그 (URL용) <span style={{ color: 'red' }}>*</span></label>
+                        <input
+                            {...register('slug', { required: '슬러그를 입력해주세요 (예: americano)' })}
+                            className={styles.input}
+                            placeholder="예: americano"
+                        />
+                        {errors.slug && <span className={styles.error}>{errors.slug.message}</span>}
                     </div>
                 </div>
 
@@ -248,7 +260,7 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
                     <p className={styles.label} style={{ marginBottom: '8px' }}>이미지 미리보기</p>
                     <div style={{ width: '120px', height: '120px', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
                         <img 
-                            src={previewUrl || watch('imageSrc') || (initialData as any)?.imageSrc || initialData?.images?.[0]?.url || '/images/blank.png'} 
+                            src={previewUrl || getImageUrl(watch('imageSrc') || (initialData as any)?.imageSrc || initialData?.images?.[0]?.url)} 
                             alt="preview" 
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             onError={(e) => (e.currentTarget.src = '/images/blank.png')}

@@ -7,11 +7,11 @@ import PageHeader from '@/app/admin/menus/_components/MenuList/PageHeader';
 import { Menu } from '@/types/menu';
 
 interface Props {
-    params: Promise<{ id: string }>;
+    params: Promise<{ slug: string }>;
 }
 
 export default function EditMenuPage({ params }: Props) {
-    const { id } = use(params);
+    const { slug } = use(params);
     const [menu, setMenu] = useState<Menu | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -19,7 +19,7 @@ export default function EditMenuPage({ params }: Props) {
     useEffect(() => {
         const fetchMenu = async () => {
             try {
-                const res = await fetch(`/api/admin/menus/${id}`);
+                const res = await fetch(`/api/admin/menus/${slug}`);
                 if (!res.ok) {
                     if (res.status === 404) notFound();
                     throw new Error('Failed to fetch menu');
@@ -62,7 +62,7 @@ export default function EditMenuPage({ params }: Props) {
         };
 
         fetchMenu();
-    }, [id]);
+    }, [slug]);
 
     if (isLoading) {
         return <div style={{ padding: '40px', textAlign: 'center' }}>데이터를 불러오는 중...</div>;
