@@ -1,60 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const AGENT_BASE = process.env.AGENT_SERVER_URL || 'http://agent-server:8000';
+const AGENT_SERVER_URL = process.env.AGENT_SERVER_URL || 'http://agent-server:8000';
 
-export async function proxyRequest(req: NextRequest) {
-    const path = req.nextUrl.pathname;
-    const search = req.nextUrl.search;
+export async function POST(req: NextRequest) {
+    const path = req.nextUrl.pathname.replace(/^\/api\/agent/, '');
+    const targetUrl = `${AGENT_SERVER_URL}${path}${req.nextUrl.search}`;
 
-    // Remove /api/agent prefix
-    const targetPath = path.replace(/^\/api\/agent/, '');
-    const targetUrl = `${AGENT_BASE}${targetPath}${search}`;
-
-    const headers: Record<string, string> = {};
-    req.headers.forEach((value, key) => {
-        if (!['host', 'connection'].includes(key.toLowerCase())) {
-            headers[key] = value;
-        }
-    });
+    console.log(`[Agent Proxy] POST ${req.nextUrl.pathname} -> ${targetUrl}`);
 
     try {
-        let body: BodyInit | null = null;
-        if (req.method !== 'GET' && req.method !== 'HEAD') {
-            const contentType = req.headers.get('content-type');
-            if (contentType?.includes('multipart/form-data')) {
-                body = await req.blob();
-            } else {
-                body = await req.text();
-            }
-        }
-
-        console.log(`[BFF Agent Proxy] ${req.method} ${path} -> ${targetUrl}`);
-
-        const proxyRes = await fetch(targetUrl, {
-            method: req.method,
-            headers,
-            body,
+        const body = await req.json();
+        const response = await fetch(targetUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
         });
 
-        const responseHeaders = new Headers();
-        const resContentType = proxyRes.headers.get('content-type');
-        if (resContentType) {
-            responseHeaders.set('Content-Type', resContentType);
+        // For streaming responses (like chat)
+        if (response.headers.get('content-type')?.includes('text/event-stream')) {
+            return new Response(response.body, {
+                status: response.status,
+                headers: {
+                    'Content-Type': 'text/event-stream',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                },
+            });
         }
 
-        return new NextResponse(proxyRes.body, {
-            status: proxyRes.status,
-            statusText: proxyRes.statusText,
-            headers: responseHeaders,
-        });
+        const data = await response.json();
+        return NextResponse.json(data, { status: response.status });
     } catch (error: any) {
-        console.error('[BFF Agent Proxy Error]', error);
-        return NextResponse.json({ message: 'Internal Server Error (Agent Proxy)', error: error.message }, { status: 500 });
+        console.error('[Agent Proxy Error]', error);
+        return NextResponse.json({ message: 'Error connecting to agent-server', error: error.message }, { status: 500 });
     }
 }
 
-export const GET = proxyRequest;
-export const POST = proxyRequest;
-export const PUT = proxyRequest;
-export const DELETE = proxyRequest;
-export const PATCH = proxyRequest;
+export async function GET(req: NextRequest) {
+    const path = req.nextUrl.pathname.replace(/^\/api\/agent/, '');
+    const targetUrl = `${AGENT_SERVER_URL}${path}${req.nextUrl.search}`;
+
+    console.log(`[Agent Proxy] GET ${req.nextUrl.pathname} -> ${targetUrl}`);
+
+    try {
+        const response = await fetch(targetUrl);
+        const data = await response.json();
+        return NextResponse.json(data, { status: response.status });
+    } catch (error: any) {
+        console.error('[Agent Proxy Error]', error);
+        return NextResponse.json({ message: 'Error connecting to agent-server', error: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    const path = req.nextUrl.pathname.replace(/^\/api\/agent/, '');
+    const targetUrl = `${AGENT_SERVER_URL}${path}${req.nextUrl.search}`;
+
+    console.log(`[Agent Proxy] DELETE ${req.nextUrl.pathname} -> ${targetUrl}`);
+
+    try {
+        const response = await fetch(targetUrl, { method: 'DELETE' });
+        const data = await response.json();
+        return NextResponse.json(data, { status: response.status });
+    } catch (error: any) {
+        console.error('[Agent Proxy Error]', error);
+        return NextResponse.json({ message: 'Error connecting to agent-server', error: error.message }, { status: 500 });
+    }
+}

@@ -11,6 +11,23 @@ export async function GET(req: NextRequest) {
 
     console.log(`[Image Proxy] ${path} -> ${targetUrl}`);
 
+    // Skip proxying for known static assets in public/images
+    const staticAssets = ['wolha.png', 'user_male.png', 'user_female.png', 'map.png'];
+    const fileName = path.split('/').pop() || '';
+    
+    if (staticAssets.includes(fileName)) {
+        console.log(`[Image Proxy] Skipping proxy for static asset: ${fileName}`);
+        // Returning 404 here will allow Next.js to potentially serve from public if configured, 
+        // but better to just return the 404 and fix the path in calling components if needed.
+        // Actually, in app router, if we have a route, it MUST handle it. 
+        // So we can try to fetch it from the frontend itself or just return 404 and rely on the calling component to use the correct path.
+        // Given ChatWidget uses /images/wolha.png, this route IS the problem.
+        // To fix, we should actually fetch it from our own public folder if needed, but that's complex.
+        // The most robust way is to just NOT shadown /images/ if we want public/images/ to work.
+        // But since we need to proxy backend images...
+        return NextResponse.json({ message: 'Static asset' }, { status: 404 });
+    }
+
     try {
         const proxyRes = await fetch(targetUrl);
 

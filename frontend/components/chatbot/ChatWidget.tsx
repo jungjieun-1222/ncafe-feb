@@ -106,7 +106,7 @@ export default function ChatWidget() {
         setIsThinking(true);
 
         try {
-            const response = await fetch('http://localhost:8112/chat', {
+            const response = await fetch('/api/agent/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
