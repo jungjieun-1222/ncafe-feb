@@ -13,6 +13,7 @@ import com.new_cafe.app.backend.admin.menu.application.port.in.AddMenuImageUseCa
 import com.new_cafe.app.backend.common.storage.application.port.in.FileStorageUseCase;
 import com.new_cafe.app.backend.admin.menu.application.result.GetMenuDetailResult;
 import com.new_cafe.app.backend.admin.menu.application.result.GetMenuListResult;
+import com.new_cafe.app.backend.admin.menu.domain.AdminMenu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,15 +44,16 @@ public class AdminMenuController {
         return new AdminMenuListResponse(models, models.size());
     }
 
-    @GetMapping("/{id}")
-    public AdminMenuWebModel getMenu(@PathVariable Long id) {
-        return mapDetailToWebModel(getMenuUseCase.getMenu(id));
+    @GetMapping("/{slug}")
+    public AdminMenuWebModel getMenu(@PathVariable String slug) {
+        return mapDetailToWebModel(getMenuUseCase.getMenuBySlug(slug));
     }
 
-    @GetMapping("/{id}/menu-images")
-    public java.util.Map<String, Object> getMenuImages(@PathVariable Long id) {
+    @GetMapping("/{slug}/menu-images")
+    public java.util.Map<String, Object> getMenuImages(@PathVariable String slug) {
+        AdminMenu menu = getMenuUseCase.getMenuBySlug(slug);
         java.util.Map<String, Object> response = new java.util.HashMap<>();
-        response.put("menuImages", getMenuUseCase.getMenuImages(id));
+        response.put("menuImages", getMenuUseCase.getMenuImages(menu.getId()));
         return response;
     }
 
@@ -96,12 +98,14 @@ public class AdminMenuController {
         deleteMenuUseCase.deleteMenu(id);
     }
 
-    @PostMapping(value = "/{id}/images", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{slug}/images", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
     public void addImageToMenu(
-            @PathVariable Long id,
+            @PathVariable String slug,
             @RequestPart(value = "file", required = false) org.springframework.web.multipart.MultipartFile file,
             @RequestParam(required = false) String srcUrl,
             @RequestParam(required = false) String altText) {
+        AdminMenu menu = getMenuUseCase.getMenuBySlug(slug);
+        Long id = menu.getId();
         
         String finalUrl = srcUrl;
         if (file != null && !file.isEmpty()) {
@@ -129,6 +133,7 @@ public class AdminMenuController {
                 .id(menu.getId())
                 .korName(menu.getKorName())
                 .engName(menu.getEngName())
+                .slug(menu.getSlug())
                 .description(menu.getDescription())
                 .price(menu.getPrice() != null ? menu.getPrice() : 0)
                 .categoryId(menu.getCategoryId() != null ? menu.getCategoryId() : 0)
@@ -146,6 +151,7 @@ public class AdminMenuController {
                 .id(menu.getId())
                 .korName(menu.getKorName())
                 .engName(menu.getEngName())
+                .slug(menu.getSlug())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
                 .categoryId(menu.getCategoryId() != null ? menu.getCategoryId() : 0)
@@ -164,6 +170,7 @@ public class AdminMenuController {
         return CreateMenuCommand.builder()
                 .korName(request.getKorName())
                 .engName(request.getEngName())
+                .slug(request.getSlug())
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .categoryId(request.getCategoryId())
@@ -180,6 +187,7 @@ public class AdminMenuController {
                 .id(id)
                 .korName(request.getKorName())
                 .engName(request.getEngName())
+                .slug(request.getSlug())
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .categoryId(request.getCategoryId())
