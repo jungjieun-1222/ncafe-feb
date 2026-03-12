@@ -1,1 +1,9 @@
+pluginManagement {
+    repositories {
+        mavenCentral()        // 메인 저장소
+        gradlePluginPortal()  // 플러그인 전용
+        maven { url 'https://repo.spring.io/release' } // 스프링 공식 릴리즈 저장소 추가!
+        google()
+    }
+}
 rootProject.name = 'backend'
