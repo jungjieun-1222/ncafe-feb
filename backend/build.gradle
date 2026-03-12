@@ -21,7 +21,7 @@ repositories {
 dependencies {
 	implementation("org.postgresql:postgresql:42.7.9")
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// Spring Security for authentication/authorization
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	
@@ -36,7 +36,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// Redis

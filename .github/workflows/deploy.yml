@@ -13,16 +13,16 @@ jobs:
         run: |
           echo "Force-cleaning potentially locked directories using Docker..."
           # docker-compose down first to release locks
-          docker compose down || true
+          docker compose down --remove-orphans || true
           
           # Use a temporary alpine container to delete directories that often have root ownership (from Postgres/Docker)
           # This avoids 'permission denied' errors during the checkout step
-          docker run --rm -v $(pwd):/workspace -w /workspace alpine sh -c "rm -rf data backend/upload 2>/dev/null" || true
+          docker run --rm -v $(pwd):/workspace -w /workspace alpine sh -c "rm -rf data backend/upload backend/build 2>/dev/null" || true
           
           # Also try to fix ownership of the rest of the workspace
           sudo chown -R $(whoami):$(whoami) . || true
           # Ensure directories are clean
-          sudo rm -rf data backend/upload || true
+          sudo rm -rf data backend/upload backend/build || true
           ls -la
 
       - name: Checkout
@@ -71,7 +71,7 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: |
-          docker compose down || true
+          docker compose down --remove-orphans || true
           docker compose up -d --build
 
       - name: Verify deployment
