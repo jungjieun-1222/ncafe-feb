@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sse_starlette.sse import EventSourceResponse
+from google.genai import types
 from app.models.schemas import ChatRequest, Message
 from app.services.gemini import chat as gemini_chat, chat_stream
 from app.services.menu_service import get_menu_by_name
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 def to_gemini_messages(messages: List[Message]):
-    return [{"role": m.role, "parts": [{"text": m.content}]} for m in messages]
+    return [{"role": "model" if m.role == "assistant" else m.role, "parts": [{"text": m.content}]} for m in messages]
 
 def extract_menu_cards(text: str):
     """Extract <<MENU:메뉴이름>> markers and return menu card data."""
@@ -76,31 +77,137 @@ async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
 
         if not request.stream:
             try:
-                response_text = await gemini_chat(gemini_messages) # 기본 system_instruction 사용
-                clean_text, cards = extract_menu_cards(response_text)
-                return {"content": clean_text, "menu_cards": cards}
+                # Loop to handle multiple turns of tool execution if needed (e.g. search -> then action)
+                for _ in range(3): # Max 3 turns to avoid loops
+                    response = await gemini_chat(gemini_messages)
+                    
+                    if not hasattr(response, 'candidates'):
+                        # String response
+                        clean_text, cards = extract_menu_cards(response)
+                        return {"content": clean_text, "menu_cards": cards}
+                    
+                    candidate = response.candidates[0]
+                    tool_calls = []
+                    search_call = None
+                    
+                    for part in candidate.content.parts:
+                        if part.function_call:
+                            if part.function_call.name == "search_menu_by_slug":
+                                search_call = part.function_call
+                            else:
+                                tool_calls.append({
+                                    "name": part.function_call.name,
+                                    "args": part.function_call.args
+                                })
+                    
+                    if search_call:
+                        # Execute search and return to LLM
+                        from app.services.gemini import search_menus
+                        search_results = search_menus(search_call.args.get("keyword", ""))
+                        
+                        # Add tool call and response to history
+                        gemini_messages.append(candidate.content)
+                        gemini_messages.append(types.Content(
+                            role="user",
+                            parts=[types.Part(
+                                function_response=types.FunctionResponse(
+                                    name=search_call.name,
+                                    response={"results": search_results}
+                                )
+                            )]
+                        ))
+                        continue # Re-invoke Gemini with search results
+                    
+                    if tool_calls:
+                        # Return UI tools to frontend
+                        # Collect text if present
+                        text_parts = [p.text for p in candidate.content.parts if p.text]
+                        content = " ".join(text_parts) if text_parts else "도구를 사용합니다."
+                        clean_text, _ = extract_menu_cards(content) # Still clean markers if any
+                        
+                        return {
+                            "content": clean_text,
+                            "tool_calls": tool_calls # Return as list
+                        }
+                    
+                    # No tools, just text
+                    response_text = candidate.content.parts[0].text if candidate.content.parts else ""
+                    clean_text, cards = extract_menu_cards(response_text)
+                    return {"content": clean_text, "menu_cards": cards}
+
             except Exception as api_err:
-                logger.error(f"Gemini API error: {api_err}")
+                logger.error(f"Gemini API error: {api_err}", exc_info=True)
                 raise HTTPException(status_code=502, detail="AI 서비스 응답 실패")
 
         # 스트리밍 모드
         async def event_generator():
             accumulated = ""
+            current_messages = list(gemini_messages)
+            
             try:
-                async for token in chat_stream(gemini_messages):
-                    accumulated += token
-                    # UI에는 원래 텍스트를 보내되 마커 부분만 클라이언트가 처리하도록 함 (성능/안정성 위함)
-                    # 서버에서 섣부르게 replace하면 멀티바이트 문자나 토큰이 깨질 수 있음
-                    yield {"data": json.dumps({"content": token}, ensure_ascii=False)}
+                for _ in range(3): # Max 3 turns
+                    has_tool_call = False
+                    is_search = False
+                    
+                    # We start streaming
+                    async for token in chat_stream(current_messages):
+                        if isinstance(token, dict) and "function_call" in token:
+                            has_tool_call = True
+                            fn = token["function_call"]
+                            
+                            if fn["name"] == "search_menu_by_slug":
+                                is_search = True
+                                # Execute search
+                                from app.services.gemini import search_menus, types
+                                search_results = search_menus(fn["args"].get("keyword", ""))
+                                
+                                # Add to history
+                                # Note: chat_stream currently doesn't give us the full Assistant content part to put back in history easily
+                                # We might need to adjust chat_stream to return the full part if we want to support multi-turn in stream
+                                # For now, let's assume we can reconstruct it or just handle it.
+                                
+                                # Reconstruct Content part for history
+                                assistant_content = types.Content(
+                                    role="model",
+                                    parts=[types.Part(
+                                        function_call=types.FunctionCall(
+                                            name=fn["name"],
+                                            args=fn["args"]
+                                        )
+                                    )]
+                                )
+                                current_messages.append(assistant_content)
+                                current_messages.append(types.Content(
+                                    role="user",
+                                    parts=[types.Part(
+                                        function_response=types.FunctionResponse(
+                                            name=fn["name"],
+                                            response={"results": search_results}
+                                        )
+                                    )]
+                                ))
+                                break # Exit the current token stream to re-invoke
+                            else:
+                                # UI tool call - send to frontend
+                                yield {"data": json.dumps({"function_call": fn}, ensure_ascii=False)}
+                        else:
+                            # Text token
+                            accumulated += token
+                            yield {"data": json.dumps({"content": token}, ensure_ascii=False)}
+                    
+                    if not is_search:
+                        # If it wasn't a search turn that needs re-invocation, we are done
+                        break
                 
                 # 답변 완료 후 메뉴 카드 정보 추출 및 전송
-                _, cards = extract_menu_cards(accumulated)
-                if cards:
-                    yield {"data": json.dumps({"menu_cards": cards}, ensure_ascii=False)}
+                if accumulated:
+                    _, cards = extract_menu_cards(accumulated)
+                    if cards:
+                        yield {"data": json.dumps({"menu_cards": cards}, ensure_ascii=False)}
                 
                 yield {"data": "[DONE]"}
             except Exception as e:
-                logger.error(f"Streaming error: {e}")
+                logger.error(f"Streaming error: {e}", exc_info=True)
                 yield {"data": json.dumps({"error": "답변 생성 중 오류가 발생했습니다."}, ensure_ascii=False)}
                 yield {"data": "[DONE]"}
             

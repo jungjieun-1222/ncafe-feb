@@ -73,6 +73,15 @@ public class CartService implements CartUseCase {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
+    public Cart addCartItemBySlug(String cartId, String slug, int quantity, java.util.List<Long> optionIds) {
+        com.new_cafe.app.backend.admin.menu.domain.AdminMenu menu = loadAdminMenuPort.loadAdminMenuBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("Menu not found for slug: " + slug));
+        
+        return addCartItemWithIds(cartId, menu.getId(), quantity, optionIds);
+    }
+
+    @Override
     public Cart updateQuantity(String cartId, String cartItemId, int quantity) {
         Cart cart = loadCartPort.loadCart(cartId);
         cart.updateQuantity(cartItemId, quantity);

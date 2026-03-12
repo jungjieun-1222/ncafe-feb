@@ -3,6 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './ChatWidget.module.css';
 import { MessageCircle, X, Send } from 'lucide-react';
+import { getImageUrl } from '@/utils/image';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 interface Message {
     id: string;
@@ -34,6 +37,74 @@ export default function ChatWidget() {
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [isThinking, setIsThinking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
+
+    const handleToolCall = async (toolCall: { name: string, args: any }) => {
+        console.log('🤖 AI Tool Call:', toolCall);
+        
+        const { name, args } = toolCall;
+        
+        switch (name) {
+            case 'Maps_to':
+                if (args.path) {
+                    console.log(`🚀 Navigating to: ${args.path}`);
+                    router.push(args.path);
+                }
+                break;
+                
+            case 'add_to_cart':
+                if (args.menu_slug) {
+                    try {
+                        let cartId = localStorage.getItem('cartId');
+                        if (!cartId) {
+                            cartId = 'guest_' + Date.now().toString();
+                            localStorage.setItem('cartId', cartId);
+                        }
+
+                        // We need the menu ID for the cart API. 
+                        // The tool gives us slug, so we might need to fetch the ID or have the backend handle slug.
+                        // Assuming the cart API might still need ID, but the prompt says use slug.
+                        // Let's try adding by slug if the backend supports it, or it will need conversion.
+                        // For now, let's look at how the menu detail page does it.
+                        
+                        console.log(`🛒 Adding to cart: ${args.menu_slug} (Quantity: ${args.quantity || 1})`);
+                        
+                        // Note: CurrentlyCart API expects menuId. 
+                        // To keep it simple, if we have menu_slug, we can fetch the menu detail first if needed,
+                        // or better, we can update the cart API to handle slugs.
+                        // For this implementation, we'll try to find the menu from the local list if possible.
+                        
+                        const res = await fetch(`/api/v1/carts/${cartId}/items/by-slug`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                slug: args.menu_slug,
+                                quantity: args.quantity || 1,
+                                optionIds: [] // Default options
+                            })
+                        });
+
+                        if (res.ok) {
+                            console.log('✅ Successfully added to cart via slug');
+                            toast.success(`${args.menu_slug} 장바구니에 담았소!`, {
+                                icon: '🧺',
+                                style: { background: '#f5f5dc', color: '#5d4037', border: '1px solid #d7ccc8' }
+                            });
+                        } else {
+                            // Fallback or retry logic if needed
+                            console.warn('Failed to add to cart via slug API');
+                            toast.error('장바구니에 담지 못했소. 잠시 후 다시 시도해주시게나.');
+                        }
+                    } catch (err) {
+                        console.error('Error in add_to_cart tool execution:', err);
+                    }
+                }
+                break;
+                
+            default:
+                console.warn(`Unknown tool: ${name}`);
+        }
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -63,7 +134,7 @@ export default function ChatWidget() {
                 : '아씨님이셨구려! 참으로 곱소이다. 궁금한 게 있다면 무엇이든 물어보시게나!'
         };
 
-        setMessages(prev => [...prev.filter(m => m.type !== 'gender_select'), userMsg, responseMsg]);
+        setMessages((prev: Message[]) => [...prev.filter(m => m.type !== 'gender_select'), userMsg, responseMsg]);
     };
 
     const handleSend = async () => {
@@ -145,11 +216,11 @@ export default function ChatWidget() {
                                 setIsThinking(false);
                                 accumulatedContent += data.content;
                                 let displayContent = accumulatedContent;
-                                setMessages(prev => prev.map(msg =>
-                                    msg.id === botMessageId
-                                        ? { ...msg, content: displayContent }
-                                        : msg
-                                ));
+                                 setMessages((prev: Message[]) => prev.map(msg =>
+                                     msg.id === botMessageId
+                                         ? { ...msg, content: displayContent }
+                                         : msg
+                                 ));
                             } else if (data.menu_cards && data.menu_cards.length > 0) {
                                 // Add menu card messages after the text message
                                 const cardMessages: Message[] = data.menu_cards.map((card: any, idx: number) => ({
@@ -165,7 +236,15 @@ export default function ChatWidget() {
                                         categoryName: card.categoryName,
                                     }
                                 }));
-                                setMessages(prev => [...prev, ...cardMessages]);
+                                 setMessages((prev: Message[]) => [...prev, ...cardMessages]);
+                            } else if (data.tool_calls && data.tool_calls.length > 0) {
+                                // Process tool calls sent as full response (non-streaming final part or standalone)
+                                for (const tool of data.tool_calls) {
+                                    handleToolCall(tool);
+                                }
+                            } else if (data.function_call) {
+                                // Process streaming tool call tokens
+                                handleToolCall(data.function_call);
                             } else if (data.error) {
                                 throw new Error(data.error);
                             }
@@ -181,7 +260,7 @@ export default function ChatWidget() {
         } catch (error) {
             console.error('Chat error:', error);
             setIsThinking(false);
-            setMessages(prev => prev.map(msg =>
+            setMessages((prev: Message[]) => prev.map(msg =>
                 msg.id === botMessageId
                     ? { ...msg, content: '죄송하오, 나리. 서역 너머의 기운이 불안정하여 대답을 드릴 수 없게 되었소. 잠시 후 다시 여쭤봐 주시겠소? (서버 연결 실패 🏮)' }
                     : msg
@@ -216,7 +295,7 @@ export default function ChatWidget() {
             <div key={msg.id} className={`${styles.messageWrapper} ${isBot ? styles.bot : styles.user}`}>
                 {isBot && msg.type !== 'gender_select' && (
                     <img
-                        src="/images/wolha.png"
+                        src={getImageUrl('wolha.png')}
                         alt="월하선생"
                         className={styles.botAvatarImage}
                         onError={(e) => {
@@ -227,7 +306,7 @@ export default function ChatWidget() {
 
                 {msg.role === 'user' && (
                     <img
-                        src={gender === 'male' ? '/images/user_male.png' : '/images/user_female.png'}
+                        src={getImageUrl(gender === 'male' ? 'user_male.png' : 'user_female.png')}
                         alt="사용자"
                         className={styles.userAvatarImage}
                         onError={(e) => {
@@ -253,7 +332,7 @@ export default function ChatWidget() {
                     {msg.type === 'menu_card' && msg.metadata && (
                         <div className={styles.cardContainer}>
                             <img
-                                src={msg.metadata.imageSrc ? `/images/${msg.metadata.imageSrc}` : 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=400&auto=format&fit=crop'}
+                                src={getImageUrl(msg.metadata.imageSrc)}
                                 alt={msg.metadata.name}
                                 className={styles.cardImage}
                                 onError={(e) => {
@@ -278,7 +357,7 @@ export default function ChatWidget() {
                 <div className={styles.chatWindow}>
                     <div className={styles.header}>
                         <div className={styles.headerInfo}>
-                            <img src="/images/wolha.png" alt="월하선생 프로필" className={styles.avatarImage} />
+                            <img src={getImageUrl('wolha.png')} alt="월하선생 프로필" className={styles.avatarImage} />
                             <div>
                                 <h3 className={styles.title}>월하선생</h3>
                                 <p className={styles.subtitle}>엔카페 터줏대감 중매쟁이</p>
@@ -294,7 +373,7 @@ export default function ChatWidget() {
                         {isThinking && (
                             <div className={`${styles.messageWrapper} ${styles.bot}`}>
                                 <img
-                                    src="/images/wolha.png"
+                                    src={getImageUrl('wolha.png')}
                                     alt="월하선생"
                                     className={styles.botAvatarImage}
                                     onError={(e) => {

@@ -7,6 +7,7 @@ public interface CartUseCase {
     Cart getCart(String cartId);
     Cart addCartItem(String cartId, CartItem item);
     Cart addCartItemWithIds(String cartId, Long menuId, int quantity, java.util.List<Long> optionIds);
+    Cart addCartItemBySlug(String cartId, String slug, int quantity, java.util.List<Long> optionIds);
     Cart updateQuantity(String cartId, String cartItemId, int quantity);
     Cart updateOptions(String cartId, String cartItemId, java.util.List<com.new_cafe.app.backend.cart.domain.Option> options);
     void updateItemOptions(Long cartItemId, java.util.List<Long> optionIds, Integer quantity);

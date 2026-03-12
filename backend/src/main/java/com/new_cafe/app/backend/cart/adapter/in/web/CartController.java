@@ -39,6 +39,14 @@ public class CartController {
                 
         return ResponseEntity.ok(cartUseCase.addCartItem(cartId, cartItem));
     }
+    
+    @PostMapping("/{cartId}/items/by-slug")
+    public ResponseEntity<Cart> addCartItemBySlug(
+            @PathVariable String cartId,
+            @RequestBody com.new_cafe.app.backend.cart.adapter.in.web.dto.AddCartItemBySlugRequest request) {
+        
+        return ResponseEntity.ok(cartUseCase.addCartItemBySlug(cartId, request.getSlug(), request.getQuantity(), request.getOptionIds()));
+    }
 
     @PatchMapping("/{cartId}/items/{itemId}")
     public ResponseEntity<Cart> updateQuantity(
