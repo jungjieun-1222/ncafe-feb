@@ -248,7 +248,7 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
                     <p className={styles.label} style={{ marginBottom: '8px' }}>이미지 미리보기</p>
                     <div style={{ width: '120px', height: '120px', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#f5f5f5' }}>
                         <img 
-                            src={previewUrl || watch('imageSrc') || initialData?.imageSrc || '/images/blank.png'} 
+                            src={previewUrl || watch('imageSrc') || (initialData as any)?.imageSrc || initialData?.images?.[0]?.url || '/images/blank.png'} 
                             alt="preview" 
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                             onError={(e) => (e.currentTarget.src = '/images/blank.png')}
