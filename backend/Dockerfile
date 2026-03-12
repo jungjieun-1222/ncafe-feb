@@ -1,5 +1,5 @@
 # 1단계: 빌드 스테이지
-FROM gradle:8.10-jdk21 AS builder
+FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
 
 # 필요한 파일들 복사
