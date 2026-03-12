@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface BrowseMenuUseCase {
     List<UserMenuResult> getAvailableMenus(Integer categoryId, String searchQuery);
-    UserMenuResult getMenuDetail(Long id);
+    UserMenuResult getMenuDetail(String slug);
 }

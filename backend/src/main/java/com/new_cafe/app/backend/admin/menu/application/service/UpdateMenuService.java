@@ -28,6 +28,7 @@ public class UpdateMenuService implements UpdateMenuUseCase {
                 .id(existingMenu.getId())
                 .korName(command.getKorName())
                 .engName(command.getEngName())
+                .slug(command.getSlug())
                 .description(command.getDescription())
                 .price(command.getPrice())
                 .categoryId(command.getCategoryId())

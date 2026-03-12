@@ -27,6 +27,7 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
                 .id(menu.getId())
                 .korName(menu.getKorName())
                 .engName(menu.getEngName())
+                .slug(menu.getSlug())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
                 .categoryId(menu.getCategoryId())
@@ -83,12 +84,18 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
         return adminMenuRepository.findById(id).map(this::mapToAdminDomain);
     }
 
+    @Override
+    public Optional<AdminMenu> loadAdminMenuBySlug(String slug) {
+        return adminMenuRepository.findBySlug(slug).map(this::mapToAdminDomain);
+    }
+
     private AdminMenu mapToAdminDomain(AdminMenuEntity entity) {
         boolean available = entity.getIsAvailable() != null ? entity.getIsAvailable() : false;
         return AdminMenu.builder()
                 .id(entity.getId())
                 .korName(entity.getKorName())
                 .engName(entity.getEngName())
+                .slug(entity.getSlug())
                 .description(entity.getDescription())
                 .price(entity.getPrice() != null ? entity.getPrice() : 0)
                 .categoryId(entity.getCategoryId())

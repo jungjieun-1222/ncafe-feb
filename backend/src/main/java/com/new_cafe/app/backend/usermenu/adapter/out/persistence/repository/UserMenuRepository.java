@@ -15,4 +15,6 @@ public interface UserMenuRepository extends JpaRepository<UserMenuEntity, Long> 
     List<UserMenuEntity> findAllByCategoryIdAndSearchQuery(
             @Param("categoryId") Integer categoryId, 
             @Param("searchQuery") String searchQuery);
+
+    java.util.Optional<UserMenuEntity> findBySlug(String slug);
 }

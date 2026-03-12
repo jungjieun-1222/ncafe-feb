@@ -31,8 +31,8 @@ public class UserMenuService implements BrowseMenuUseCase {
     }
 
     @Override
-    public UserMenuResult getMenuDetail(Long id) {
-        UserMenu menu = loadUserMenuPort.loadUserMenuById(id)
+    public UserMenuResult getMenuDetail(String slug) {
+        UserMenu menu = loadUserMenuPort.loadUserMenuBySlug(slug)
                 .orElseThrow(() -> new RuntimeException("Menu not found or not available"));
         enrichUserMenu(menu);
         return UserMenuResult.from(menu);

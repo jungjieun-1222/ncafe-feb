@@ -26,9 +26,9 @@ public class UserMenuController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
-    public UserMenuWebModel getMenuDetail(@PathVariable Long id) {
-        return mapToWebModel(browseMenuUseCase.getMenuDetail(id));
+    @GetMapping("/{slug}")
+    public UserMenuWebModel getMenuDetail(@PathVariable String slug) {
+        return mapToWebModel(browseMenuUseCase.getMenuDetail(slug));
     }
 
     private UserMenuWebModel mapToWebModel(UserMenuResult menu) {
@@ -36,6 +36,7 @@ public class UserMenuController {
                 .id(menu.getId())
                 .korName(menu.getKorName())
                 .engName(menu.getEngName())
+                .slug(menu.getSlug())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
                 .categoryId(menu.getCategoryId() != null ? menu.getCategoryId().intValue() : 0)

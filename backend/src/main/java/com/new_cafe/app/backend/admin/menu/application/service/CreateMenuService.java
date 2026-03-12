@@ -22,6 +22,7 @@ public class CreateMenuService implements CreateMenuUseCase {
         AdminMenu menu = AdminMenu.builder()
                 .korName(command.getKorName())
                 .engName(command.getEngName())
+                .slug(command.getSlug())
                 .description(command.getDescription())
                 .price(command.getPrice())
                 .categoryId(command.getCategoryId())

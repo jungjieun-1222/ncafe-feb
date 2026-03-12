@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface LoadUserMenuPort {
     List<UserMenu> loadAllUserMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery);
-    Optional<UserMenu> loadUserMenuById(Long id);
+    Optional<UserMenu> loadUserMenuBySlug(String slug);
 }

@@ -40,6 +40,14 @@ public class GetMenuService implements GetMenuUseCase {
     }
 
     @Override
+    public GetMenuDetailResult getMenuBySlug(String slug) {
+        AdminMenu menu = loadAdminMenuPort.loadAdminMenuBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+        enrichAdminMenu(menu);
+        return GetMenuDetailResult.from(menu);
+    }
+
+    @Override
     public List<com.new_cafe.app.backend.usermenu.adapter.out.persistence.entity.MenuImageEntity> getMenuImages(Long id) {
         return loadMenuImagePort.loadAllEntitiesByMenuId(id);
     }

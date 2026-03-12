@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface LoadAdminMenuPort {
     List<AdminMenu> loadAllAdminMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery);
     Optional<AdminMenu> loadAdminMenuById(Long id);
+    Optional<AdminMenu> loadAdminMenuBySlug(String slug);
 }

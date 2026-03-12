@@ -25,8 +25,8 @@ public class UserMenuPersistenceAdapter implements LoadUserMenuPort {
     }
 
     @Override
-    public Optional<UserMenu> loadUserMenuById(Long id) {
-        return userMenuRepository.findById(id).map(this::mapToUserDomain);
+    public Optional<UserMenu> loadUserMenuBySlug(String slug) {
+        return userMenuRepository.findBySlug(slug).map(this::mapToUserDomain);
     }
 
     private UserMenu mapToUserDomain(UserMenuEntity entity) {
@@ -34,6 +34,7 @@ public class UserMenuPersistenceAdapter implements LoadUserMenuPort {
                 .id(entity.getId())
                 .korName(entity.getKorName())
                 .engName(entity.getEngName())
+                .slug(entity.getSlug())
                 .description(entity.getDescription())
                 .price(entity.getPrice() != null ? entity.getPrice() : 0)
                 .categoryId(entity.getCategoryId() != null ? (long) entity.getCategoryId() : 0L)

@@ -12,6 +12,7 @@ public class GetMenuDetailResult {
     private Long id;
     private String korName;
     private String engName;
+    private String slug;
     private String description;
     private Integer price;
     private Integer categoryId;
@@ -30,6 +31,7 @@ public class GetMenuDetailResult {
                 .id(menu.getId())
                 .korName(menu.getKorName())
                 .engName(menu.getEngName())
+                .slug(menu.getSlug())
                 .description(menu.getDescription())
                 .price(menu.getPrice())
                 .categoryId(menu.getCategoryId())

@@ -8,6 +8,7 @@ import lombok.Setter;
 public class AdminMenuWebRequest {
     private String korName;
     private String engName;
+    private String slug;
     private String description;
     private int price;
     private int categoryId;

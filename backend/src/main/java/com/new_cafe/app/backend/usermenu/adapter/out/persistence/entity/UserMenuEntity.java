@@ -23,6 +23,8 @@ public class UserMenuEntity {
     @Column(name = "eng_name")
     private String engName;
 
+    private String slug;
+
     private String description;
     private Integer price;
 

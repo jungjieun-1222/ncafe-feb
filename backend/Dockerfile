@@ -5,6 +5,8 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
+USER root
+RUN chown -R 1000:1000 /app
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar
 

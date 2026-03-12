@@ -10,6 +10,7 @@ public class UserMenuWebModel {
     private Long id;
     private String korName;
     private String engName;
+    private String slug;
     private String description;
     private int price;
     private int categoryId;

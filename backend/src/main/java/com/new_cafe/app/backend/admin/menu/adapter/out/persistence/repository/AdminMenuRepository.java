@@ -16,4 +16,6 @@ public interface AdminMenuRepository extends JpaRepository<AdminMenuEntity, Long
     List<AdminMenuEntity> findAllByCategoryIdAndSearchQuery(
             @Param("categoryId") Integer categoryId, 
             @Param("searchQuery") String searchQuery);
+
+    java.util.Optional<AdminMenuEntity> findBySlug(String slug);
 }

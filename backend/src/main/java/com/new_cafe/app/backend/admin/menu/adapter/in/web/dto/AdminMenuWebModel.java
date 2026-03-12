@@ -12,6 +12,7 @@ public class AdminMenuWebModel {
     private Long id;
     private String korName;
     private String engName;
+    private String slug;
     private String description;
     private Integer price;
     private int categoryId;
