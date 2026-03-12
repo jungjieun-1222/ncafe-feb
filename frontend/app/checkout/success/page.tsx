@@ -3,8 +3,9 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, Home, List } from 'lucide-react';
 import styles from './success.module.css';
+import { Suspense } from 'react';
 
-export default function SuccessPage() {
+function SuccessContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const approvalNumber = searchParams.get('approvalNumber');
@@ -35,5 +36,13 @@ export default function SuccessPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={<div>Loading order details...</div>}>
+            <SuccessContent />
+        </Suspense>
     );
 }
