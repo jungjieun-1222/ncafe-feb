@@ -51,7 +51,7 @@ public class AdminMenuController {
 
     @GetMapping("/{slug}/menu-images")
     public java.util.Map<String, Object> getMenuImages(@PathVariable String slug) {
-        AdminMenu menu = getMenuUseCase.getMenuBySlug(slug);
+        GetMenuDetailResult menu = getMenuUseCase.getMenuBySlug(slug);
         java.util.Map<String, Object> response = new java.util.HashMap<>();
         response.put("menuImages", getMenuUseCase.getMenuImages(menu.getId()));
         return response;
@@ -104,7 +104,7 @@ public class AdminMenuController {
             @RequestPart(value = "file", required = false) org.springframework.web.multipart.MultipartFile file,
             @RequestParam(required = false) String srcUrl,
             @RequestParam(required = false) String altText) {
-        AdminMenu menu = getMenuUseCase.getMenuBySlug(slug);
+        GetMenuDetailResult menu = getMenuUseCase.getMenuBySlug(slug);
         Long id = menu.getId();
         
         String finalUrl = srcUrl;
