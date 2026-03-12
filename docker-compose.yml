@@ -74,7 +74,7 @@ services:
     # ports:
     #   - "${DB_PORT:-5412}:5432"
     volumes:
-      - ncafe-db-data:/var/lib/postgresql/data
+      - /home/mochijj/dist/ncafe/data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - ncafe-network
@@ -88,9 +88,9 @@ services:
     networks:
       - ncafe-network
 
-volumes:
-  ncafe-db-data:
-  ncafe-upload:
+#volumes:
+#  ncafe-db-data:
+#  ncafe-upload:
 
 networks:
   ncafe-network:
