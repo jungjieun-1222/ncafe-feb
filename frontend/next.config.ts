@@ -11,7 +11,11 @@ const nextConfig = {
     return [
       {
         // 1. 이미지 처리
+        // 브라우저에서 /api/images/black-sesame.png 라고 부르면
         source: '/api/images/:path*',
+
+        // 실제로는 backendUrl/images/black-sesame.png 로 연결해라!
+        // (이때 backendUrl에 이미 /api가 포함되어 있지는 않은지 확인하세요)
         destination: `${backendUrl}/images/:path*`,
       },
       {

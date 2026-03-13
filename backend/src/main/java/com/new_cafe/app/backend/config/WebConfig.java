@@ -18,7 +18,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
+        // 이미지는 /images/** -> /app/dist/ncafe-upload/images/
         registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:/app/dist/ncafe-upload/images/");
+        
+        // 업로드 파일은 /uploads/** -> /app/dist/ncafe-upload/
+        registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:/app/dist/ncafe-upload/");
     }
 }
