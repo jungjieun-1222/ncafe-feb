@@ -6,6 +6,7 @@ import { MessageCircle, X, Send } from 'lucide-react';
 import { getImageUrl } from '@/utils/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import { sendMessageStream } from '@/app/lib/aiAgent';
 
 interface Message {
     id: string;
@@ -183,84 +184,40 @@ export default function ChatWidget() {
         setIsThinking(true);
 
         try {
-            const response = await fetch('/api/agent/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    messages: messageHistory,
-                    stream: true
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to connect to AI server');
-            }
-
-            const reader = response.body?.getReader();
-            if (!reader) throw new Error('No reader available');
-
-            const decoder = new TextDecoder();
             let accumulatedContent = '';
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n');
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const dataStr = line.slice(6).trim();
-                        if (dataStr === '[DONE]') continue;
-
-                        try {
-                            const data = JSON.parse(dataStr);
-                             if (data.content) {
-                                 setIsThinking(false);
-                                 accumulatedContent += (data.content as string);
-                                 let displayContent = accumulatedContent;
-                                  setMessages((prev: Message[]) => prev.map((msg: Message) =>
-                                     msg.id === botMessageId
-                                         ? { ...msg, content: displayContent }
-                                         : msg
-                                 ));
-                            } else if (data.menu_cards && data.menu_cards.length > 0) {
-                                // Add menu card messages after the text message
-                                const cardMessages: Message[] = data.menu_cards.map((card: any, idx: number) => ({
-                                    id: `${botMessageId}-card-${idx}`,
-                                    role: 'assistant' as const,
-                                    type: 'menu_card' as const,
-                                    content: '',
-                                    metadata: {
-                                        name: card.name,
-                                        price: card.price,
-                                        imageSrc: card.imageSrc ? card.imageSrc.replace(/^\/images\//, '') : '',
-                                        description: card.description,
-                                        categoryName: card.categoryName,
-                                    }
-                                }));
-                                 setMessages((prev: Message[]) => [...prev, ...cardMessages]);
-                             } else if (data.tool_calls && Array.isArray(data.tool_calls) && data.tool_calls.length > 0) {
-                                 // Process tool calls sent as full response (non-streaming final part or standalone)
-                                 for (const tool of data.tool_calls) {
-                                     handleToolCall(tool as { name: string, args: Record<string, any> });
-                                 }
-                             } else if (data.function_call) {
-                                 // Process streaming tool call tokens
-                                 handleToolCall(data.function_call as { name: string, args: Record<string, any> });
-                            } else if (data.error) {
-                                throw new Error(data.error);
-                            }
-                        } catch (e) {
-                            // Only log actual parse errors, not menu_card processing
-                            if (!(e instanceof SyntaxError)) {
-                                console.error('Error processing SSE data', e);
-                            }
+            for await (const data of sendMessageStream(messageHistory)) {
+                if (data.content) {
+                    setIsThinking(false);
+                    accumulatedContent += (data.content as string);
+                    setMessages((prev: Message[]) => prev.map((msg: Message) =>
+                        msg.id === botMessageId
+                            ? { ...msg, content: accumulatedContent }
+                            : msg
+                    ));
+                } else if (data.menu_cards && data.menu_cards.length > 0) {
+                    const cardMessages: Message[] = data.menu_cards.map((card: any, idx: number) => ({
+                        id: `${botMessageId}-card-${idx}`,
+                        role: 'assistant' as const,
+                        type: 'menu_card' as const,
+                        content: '',
+                        metadata: {
+                            name: card.name,
+                            price: card.price,
+                            imageSrc: card.imageSrc ? card.imageSrc.replace(/^\/images\//, '') : '',
+                            description: card.description,
+                            categoryName: card.categoryName,
                         }
+                    }));
+                    setMessages((prev: Message[]) => [...prev, ...cardMessages]);
+                } else if (data.tool_calls && Array.isArray(data.tool_calls) && data.tool_calls.length > 0) {
+                    for (const tool of data.tool_calls) {
+                        handleToolCall(tool as { name: string, args: Record<string, any> });
                     }
+                } else if (data.function_call) {
+                    handleToolCall(data.function_call as { name: string, args: Record<string, any> });
+                } else if (data.error) {
+                    throw new Error(data.error);
                 }
             }
         } catch (error) {

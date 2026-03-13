@@ -7,8 +7,10 @@ services:
     container_name: ${USER_ID:-mochijj}-backend
     # ports:
     #   - "${BACKEND_PORT:-8012}:8081"
+    expose:
+      - "8081"
     volumes:
-      - ${UPLOAD_PATH:-./backend/upload}:/app/upload
+      - ${UPLOAD_PATH:-/home/jungjieun-1222/dist/ncafe-upload}:/app/dist/ncafe-upload
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
@@ -46,8 +48,8 @@ services:
       context: ./agent-server
       dockerfile: Dockerfile
     container_name: ${USER_ID:-mochijj}-agent-server
-    ports:
-      - "${AGENT_SERVER_PORT:-8112}:8000"
+    # ports:
+    #   - "${AGENT_SERVER_PORT:-8112}:8000"
     expose:
       - "8000"
     env_file:
@@ -73,8 +75,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     # ports:
     #   - "${DB_PORT:-5412}:5432"
+    expose:
+      - "5432"
     volumes:
-      - ${DB_DATA_PATH:-./data}:/var/lib/postgresql/data
+      - ${DB_DATA_PATH:-/home/jungjieun-1222/dist/ncafe-data}:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - ncafe-network
@@ -82,8 +86,10 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ${USER_ID:-mochijj}-redis
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    # ports:
+    #   - "${REDIS_PORT:-6379}:6379"
+    expose:
+      - "6379"
     restart: unless-stopped
     networks:
       - ncafe-network

@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:backend/uploads/");
+        registry.addResourceHandler("/api/images/**")
+                .addResourceLocations("file:/app/dist/ncafe-upload/");
     }
 }

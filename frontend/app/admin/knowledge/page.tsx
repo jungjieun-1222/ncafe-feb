@@ -34,7 +34,7 @@ export default function KnowledgeManager() {
     const fetchKnowledge = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${AGENT_SERVER_URL}/knowledge/`);
+            const res = await fetch('/api/agent/knowledge');
             if (res.ok) {
                 const data = await res.json();
                 setKnowledgeList(data);
@@ -48,10 +48,10 @@ export default function KnowledgeManager() {
 
     const handleRegister = async () => {
         if (!newContent.trim()) return;
-        
+
         setIsLoading(true);
         try {
-            const res = await fetch(`${AGENT_SERVER_URL}/knowledge/`, {
+            const res = await fetch(`/api/agent/knowledge`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ content: newContent }),
@@ -77,7 +77,7 @@ export default function KnowledgeManager() {
         formData.append('file', selectedFile);
 
         try {
-            const res = await fetch(`${AGENT_SERVER_URL}/knowledge/upload`, {
+            const res = await fetch(`/api/agent/knowledge/upload`, {
                 method: 'POST',
                 body: formData,
             });
@@ -86,7 +86,7 @@ export default function KnowledgeManager() {
                 setSelectedFile(null);
                 const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
                 if (fileInput) fileInput.value = '';
-                
+
                 fetchKnowledge();
                 alert('파일 내용이 성공적으로 등록되었습니다.');
             } else {
@@ -105,7 +105,7 @@ export default function KnowledgeManager() {
         if (!confirm('정말 삭제하시겠습니까?')) return;
 
         try {
-            const res = await fetch(`${AGENT_SERVER_URL}/knowledge/${id}`, {
+            const res = await fetch(`/api/agent/knowledge/${id}`, {
                 method: 'DELETE',
             });
             if (res.ok) {
@@ -122,7 +122,7 @@ export default function KnowledgeManager() {
 
         setIsSearching(true);
         try {
-            const res = await fetch(`${AGENT_SERVER_URL}/knowledge/search`, {
+            const res = await fetch(`/api/agent/knowledge/search`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: searchQuery, top_k: 3 }),
@@ -149,7 +149,7 @@ export default function KnowledgeManager() {
                 {/* Registration Section */}
                 <section className={styles.card}>
                     <h2 className={styles.cardTitle}>새 지식 등록</h2>
-                    
+
                     <div className={styles.registerForm}>
                         <h3 className={styles.sectionTitle}>직접 입력</h3>
                         <textarea
@@ -159,8 +159,8 @@ export default function KnowledgeManager() {
                             onChange={(e) => setNewContent(e.target.value)}
                             rows={3}
                         />
-                        <button 
-                            className={styles.buttonPrimary} 
+                        <button
+                            className={styles.buttonPrimary}
                             onClick={handleRegister}
                             disabled={isLoading || !newContent.trim()}
                         >
@@ -206,7 +206,7 @@ export default function KnowledgeManager() {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                         />
-                        <button 
+                        <button
                             className={styles.buttonSecondary}
                             onClick={handleSearch}
                             disabled={isSearching || !searchQuery.trim()}
@@ -251,7 +251,7 @@ export default function KnowledgeManager() {
                                         <td>{item.id}</td>
                                         <td className={styles.truncatedContent}>{item.content}</td>
                                         <td>
-                                            <button 
+                                            <button
                                                 className={styles.buttonDelete}
                                                 onClick={() => handleDelete(item.id)}
                                             >
