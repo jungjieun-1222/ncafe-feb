@@ -12,12 +12,12 @@ const nextConfig = {
       {
         // 1. 이미지 처리
         source: '/api/images/:path*',
-        destination: `${backendUrl}/api/images/:path*`,
+        destination: `${backendUrl}/images/:path*`,
       },
       {
         // 2. 업로드 파일 처리
         source: '/api/uploads/:path*',
-        destination: `${backendUrl}/api/uploads/:path*`,
+        destination: `${backendUrl}/uploads/:path*`,
       },
       {
         // 3. 지식관리(RAG) 챗봇 처리
