@@ -302,7 +302,26 @@ export default function ChatWidget() {
                             <div className={styles.cardContent}>
                                 <div className={styles.cardTitle}>{msg.metadata.name}</div>
                                 <div className={styles.cardPrice}>{msg.metadata.price.toLocaleString()}원</div>
-                                <button className={styles.cardAction} onClick={() => alert('주문 API 연동 전입니다.')}>주문하기</button>
+                                <div className={styles.cardActions}>
+                                    <button 
+                                        className={styles.cardPrimaryAction} 
+                                        onClick={() => {
+                                            handleToolCall({ name: 'add_to_cart', args: { menu_slug: msg.metadata?.name, quantity: 1 } });
+                                            router.push('/cart');
+                                        }}
+                                    >
+                                        바로 주문
+                                    </button>
+                                    <button 
+                                        className={styles.cardSecondaryAction} 
+                                        onClick={() => handleToolCall({ name: 'add_to_cart', args: { menu_slug: msg.metadata?.name, quantity: 1 } })}
+                                    >
+                                        장바구니 담기
+                                    </button>
+                                </div>
+                                <p className={styles.cardFooterText}>
+                                    * 나리, 바로 주문하시겠소? 아니면 나중에 더 보시려면 장바구니에 담아두셔도 된다오. 🏮
+                                </p>
                             </div>
                         </div>
                     )}
