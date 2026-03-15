@@ -1,22 +1,23 @@
 export const STATIC_IMAGES = ['wolha.png', 'user_male.png', 'user_female.png', 'map.png', 'blank.png'];
 
 export const getImageUrl = (url: string | null | undefined) => {
-    // 1. 기본/에러 이미지 처리: 무조건 /api/images/ 경로를 타게 합니다.
-    if (!url || url === 'blank.png' || url === '') return '/api/images/blank.png';
+    // 1. URL이 없으면 기본 이미지
+    if (!url || url === '' || url === 'blank.png') return '/images/blank.png';
 
-    // 2. 외부 링크는 그대로
+    // 2. 외부 링크는 그대로 반환
     if (url.startsWith('http')) return url;
 
-    // 3. 이미 /api/images/로 시작하는 경우 그대로 반환
-    if (url.startsWith('/api/images/')) return url;
+    // 3. 이미 /images/ 로 시작하면 그대로 반환
+    if (url.startsWith('/images/')) return url;
 
-    // 4. 고정 정적 이미지 및 모든 DB 이미지 통합 처리
-    // 파일명만 추출해서 무조건 /api/images/파일명 형태로 만듭니다.
-    const fileName = url.split('/').pop() || '';
-    if (['wolha.png', 'map.png', 'user_male.png', 'user_female.png'].includes(fileName)) {
-        return `/images/${fileName}`;
+    // 4. /api/images/ -> /images/ (BFF 대응 및 통합)
+    if (url.startsWith('/api/images/')) {
+        return url.replace('/api/images/', '/images/');
     }
 
-    // 최종적으로 /api/images/파일명 형태로 리턴 -> Next.js rewrite가 가로챔!
-    return `/api/images/${fileName}`;
+    // 5. 모든 이미지를 /images/ 경로로 통합 (계층 구조/폴더명 보존!!)
+    // 이 요청은 Next.js rewrite를 통해 백엔드로 전달되고, 
+    // 백엔드는 upload 폴더와 extra-static(public) 폴더에서 파일을 찾습니다.
+    const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+    return `/images/${cleanPath}`;
 };

@@ -10,7 +10,8 @@ const nextConfig = {
 
     return [
       {
-        // 브라우저에서 <img src="/images/..." /> 라고 부를 때 동작
+        // 모든 이미지 요청을 백엔드로 넘겨서 통합 서빙합니다.
+        // 백엔드는 upload 폴더와 프론트엔드의 public/images(extra-static)를 모두 알고 있습니다.
         source: '/images/:path*',
         destination: `${backendUrl}/images/:path*`,
       },
