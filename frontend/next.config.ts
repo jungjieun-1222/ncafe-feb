@@ -8,8 +8,9 @@ const nextConfig = {
 
     return [
       {
-        // /images/map.png 처럼 사용자가 주소창에 직접 입력했을 때 백엔드(extra-static)를 통해 보여줍니다.
-        source: '/images/:path*',
+        // 공통적으로 사용하는 정적 이미지들은 프론트엔드가 직접 서빙하도록 리라이트에서 제외합니다.
+        // 그 외의 이미지(메뉴 업로드 등)는 백엔드로 넘깁니다.
+        source: '/images/:path((?!wolha\\.png|user_male\\.png|user_female\\.png|map\\.png|blank\\.png).*)',
         destination: `${backendUrl}/images/:path*`,
       },
     ];

@@ -26,23 +26,15 @@ async function proxyRequest(req: NextRequest) {
         headers['Authorization'] = `Bearer ${session.token}`;
     }
 
-    let body: BodyInit | null = null;
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-        const contentType = req.headers.get('content-type');
-        if (contentType?.includes('multipart/form-data')) {
-            body = await req.blob();
-        } else {
-            body = await req.text();
-        }
-    }
-
     console.log(`[BFF Proxy] ${req.method} ${path} -> ${targetUrl}`);
 
     try {
         const proxyRes = await fetch(targetUrl, {
             method: req.method,
             headers,
-            body,
+            body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : null,
+            // @ts-ignore - duplex is required when body is a stream
+            duplex: 'half',
         });
 
         if (proxyRes.status === 401 && session.token) {
