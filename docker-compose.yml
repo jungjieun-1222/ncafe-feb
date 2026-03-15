@@ -28,7 +28,7 @@ services:
       - ncafe-network
 
   frontend:
-    image: ${FRONTEND_IMAGE:-ncafe-frontend:latest}
+    image: ${FRONTEND_IMAGE:mochijj-frontend:latest}
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -47,7 +47,7 @@ services:
       - ncafe-network
 
   agent-server:
-    image: ${AGENT_SERVER_IMAGE:-agent-server:latest}
+    image: ${AGENT_SERVER_IMAGE:-mochijj-agent-server:latest}
     build:
       context: ./agent-server
       dockerfile: Dockerfile
