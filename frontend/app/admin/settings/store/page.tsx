@@ -113,6 +113,19 @@ export default function StoreSettingsPage() {
                 </div>
 
                 <div className={styles.card}>
+                    <h3 className={styles.sectionTitle}><Clock size={20} /> 영업 시간</h3>
+                    <div className={styles.field}>
+                        <label className={styles.label}>영업 시간 안내</label>
+                        <textarea 
+                            className={`${styles.input} ${styles.textarea}`}
+                            value={settings.operatingHours || ''}
+                            onChange={e => setSettings({...settings, operatingHours: e.target.value})}
+                            placeholder="예: 평일 09:00 - 22:00, 주말 10:00 - 21:00"
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.card}>
                     <h3 className={styles.sectionTitle}><Info size={20} /> 공지사항</h3>
                     <div className={styles.field}>
                         <label className={styles.label}>메인 공지 문구</label>

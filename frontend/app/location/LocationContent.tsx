@@ -3,8 +3,11 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './location.module.css';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 
 export default function LocationContent() {
+    const settings = useSettingsStore(state => state.settings);
+
     return (
         <div className={styles.locationPage}>
             {/* Background Falling Petals */}
@@ -33,7 +36,7 @@ export default function LocationContent() {
 
                     <h1 className={styles.title}>
                         안개 숲 너머, <br />
-                        <span className={styles.myeongjo}>엔카페를 찾는 법</span>
+                        <span className={styles.myeongjo}>{settings?.name || '엔카페'}를 찾는 법</span>
                     </h1>
 
                     <p className={styles.description}>
@@ -42,7 +45,7 @@ export default function LocationContent() {
                     </p>
                     
                     <p className={styles.addressMain}>
-                        주소: 경기도 달빛마을 서당길 12 (깊은 산자락)
+                        주소: {settings?.address || '경기도 달빛마을 서당길 12 (깊은 산자락)'}
                     </p>
 
                     <div className={styles.infoCardContainer}>
@@ -69,8 +72,13 @@ export default function LocationContent() {
                         <div className={styles.infoSection}>
                             <div className={styles.iconWrapper}>ℹ️</div>
                             <div className={styles.textWrapper}>
-                                <div className={styles.infoTitle}>참고</div>
+                                <div className={styles.infoTitle}>참고 및 영업 시간</div>
                                 <div className={styles.infoDesc}>
+                                    {settings?.operatingHours && (
+                                        <div style={{ marginBottom: '8px', fontWeight: 'bold', color: 'var(--k-gold)' }}>
+                                            영업: {settings.operatingHours}
+                                        </div>
+                                    )}
                                     네 발 달린 식구들을 위한 시원한 물그릇이 항상 준비되어 있고, 비 오는 날에는 젖은 발을 닦을 비단 수건도 내어드린다네. 🐾✨
                                 </div>
                             </div>

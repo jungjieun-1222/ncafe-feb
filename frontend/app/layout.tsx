@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 
 import { Toaster } from "react-hot-toast";
 import AuthInitializer from '@/components/auth/AuthInitializer';
+import SettingsInitializer from '@/components/SettingsInitializer';
 import LayoutWrapper from '@/components/LayoutWrapper';
 
 export default function RootLayout({
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
       <body className={`sans-serif heritage-theme`}>
         <AuthInitializer />
+        <SettingsInitializer />
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

@@ -70,6 +70,21 @@
     opacity: 0.5;
 }
 
+.contactInfo {
+    margin-bottom: 24px;
+    text-align: right;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: var(--font-myeongjo);
+}
+
+.hours {
+    margin-top: 8px;
+    font-weight: 500;
+    color: var(--k-gold);
+    opacity: 0.9;
+}
+
 @media (max-width: 768px) {
     .footerContent {
         flex-direction: column;
