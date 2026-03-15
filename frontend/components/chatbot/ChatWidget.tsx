@@ -50,9 +50,9 @@ export default function ChatWidget() {
 
     const handleToolCall = async (toolCall: { name: string, args: Record<string, any> }) => {
         console.log('🤖 AI Tool Call:', toolCall);
-        
+
         const { name, args } = toolCall;
-        
+
         switch (name) {
             case 'Maps_to':
                 if (args.path) {
@@ -60,7 +60,7 @@ export default function ChatWidget() {
                     router.push(args.path);
                 }
                 break;
-                
+
             case 'add_to_cart':
                 if (args.menu_slug) {
                     try {
@@ -75,14 +75,14 @@ export default function ChatWidget() {
                         // Assuming the cart API might still need ID, but the prompt says use slug.
                         // Let's try adding by slug if the backend supports it, or it will need conversion.
                         // For now, let's look at how the menu detail page does it.
-                        
+
                         console.log(`🛒 Adding to cart: ${args.menu_slug} (Quantity: ${args.quantity || 1})`);
-                        
+
                         // Note: CurrentlyCart API expects menuId. 
                         // To keep it simple, if we have menu_slug, we can fetch the menu detail first if needed,
                         // or better, we can update the cart API to handle slugs.
                         // For this implementation, we'll try to find the menu from the local list if possible.
-                        
+
                         const res = await fetch(`/api/v1/carts/${cartId}/items/by-slug`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -111,7 +111,7 @@ export default function ChatWidget() {
                     }
                 }
                 break;
-                
+
             default:
                 console.warn(`Unknown tool: ${name}`);
         }
@@ -227,11 +227,11 @@ export default function ChatWidget() {
         } catch (error) {
             console.error('Chat error:', error);
             setIsThinking(false);
-             setMessages((prev: Message[]) => prev.map((msg: Message) =>
-                 msg.id === botMessageId
-                     ? { ...msg, content: '죄송하오, 나리. 서역 너머의 기운이 불안정하여 대답을 드릴 수 없게 되었소. 잠시 후 다시 여쭤봐 주시겠소? (서버 연결 실패 🏮)' }
-                     : msg
-             ));
+            setMessages((prev: Message[]) => prev.map((msg: Message) =>
+                msg.id === botMessageId
+                    ? { ...msg, content: '죄송하오, 나리. 서역 너머의 기운이 불안정하여 대답을 드릴 수 없게 되었소. 잠시 후 다시 여쭤봐 주시겠소? (서버 연결 실패 🏮)' }
+                    : msg
+            ));
         }
     };
 
@@ -269,7 +269,7 @@ export default function ChatWidget() {
                         src={getImageUrl('wolha.png')}
                         alt="월하선생"
                         className={styles.botAvatarImage}
-                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=40px&auto=format&fit=crop';
                         }}
                     />
@@ -277,11 +277,12 @@ export default function ChatWidget() {
 
                 {msg.role === 'user' && (
                     <img
-                        src={getImageUrl(gender === 'male' ? 'user_male.png' : 'user_female.png')}
+                        src={gender === 'male' ? '/images/user_male.png' : '/images/user_female.png'}
                         alt="사용자"
                         className={styles.userAvatarImage}
-                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                            (e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=User';
+                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                            console.error("사용자 아바타 로딩 실패!", (e.target as HTMLImageElement).src);
+                            //(e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=User';
                         }}
                     />
                 )}
@@ -306,7 +307,7 @@ export default function ChatWidget() {
                                 src={getImageUrl(msg.metadata.imageSrc)}
                                 alt={msg.metadata.name}
                                 className={styles.cardImage}
-                                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=400&auto=format&fit=crop';
                                 }}
                             />
@@ -344,11 +345,12 @@ export default function ChatWidget() {
                         {isThinking && (
                             <div className={`${styles.messageWrapper} ${styles.bot}`}>
                                 <img
-                                    src={getImageUrl('wolha.png')}
+                                    src="/images/wolha.png"
                                     alt="월하선생"
                                     className={styles.botAvatarImage}
-                                     onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=40px&auto=format&fit=crop';
+                                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                                        console.error('이미지 로딩 실패');
+                                        //(e.target as HTMLImageElement).src = '/images/wolha.png';
                                     }}
                                 />
                                 <div className={styles.thinkingBubble}>
