@@ -11,7 +11,7 @@ services:
       - "8081"
     volumes:
       - ${UPLOAD_PATH:-../ncafe-upload}:/app/upload
-      - ./frontend/public/images:/app/public-images:ro
+      - ./frontend/public/images:/app/extra-static/images:ro
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
@@ -19,7 +19,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - UPLOAD_PATH=/app/upload/
-      - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/app/upload/,file:/app/public-images/,classpath:/static/
+      - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/app/upload/,file:/app/extra-static/,classpath:/static/
     restart: unless-stopped
     depends_on:
       - db
@@ -37,6 +37,7 @@ services:
     environment:
       - API_BASE_URL=http://backend:8081
       - BACKEND_URL=http://backend:8081
+      - AGENT_URL=http://agent-server:8000
       - SESSION_SECRET=${SESSION_SECRET}
     depends_on:
       - backend
@@ -50,7 +51,7 @@ services:
       context: ./agent-server
       dockerfile: Dockerfile
     container_name: ${USER_ID:-mochijj}-agent-server
-    profiles: ["agent", "with-db"]
+    profiles: ["with-db"]
     # ports:
     #   - "${AGENT_SERVER_PORT:-8112}:8000"
     expose:
