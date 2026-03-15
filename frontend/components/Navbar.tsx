@@ -21,11 +21,18 @@ const Navbar = () => {
 
     React.useEffect(() => {
         const fetchCartCount = async () => {
-            const cartId = localStorage.getItem('cartId');
+            let cartId = localStorage.getItem('cartId');
             if (!cartId) {
                 setCartCount(0);
                 return;
             }
+            
+            // Sanitization: Remove any trailing info like :1
+            if (cartId.includes(':')) {
+                cartId = cartId.split(':')[0];
+                localStorage.setItem('cartId', cartId);
+            }
+
             try {
                 const res = await fetch(`/api/v1/carts/${cartId}`);
                 if (res.ok) {

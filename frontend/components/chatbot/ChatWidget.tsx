@@ -84,6 +84,12 @@ export default function ChatWidget() {
                 if (args.menu_slug) {
                     try {
                         let cartId = localStorage.getItem('cartId');
+                        // Sanitize cartId
+                        if (cartId && cartId.includes(':')) {
+                            cartId = cartId.split(':')[0];
+                            localStorage.setItem('cartId', cartId);
+                        }
+                        
                         if (!cartId) {
                             cartId = 'guest_' + Date.now().toString();
                             localStorage.setItem('cartId', cartId);

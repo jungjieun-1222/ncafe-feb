@@ -39,7 +39,11 @@ export default function LoginForm() {
                 setUser(loggedInUser);
 
                 // 장바구니 병합 로직
-                const guestCartId = localStorage.getItem('cartId');
+                let guestCartId = localStorage.getItem('cartId');
+                // Sanitize guestCartId if it exists
+                if (guestCartId && guestCartId.includes(':')) {
+                    guestCartId = guestCartId.split(':')[0];
+                }
                 const userCartId = `user-${loggedInUser.id}`;
                 
                 if (guestCartId && guestCartId !== userCartId) {
