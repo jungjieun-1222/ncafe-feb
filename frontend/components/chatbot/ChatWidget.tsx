@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { sendMessageStream } from '@/app/lib/aiAgent';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useConfigStore } from '@/stores/useConfigStore';
 
 interface Message {
     id: string;
@@ -47,6 +48,11 @@ export default function ChatWidget() {
     const [isThinking, setIsThinking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const getConfig = useConfigStore(state => state.getConfig);
+
+    const chatbotImage = getConfig('chatbot_image', 'wolha.png');
+    const userMaleImage = getConfig('user_male_image', 'user_male.png');
+    const userFemaleImage = getConfig('user_female_image', 'user_female.png');
 
     const handleToolCall = async (toolCall: { name: string, args: Record<string, any> }) => {
         console.log('🤖 AI Tool Call:', toolCall);
@@ -266,7 +272,7 @@ export default function ChatWidget() {
             <div key={msg.id} className={`${styles.messageWrapper} ${isBot ? styles.bot : styles.user}`}>
                 {isBot && msg.type !== 'gender_select' && (
                     <img
-                        src={getImageUrl('wolha.png')}
+                        src={getImageUrl(chatbotImage)}
                         alt="월하선생"
                         className={styles.botAvatarImage}
                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -277,7 +283,7 @@ export default function ChatWidget() {
 
                 {msg.role === 'user' && (
                     <img
-                        src={gender === 'male' ? '/images/user_male.png' : '/images/user_female.png'}
+                        src={getImageUrl(gender === 'male' ? userMaleImage : userFemaleImage)}
                         alt="사용자"
                         className={styles.userAvatarImage}
                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -329,7 +335,7 @@ export default function ChatWidget() {
                 <div className={styles.chatWindow}>
                     <div className={styles.header}>
                         <div className={styles.headerInfo}>
-                            <img src={getImageUrl('wolha.png')} alt="월하선생 프로필" className={styles.avatarImage} />
+                            <img src={getImageUrl(chatbotImage)} alt="월하선생 프로필" className={styles.avatarImage} />
                             <div>
                                 <h3 className={styles.title}>월하선생</h3>
                                 <p className={styles.subtitle}>엔카페 터줏대감 중매쟁이</p>
@@ -345,7 +351,7 @@ export default function ChatWidget() {
                         {isThinking && (
                             <div className={`${styles.messageWrapper} ${styles.bot}`}>
                                 <img
-                                    src="/images/wolha.png"
+                                    src={getImageUrl(chatbotImage)}
                                     alt="월하선생"
                                     className={styles.botAvatarImage}
                                     onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
