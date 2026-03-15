@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/configs")
+@RequestMapping("/api/v1/configs")
 @RequiredArgsConstructor
 public class CafeConfigController {
 

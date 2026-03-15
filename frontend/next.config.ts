@@ -10,6 +10,11 @@ const nextConfig = {
 
     return [
       {
+        // 백엔드 API 프록시 (설정 등)
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+      {
         // 브라우저에서 <img src="/images/..." /> 라고 부를 때 동작
         source: '/images/:path*',
         destination: `${backendUrl}/images/:path*`,
