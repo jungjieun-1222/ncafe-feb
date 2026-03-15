@@ -8,9 +8,9 @@ const nextConfig = {
 
     return [
       {
-        // 공통적으로 사용하는 정적 이미지들은 프론트엔드가 직접 서빙하도록 리라이트에서 제외합니다.
-        // 그 외의 이미지(메뉴 업로드 등)는 백엔드로 넘깁니다.
-        source: '/images/:path((?!wolha\\.png|user_male\\.png|user_female\\.png|map\\.png|blank\\.png).*)',
+        // 모든 이미지 요청(/images/...)을 백엔드로 넘겨서 통합 서빙합니다.
+        // 백엔드는 업로드 폴더와 정적 이미지 폴더를 모두 알고 있습니다.
+        source: '/images/:path*',
         destination: `${backendUrl}/images/:path*`,
       },
     ];
