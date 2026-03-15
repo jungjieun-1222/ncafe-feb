@@ -6,7 +6,6 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatWidget from './chatbot/ChatWidget';
 import CartDrawer from './CartDrawer';
-import AnnouncementBanner from './AnnouncementBanner';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -22,7 +21,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     // For non-admin routes, render the normal layout wrapper
     return (
         <>
-            <AnnouncementBanner />
             <Navbar />
             <main style={{ minHeight: 'calc(100vh - 180px)' }}>
                 {children}

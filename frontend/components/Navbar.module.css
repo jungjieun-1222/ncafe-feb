@@ -168,6 +168,42 @@
     padding-left: 20px;
 }
 
+.notificationBtn {
+    background: transparent;
+    color: var(--k-gold);
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+}
+
+.notificationBtn:hover {
+    background: rgba(181, 155, 109, 0.1);
+    transform: scale(1.1);
+}
+
+.notificationBadge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: var(--k-crimson);
+    border-radius: 50%;
+    border: 1px solid #1C252E;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 /* Base button style for consistency */
 .btnBase {
     display: inline-flex;

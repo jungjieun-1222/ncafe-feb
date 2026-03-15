@@ -9,7 +9,8 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useCartStore } from '@/stores/useCartStore';
-import { ShoppingBag, ClipboardList, Settings } from 'lucide-react';
+import { ShoppingBag, ClipboardList, Settings, Bell } from 'lucide-react';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -41,11 +42,28 @@ const Navbar = () => {
         fetchCartCount();
     }, [refreshTrigger]);
 
+    const { settings } = useSettingsStore();
+
     const handleLogout = async () => {
         await logout();
         localStorage.removeItem('cartId'); // 장바구니 ID 초기화
         toast.success('로그아웃 되었습니다.');
         router.push('/');
+    };
+
+    const handleShowAnnouncement = () => {
+        if (settings?.announcement) {
+            toast(settings.announcement, {
+                icon: '📢',
+                duration: 5000,
+                style: {
+                    background: 'var(--k-clay)',
+                    color: '#F7F3EE',
+                    border: '1px solid var(--k-gold)',
+                    fontFamily: 'var(--font-myeongjo)'
+                }
+            });
+        }
     };
 
     const isAdmin = user?.role?.includes('ADMIN') || user?.role?.includes('MASTER') || user?.role?.includes('STAFF');
@@ -120,6 +138,18 @@ const Navbar = () => {
                 </div>
 
                 <div className={styles.actions}>
+                    {settings?.announcement && (
+                        <button 
+                            onClick={handleShowAnnouncement}
+                            className={styles.notificationBtn}
+                            title="공지사항"
+                        >
+                            <div style={{ position: 'relative' }}>
+                                <Bell size={20} />
+                                <span className={styles.notificationBadge} />
+                            </div>
+                        </button>
+                    )}
                     {isAuthenticated ? (
                         <>
                             {isAdmin ? (
