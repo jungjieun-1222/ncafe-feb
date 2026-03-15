@@ -15,14 +15,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: {
     default: "엔카페:몽중화(夢中花)", // 기본 제목
-    template: "%s | 엔카페:몽중화(夢中花)", // 다른 페이지에서 사용할 양식
+    template: "%s | 엔카페:몽중화(夢중화)", // 다른 페이지에서 사용할 양식
   },
   description: "가장 한국적인 공간에서 즐기는 평온한 순간",
 };
 
 import { Toaster } from "react-hot-toast";
 import AuthInitializer from '@/components/auth/AuthInitializer';
-import ConfigInitializer from '@/components/ConfigInitializer';
 import LayoutWrapper from '@/components/LayoutWrapper';
 
 export default function RootLayout({
@@ -37,7 +36,6 @@ export default function RootLayout({
       </head>
       <body className={`sans-serif heritage-theme`}>
         <AuthInitializer />
-        <ConfigInitializer />
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

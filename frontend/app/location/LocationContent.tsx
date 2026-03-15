@@ -3,13 +3,8 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './location.module.css';
-import { useConfigStore } from '@/stores/useConfigStore';
-import { getImageUrl } from '@/utils/image';
 
 export default function LocationContent() {
-    const getConfig = useConfigStore(state => state.getConfig);
-    const mapImage = getConfig('location_map_image', 'map.png');
-
     return (
         <div className={styles.locationPage}>
             {/* Background Falling Petals */}
@@ -67,7 +62,7 @@ export default function LocationContent() {
                                 <div className={styles.infoTitle}>주차 안내</div>
                                 <div className={styles.infoDesc}>
                                     대문 앞 빈터에 차를 세우셔도 좋으나, 네 발 달린 친구들과 산책하는 이들이 많으니 천천히 드나드시게. 🕯️
-                                </div>
+                                e</div>
                             </div>
                         </div>
 
@@ -86,7 +81,7 @@ export default function LocationContent() {
                 <div className={`${styles.rightColumn} animate-in`}>
                     <div className={styles.imageWrapper}>
                         <Image
-                            src={getImageUrl(mapImage)}
+                            src="/images/map.png"
                             alt="Antique Hanok Location Map"
                             fill
                             className={styles.locationImage}

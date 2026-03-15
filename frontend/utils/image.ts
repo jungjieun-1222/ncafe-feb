@@ -1,21 +1,22 @@
 export const STATIC_IMAGES = ['wolha.png', 'user_male.png', 'user_female.png', 'map.png', 'blank.png'];
 
 export const getImageUrl = (url: string | null | undefined) => {
-    // 1. URL이 없으면 기본 이미지
-    if (!url || url === '' || url === 'blank.png') return '/images/blank.png';
+    // 1. 기본/에러 이미지 처리: 무조건 /api/images/ 경로를 타게 합니다.
+    if (!url || url === 'blank.png' || url === '') return '/api/images/blank.png';
 
-    // 2. 외부 링크는 그대로 반환
+    // 2. 외부 링크는 그대로
     if (url.startsWith('http')) return url;
 
-    // 3. /api/images/ -> /images/ (이동 전 경로 호환성 및 BFF 대응)
-    if (url.startsWith('/api/images/')) {
-        return url.replace('/api/images/', '/images/');
+    // 3. 이미 /api/images/로 시작하는 경우 그대로 반환
+    if (url.startsWith('/api/images/')) return url;
+
+    // 4. 고정 정적 이미지 및 모든 DB 이미지 통합 처리
+    // 파일명만 추출해서 무조건 /api/images/파일명 형태로 만듭니다.
+    const fileName = url.split('/').pop() || '';
+    if (['wolha.png', 'map.png', 'user_male.png', 'user_female.png'].includes(fileName)) {
+        return `/images/${fileName}`;
     }
 
-    // 4. 이미 /images/ 로 시작하면 그대로 반환
-    if (url.startsWith('/images/')) return url;
-
-    // 5. 그 외 모든 상대 경로는 /images/ 를 붙여서 반환 (계층 구조 보존!!)
-    const cleanPath = url.startsWith('/') ? url.slice(1) : url;
-    return `/images/${cleanPath}`;
+    // 최종적으로 /api/images/파일명 형태로 리턴 -> Next.js rewrite가 가로챔!
+    return `/api/images/${fileName}`;
 };

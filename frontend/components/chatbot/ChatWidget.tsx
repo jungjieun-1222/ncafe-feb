@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { sendMessageStream } from '@/app/lib/aiAgent';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { useConfigStore } from '@/stores/useConfigStore';
 
 interface Message {
     id: string;
@@ -48,11 +47,6 @@ export default function ChatWidget() {
     const [isThinking, setIsThinking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
-    const getConfig = useConfigStore(state => state.getConfig);
-
-    const chatbotImage = getConfig('chatbot_image', 'wolha.png');
-    const userMaleImage = getConfig('user_male_image', 'user_male.png');
-    const userFemaleImage = getConfig('user_female_image', 'user_female.png');
 
     const handleToolCall = async (toolCall: { name: string, args: Record<string, any> }) => {
         console.log('🤖 AI Tool Call:', toolCall);
@@ -76,18 +70,7 @@ export default function ChatWidget() {
                             localStorage.setItem('cartId', cartId);
                         }
 
-                        // We need the menu ID for the cart API. 
-                        // The tool gives us slug, so we might need to fetch the ID or have the backend handle slug.
-                        // Assuming the cart API might still need ID, but the prompt says use slug.
-                        // Let's try adding by slug if the backend supports it, or it will need conversion.
-                        // For now, let's look at how the menu detail page does it.
-
                         console.log(`🛒 Adding to cart: ${args.menu_slug} (Quantity: ${args.quantity || 1})`);
-
-                        // Note: CurrentlyCart API expects menuId. 
-                        // To keep it simple, if we have menu_slug, we can fetch the menu detail first if needed,
-                        // or better, we can update the cart API to handle slugs.
-                        // For this implementation, we'll try to find the menu from the local list if possible.
 
                         const res = await fetch(`/api/v1/carts/${cartId}/items/by-slug`, {
                             method: 'POST',
@@ -108,7 +91,6 @@ export default function ChatWidget() {
                                 style: { background: '#f5f5dc', color: '#5d4037', border: '1px solid #d7ccc8' }
                             });
                         } else {
-                            // Fallback or retry logic if needed
                             console.warn('Failed to add to cart via slug API');
                             toast.error('장바구니에 담지 못했소. 잠시 후 다시 시도해주시게나.');
                         }
@@ -168,7 +150,6 @@ export default function ChatWidget() {
         setMessages((prev: Message[]) => [...prev, newUserMsg]);
         setInputValue('');
 
-        // Prepare message history for API (map 'assistant' to 'model')
         const messageHistory = messages
             .filter(m => m.type === 'text')
             .map((msg: Message) => ({
@@ -176,13 +157,11 @@ export default function ChatWidget() {
                 content: msg.content
             }));
 
-        // Add current user message
         messageHistory.push({
             role: 'user',
             content: userContent
         });
 
-        // Add placeholder bot message for streaming
         const botMessageId = (Date.now() + 1).toString();
         const placeholderBotMsg: Message = {
             id: botMessageId,
@@ -214,7 +193,7 @@ export default function ChatWidget() {
                         metadata: {
                             name: card.name,
                             price: card.price,
-                            imageSrc: card.imageSrc ? card.imageSrc.replace(/^\/images\//, '') : '',
+                            imageSrc: card.imageSrc,
                             description: card.description,
                             categoryName: card.categoryName,
                         }
@@ -263,7 +242,6 @@ export default function ChatWidget() {
     const renderMessage = (msg: Message) => {
         const isBot = msg.role === 'assistant';
 
-        // 봇 메시지이고 아직 내용이 없는 경우(생각 중인 경우) 중복 표시를 막기 위해 표시하지 않음
         if (isBot && msg.type === 'text' && !msg.content) {
             return null;
         }
@@ -272,7 +250,7 @@ export default function ChatWidget() {
             <div key={msg.id} className={`${styles.messageWrapper} ${isBot ? styles.bot : styles.user}`}>
                 {isBot && msg.type !== 'gender_select' && (
                     <img
-                        src={getImageUrl(chatbotImage)}
+                        src={getImageUrl('wolha.png')}
                         alt="월하선생"
                         className={styles.botAvatarImage}
                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -283,12 +261,11 @@ export default function ChatWidget() {
 
                 {msg.role === 'user' && (
                     <img
-                        src={getImageUrl(gender === 'male' ? userMaleImage : userFemaleImage)}
+                        src={getImageUrl(gender === 'male' ? 'user_male.png' : 'user_female.png')}
                         alt="사용자"
                         className={styles.userAvatarImage}
                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                             console.error("사용자 아바타 로딩 실패!", (e.target as HTMLImageElement).src);
-                            //(e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=User';
                         }}
                     />
                 )}
@@ -335,7 +312,7 @@ export default function ChatWidget() {
                 <div className={styles.chatWindow}>
                     <div className={styles.header}>
                         <div className={styles.headerInfo}>
-                            <img src={getImageUrl(chatbotImage)} alt="월하선생 프로필" className={styles.avatarImage} />
+                            <img src={getImageUrl('wolha.png')} alt="월하선생 프로필" className={styles.avatarImage} />
                             <div>
                                 <h3 className={styles.title}>월하선생</h3>
                                 <p className={styles.subtitle}>엔카페 터줏대감 중매쟁이</p>
@@ -351,12 +328,11 @@ export default function ChatWidget() {
                         {isThinking && (
                             <div className={`${styles.messageWrapper} ${styles.bot}`}>
                                 <img
-                                    src={getImageUrl(chatbotImage)}
+                                    src={getImageUrl('wolha.png')}
                                     alt="월하선생"
                                     className={styles.botAvatarImage}
                                     onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                                         console.error('이미지 로딩 실패');
-                                        //(e.target as HTMLImageElement).src = '/images/wolha.png';
                                     }}
                                 />
                                 <div className={styles.thinkingBubble}>
