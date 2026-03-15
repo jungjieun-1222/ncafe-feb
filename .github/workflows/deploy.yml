@@ -56,9 +56,9 @@ jobs:
           # 브라우저에서 챗봇이 접속할 공개 URL
           echo "AGENT_URL=https://mochijj.newlecture.com/api/agent" >> .env
           
-          # 서버 실제 데이터 경로 (상대 경로로 통일)
-          echo "UPLOAD_PATH=../ncafe-upload" >> .env
-          echo "DB_DATA_PATH=../ncafe-data" >> .env
+          # 서버 실제 데이터 경로 (절대 경로로 다시 복구)
+          echo "UPLOAD_PATH=/home/jungjieun-1222/dist/ncafe-upload" >> .env
+          echo "DB_DATA_PATH=/home/jungjieun-1222/dist/ncafe-data" >> .env
         env:
           COMPOSE_PROJECT_NAME: ${{ vars.COMPOSE_PROJECT_NAME }}
           USER_ID: ${{ vars.USER_ID }}
