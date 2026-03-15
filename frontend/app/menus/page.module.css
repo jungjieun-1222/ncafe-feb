@@ -1,6 +1,6 @@
 .container {
     min-height: 100vh;
-    background-color: #fbf9f5;
+    background-color: #fbf9f5; /* Back to original warm ivory */
     color: #332d2b;
 }
 
@@ -69,32 +69,88 @@
 
 .categoryTabs {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
     gap: 12px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+    padding: 10px 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.categoryTabs::-webkit-scrollbar {
+    display: none;
 }
 
 .tab {
-    padding: 10px 24px;
+    flex-shrink: 0;
+    padding: 12px 28px;
     border-radius: 50px;
-    border: 1px solid #d5cec4;
+    border: 1px solid #efe8e1;
     background: white;
-    color: #6d5b53; /* Darker than before */
+    color: #8c7b75;
     cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
 }
 
 .tab:hover {
-    background: #fdfaf8;
-    border-color: #7b5944; /* Darker hover border */
+    background: #fff;
+    border-color: #d7ccc8;
     color: #4a3e3e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .activeTab {
-    background: #7b5944; /* Darker, richer brown */
-    border-color: #7b5944;
+    background: #1C252E; /* Matching the new Dark Nav color */
+    border-color: #1C252E;
     color: white;
+    box-shadow: 0 6px 15px rgba(28, 37, 46, 0.25);
+}
+
+.filterBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    gap: 20px;
+}
+
+.sortSelectWrapper {
+    flex-shrink: 0;
+}
+
+.sortSelect {
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 1px solid #efe8e1;
+    background: white;
+    color: #8c7b75;
+    font-weight: 600;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.sortSelect:focus {
+    border-color: #c9a388;
+}
+
+@media (max-width: 768px) {
+    .filterBar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 .cardLink {
@@ -278,4 +334,87 @@
     background-color: #d1cbc4;
     cursor: not-allowed;
     color: #8c7b75;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.pageBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #e0d5cd;
+    border-radius: 12px;
+    background-color: white;
+    font-size: 1rem;
+    color: #8c7b75;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+    border-color: #c9a388;
+    background-color: #fcfaf7;
+    color: #4a3e3e;
+}
+
+.activePage {
+    border-color: #4a3e3e;
+    background-color: #fcfaf7;
+    color: #4a3e3e;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(74, 62, 62, 0.1);
+}
+
+.pageBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: #f5f5f5;
+}
+
+.pageInfo {
+    margin-left: 20px;
+    font-size: 0.95rem;
+    color: #8c7b75;
+}
+
+/* Badge Styles */
+.badgeContainer {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 2;
+}
+
+.badge {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #4a3e3e;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }

@@ -29,7 +29,7 @@ public class OrderService implements PlaceOrderUseCase, QueryOrderUseCase, Manag
     private final LoadOrderPort loadOrderPort;
 
     @Override
-    public String placeOrder(String cartId, String paymentMethod, String requestMessage) {
+    public String placeOrder(String userId, String cartId, String paymentMethod, String requestMessage) {
         Cart cart = cartUseCase.getCart(cartId);
         
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
@@ -63,13 +63,6 @@ public class OrderService implements PlaceOrderUseCase, QueryOrderUseCase, Manag
                 })
                 .collect(Collectors.toList());
 
-        Long userId = null;
-        if (cartId.startsWith("user-")) {
-            try {
-                userId = Long.parseLong(cartId.substring(5));
-            } catch (NumberFormatException ignored) {}
-        }
-
         // 가상 결제 승인 번호 생성
         String approvalNumber = "APP-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
@@ -100,7 +93,7 @@ public class OrderService implements PlaceOrderUseCase, QueryOrderUseCase, Manag
     }
 
     @Override
-    public List<OrderEntity> getOrdersByUserId(Long userId) {
+    public List<OrderEntity> getOrdersByUserId(String userId) {
         return loadOrderPort.loadOrdersByUserId(userId);
     }
 

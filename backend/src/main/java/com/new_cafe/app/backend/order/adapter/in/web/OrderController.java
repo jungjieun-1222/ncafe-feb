@@ -22,6 +22,7 @@ public class OrderController {
     @PostMapping
     public OrderResponse placeOrder(@RequestBody OrderRequest request) {
         String approvalNumber = placeOrderUseCase.placeOrder(
+            request.getUserId(),
             request.getCartId(), 
             request.getPaymentMethod(), 
             request.getRequestMessage()
@@ -31,9 +32,9 @@ public class OrderController {
 
     @GetMapping
     public List<OrderEntity> getAllOrders(
-            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String userId,
             @RequestParam(required = false) String cartId) {
-        if (userId != null) {
+        if (userId != null && !userId.isEmpty()) {
             return queryOrderUseCase.getOrdersByUserId(userId);
         }
         if (cartId != null && !cartId.isEmpty()) {
@@ -43,7 +44,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<OrderEntity> getOrdersByUserId(@PathVariable Long userId) {
+    public List<OrderEntity> getOrdersByUserId(@PathVariable String userId) {
         return queryOrderUseCase.getOrdersByUserId(userId);
     }
 
@@ -54,6 +55,7 @@ public class OrderController {
 
     @lombok.Data
     public static class OrderRequest {
+        private String userId;
         private String cartId;
         private String paymentMethod;
         private String requestMessage;

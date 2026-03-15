@@ -8,20 +8,21 @@
 .main {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 120px 20px 40px; /* Increased top padding to avoid Nav Bar overlap */
 }
 
 .backBtn {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     background: none;
     border: none;
     color: #8b5e3c;
-    font-weight: 500;
+    font-size: 1.3rem; /* Increased font size */
+    font-weight: 700; /* Bolder font */
     cursor: pointer;
-    margin-bottom: 24px;
-    transition: transform 0.2s;
+    margin-bottom: 32px; /* More spacing below */
+    transition: all 0.2s;
 }
 
 .backBtn:hover {

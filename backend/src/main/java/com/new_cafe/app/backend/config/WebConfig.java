@@ -16,14 +16,21 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
+    @org.springframework.beans.factory.annotation.Value("${upload.path}")
+    private String uploadPath;
+
     @Override
     public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
-        // 이미지는 /images/** -> /app/dist/ncafe-upload/images/
+        // Ensure path ends with slash and has protocol
+        String baseLocation = uploadPath.startsWith("file:") ? uploadPath : "file:" + uploadPath;
+        if (!baseLocation.endsWith("/")) baseLocation += "/";
+
+        // 이미지는 /images/** -> {upload.path}/images/
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:/app/dist/ncafe-upload/images/");
+                .addResourceLocations(baseLocation + "images/");
         
-        // 업로드 파일은 /uploads/** -> /app/dist/ncafe-upload/
+        // 업로드 파일은 /uploads/** -> {upload.path}
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:/app/dist/ncafe-upload/");
+                .addResourceLocations(baseLocation);
     }
 }

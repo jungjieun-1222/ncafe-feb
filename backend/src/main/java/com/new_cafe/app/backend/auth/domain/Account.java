@@ -7,11 +7,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Account {
+    private final String id;
     private final String username;
     private final String password; // 인코딩된 패스워드
     private final String name;
+    private final String role;
 
-    public static Account of(String username, String password, String name) {
-        return new Account(username, password, name);
+    public static Account of(String id, String username, String password, String name, String role) {
+        return new Account(id, username, password, name, role);
     }
 }

@@ -21,7 +21,7 @@ public class OrderEntity {
     private Long id;
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @Column(name = "cart_id")
     private String cartId;

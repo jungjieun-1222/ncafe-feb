@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     session.token = token;
     if (user) {
         session.user = {
-            id: user.id || 0,
+            id: user.id || '',
             email: user.email || '',
             nickname: user.username || user.nickname || '',
             role: user.role || 'ROLE_USER',
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     } else {
         // Fallback if /auth/me fails or is still session based
         session.user = {
-            id: 0,
+            id: '',
             email: '',
             nickname: tokenData.username || 'User',
             role: 'ROLE_USER'

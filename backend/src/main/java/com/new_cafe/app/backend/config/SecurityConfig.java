@@ -38,7 +38,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/orders/**").hasAnyRole("MASTER", "STAFF", "ADMIN")
+                .requestMatchers("/admin/settings/**").hasAnyRole("MASTER", "ADMIN")
+                .requestMatchers("/admin/accounts/**").hasAnyRole("MASTER", "ADMIN")
+                .requestMatchers("/admin/menus/**").hasAnyRole("MASTER", "ADMIN")
+                .requestMatchers("/admin/dashboard/**").hasAnyRole("MASTER", "ADMIN")
+                .requestMatchers("/admin/**").hasAnyRole("MASTER", "ADMIN")
                 .anyRequest().permitAll()
             )
             .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);

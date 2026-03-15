@@ -19,7 +19,18 @@ public class NewCategoryService implements CategoryService {
 
     @Override
     public List<Category> getAll() {
-        // 레포지토리에서 데이터를 가져와 반환
-        return categoryRepository.findAll();
+        // 정렬 순서대로 가져오기
+        return categoryRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "sortOrder"));
+    }
+
+    @Override
+    public void reorder(List<Long> categoryIds) {
+        for (int i = 0; i < categoryIds.size(); i++) {
+            Long id = categoryIds.get(i);
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+            category.setSortOrder(i + 1);
+            categoryRepository.save(category);
+        }
     }
 }

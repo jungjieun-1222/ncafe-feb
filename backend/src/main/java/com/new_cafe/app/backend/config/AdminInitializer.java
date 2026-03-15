@@ -25,11 +25,19 @@ public class AdminInitializer implements CommandLineRunner {
             admin.setId(UUID.randomUUID().toString());
             admin.setNickname("admin");
             admin.setPassword(passwordEncoder.encode("1234"));
-            admin.setRole("ROLE_ADMIN");
+            admin.setRole("ROLE_MASTER");
             userRepository.save(admin);
             log.info("✅ Admin account created (admin / 1234)");
         } else {
-            log.info("ℹ️ Admin account already exists, skipping creation");
+            UserEntity existingAdmin = userRepository.findByNickname("admin").get();
+            // 임시 비밀번호 재설정 (로그인 불가 상황 해결용)
+            existingAdmin.setPassword(passwordEncoder.encode("1234"));
+            if ("ROLE_ADMIN".equals(existingAdmin.getRole())) {
+                existingAdmin.setRole("ROLE_MASTER");
+                log.info("✅ Admin role updated to ROLE_MASTER");
+            }
+            userRepository.save(existingAdmin);
+            log.info("⚠️ Admin password has been reset to 1234 for emergency access");
         }
     }
 }

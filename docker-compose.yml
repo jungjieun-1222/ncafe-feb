@@ -17,11 +17,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
-      - REDIS_HOST=redis
+      - UPLOAD_PATH=/app/dist/ncafe-upload/
     restart: unless-stopped
     depends_on:
       - db
-      - redis
     networks:
       - ncafe-network
 
@@ -56,19 +55,17 @@ services:
     env_file:
       - .env
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
       - BACKEND_URL=http://backend:8081
     depends_on:
+      - db
       - backend
-      - redis
     restart: unless-stopped
     networks:
       - ncafe-network
 
   db:
     image: pgvector/pgvector:pg17
-    profiles: [ "with-db" ]
+    #profiles: [ "with-db" ]
     container_name: ${USER_ID:-mochijj}-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-ncafedb}
@@ -84,16 +81,7 @@ services:
     networks:
       - ncafe-network
 
-  redis:
-    image: redis:7-alpine
-    container_name: ${USER_ID:-mochijj}-redis
-    # ports:
-    #   - "${REDIS_PORT:-6379}:6379"
-    expose:
-      - "6379"
-    restart: unless-stopped
-    networks:
-      - ncafe-network
+
 
 #volumes:
 #  ncafe-db-data:

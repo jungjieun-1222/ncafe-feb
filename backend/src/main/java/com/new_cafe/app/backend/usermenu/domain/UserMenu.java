@@ -21,5 +21,10 @@ public class UserMenu {
     
     // 유저 전용 필드 (미래 확장 예시)
     private String allergyInfo;
+    private Integer sortOrder;
     private java.util.List<String> images;
+    @Builder.Default
+    private java.util.List<com.new_cafe.app.backend.cart.domain.Option> options = new java.util.ArrayList<>();
+    @Builder.Default
+    private java.util.List<String> curationTags = new java.util.ArrayList<>();
 }

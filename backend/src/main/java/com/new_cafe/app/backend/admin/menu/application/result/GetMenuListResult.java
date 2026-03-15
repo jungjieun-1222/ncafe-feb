@@ -20,8 +20,11 @@ public class GetMenuListResult {
     private boolean isSoldOut;
     private String primaryImageSrc;
     private String description;
+    private String altText;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private java.util.List<String> curationTags;
+    private Integer sortOrder;
 
     public static GetMenuListResult from(AdminMenu menu) {
         return GetMenuListResult.builder()
@@ -36,8 +39,11 @@ public class GetMenuListResult {
                 .isSoldOut(menu.isSoldOut())
                 .primaryImageSrc(menu.getPrimaryImageSrc())
                 .description(menu.getDescription())
+                .altText(menu.getAltText())
                 .createdAt(menu.getCreatedAt())
                 .updatedAt(menu.getUpdatedAt())
+                .curationTags(menu.getCurationTags())
+                .sortOrder(menu.getSortOrder())
                 .build();
     }
 }

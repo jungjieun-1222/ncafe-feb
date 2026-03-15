@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCard, Wallet, Smartphone, ChevronLeft, CheckCircle } from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
 import styles from './page.module.css';
 
 interface Option {
@@ -59,6 +60,8 @@ export default function CheckoutPage() {
         fetchCart();
     }, []);
 
+    const { user } = useAuthStore();
+
     const handlePayment = async () => {
         setIsProcessing(true);
 
@@ -72,6 +75,7 @@ export default function CheckoutPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    userId: user?.id,
                     cartId,
                     paymentMethod,
                     requestMessage: requestNote,

@@ -4,6 +4,9 @@ import styles from './Footer.module.css';
 const Footer = () => {
     return (
         <footer className={`${styles.footer} heritage-theme`}>
+            <div className={styles.patternLine}>
+                <div className={styles.dancheongPattern}></div>
+            </div>
             <div className={styles.container}>
                 <div className={styles.footerContent}>
                     <div className={styles.footerBrand}>

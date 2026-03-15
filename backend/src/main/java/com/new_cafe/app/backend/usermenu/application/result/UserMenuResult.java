@@ -19,6 +19,9 @@ public class UserMenuResult {
     private boolean isAvailable;
     private String allergyInfo;
     private java.util.List<String> images;
+    private java.util.List<com.new_cafe.app.backend.cart.domain.Option> options;
+    private java.util.List<String> curationTags;
+    private Integer sortOrder;
 
     public static UserMenuResult from(UserMenu menu) {
         return UserMenuResult.builder()
@@ -34,6 +37,9 @@ public class UserMenuResult {
                 .isAvailable(menu.isAvailable())
                 .allergyInfo(menu.getAllergyInfo())
                 .images(menu.getImages())
+                .options(menu.getOptions())
+                .curationTags(menu.getCurationTags())
+                .sortOrder(menu.getSortOrder())
                 .build();
     }
 }

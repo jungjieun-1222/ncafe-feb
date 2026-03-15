@@ -40,6 +40,7 @@ export default function MenuDetailImage({ slug }: { slug: string }) {
             await refresh();
             const toast = (await import('react-hot-toast')).default;
             toast.success('이미지가 추가되었습니다.');
+            window.location.reload();
         } catch (error) {
             console.error(error);
         } finally {
@@ -59,17 +60,31 @@ export default function MenuDetailImage({ slug }: { slug: string }) {
             if (activeIndex >= images.length - 1) setActiveIndex(0);
             const toast = (await import('react-hot-toast')).default;
             toast.success('이미지가 삭제되었습니다.');
+            window.location.reload();
         } catch (error) {
             console.error(error);
         }
     };
 
     const handleSetPrimary = async () => {
-        if (activeIndex === 0) return;
+        if (activeIndex === 0 || !menu) return;
+        const targetImage = displayImages[activeIndex];
+        if (!targetImage || targetImage.id === 0) return;
+
         setIsUpdating(true);
         try {
-            // This could be implemented by updating sort orders or setting a primary flag
-            alert('대표 이미지 변경 기능은 준비 중입니다.');
+            const res = await fetch(`/api/admin/menus/${menu.id}/images/${targetImage.id}/primary`, {
+                method: 'POST'
+            });
+            if (!res.ok) throw new Error('Failed to set primary image');
+            
+            await refresh();
+            setActiveIndex(0);
+            const toast = (await import('react-hot-toast')).default;
+            toast.success('대표 이미지가 변경되었습니다.');
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
         } finally {
             setIsUpdating(false);
         }

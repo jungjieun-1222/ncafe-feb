@@ -24,7 +24,7 @@ public class OrderPersistenceAdapter implements SaveOrderPort, LoadOrderPort {
     }
 
     @Override
-    public List<OrderEntity> loadOrdersByUserId(Long userId) {
+    public List<OrderEntity> loadOrdersByUserId(String userId) {
         return orderRepository.findByUserIdOrderByOrderedAtDesc(userId);
     }
 

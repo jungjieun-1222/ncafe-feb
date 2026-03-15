@@ -1,53 +1,45 @@
 package com.new_cafe.app.backend.controller.admin;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.new_cafe.app.backend.entity.Category;
 import com.new_cafe.app.backend.service.CategoryService;
 
-/**
- * 카테고리와 관련된 HTTP 요청(API)을 처리하는 컨트롤러
- */
 @RestController
+@RequestMapping("/admin/categories")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    // 목록 조회 데이터 반환
-    @GetMapping("/admin/categories")
+    @GetMapping
     public List<Category> categories() {
         return categoryService.getAll();
     }
 
-    // 상세 조회 데이터 반환
-    @GetMapping("/admin/categories/{id}")
-    public String detail() {
-        return "detail";
+    @GetMapping("/{id}")
+    public Category detail(@PathVariable Long id) {
+        return null; // TODO: Implement if needed
     }
 
-    // 카테고리 생성 데이터 입력
-    @PostMapping("/admin/categories")
-    public String newCategory(Category category) {
-        return "newCategory";
+    @PostMapping
+    public void newCategory(@RequestBody Category category) {
+        // TODO: Implement
     }
 
-    @PutMapping("/admin/categories/{id}")
-    public String editCategory(Category category) {
-        // TODO: process PUT request
-        return "editCategory";
+    @PutMapping("/{id}")
+    public void editCategory(@PathVariable Long id, @RequestBody Category category) {
+        // TODO: Implement
     }
 
-    // 카테고리 삭제 데이터 입력
-    @DeleteMapping("/admin/categories/{id}")
-    public String deleteCategory() {
-        return "deleteCategory";
+    @DeleteMapping("/{id}")
+    public void deleteCategory(@PathVariable Long id) {
+        // TODO: Implement
+    }
+
+    @PutMapping("/reorder")
+    public void reorder(@RequestBody List<Long> categoryIds) {
+        categoryService.reorder(categoryIds);
     }
 }

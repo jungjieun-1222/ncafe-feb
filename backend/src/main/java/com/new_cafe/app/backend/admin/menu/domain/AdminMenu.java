@@ -33,4 +33,11 @@ public class AdminMenu {
     // 관리자 전용 필드
     private Integer costPrice;
     private String adminMemo;
+    private Integer sortOrder;
+
+    @Builder.Default
+    private java.util.List<com.new_cafe.app.backend.cart.domain.Option> options = new java.util.ArrayList<>();
+
+    @Builder.Default
+    private java.util.List<String> curationTags = new java.util.ArrayList<>();
 }

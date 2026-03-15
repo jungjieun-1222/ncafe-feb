@@ -19,6 +19,7 @@ interface MenuDetail {
     imageSrc: string;
     isAvailable: boolean;
     allergyInfo?: string;
+    options: MenuOption[];
 }
 
 export default function MenuDetailPage() {
@@ -44,12 +45,29 @@ export default function MenuDetailPage() {
                 const data = await res.json();
                 setMenu(data);
                 
-                // Get pre-defined options based on category
-                const groups = getOptionsByCategory(data.categoryName);
-                setOptionGroups(groups);
+                // Group dynamic options by name
+                const options = data.options || [];
+                const groupsMap: Record<string, MenuOption[]> = {};
+                options.forEach((opt: MenuOption) => {
+                    if (!groupsMap[opt.name]) groupsMap[opt.name] = [];
+                    groupsMap[opt.name].push(opt);
+                });
+
+                const dynamicGroups: OptionGroup[] = Object.keys(groupsMap).map(name => ({
+                    name,
+                    type: 'radio', // Default to radio for now
+                    options: groupsMap[name]
+                }));
+
+                // Fallback to pre-defined options only if no dynamic options exist
+                const finalGroups = dynamicGroups.length > 0 
+                    ? dynamicGroups 
+                    : getOptionsByCategory(data.categoryName);
+                
+                setOptionGroups(finalGroups);
                 
                 // Initial selection: pick first radio of each group
-                const initial = groups
+                const initial = finalGroups
                     .filter((g: OptionGroup) => g.type === 'radio')
                     .map((g: OptionGroup) => g.options[0]);
                 setSelectedOptions(initial);
@@ -142,7 +160,7 @@ export default function MenuDetailPage() {
         <div className={styles.container}>
             <main className={styles.main}>
                 <button onClick={() => router.back()} className={styles.backBtn}>
-                    <ChevronLeft size={20} /> 차림표로 돌아가기
+                    <ChevronLeft size={24} /> 차림표로 돌아가기
                 </button>
 
                 <div className={styles.content}>

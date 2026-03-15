@@ -1,40 +1,205 @@
-.sectionTitle {
-    font-size: var(--text-xl);
-    font-weight: 600;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: var(--space-4);
-    color: var(--color-gray-900);
+}
+
+.sectionTitle {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-primary-800);
 }
 
 .optionList {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-2);
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: var(--space-2);
+}
+
+/* Scrollbar styling */
+.optionList::-webkit-scrollbar,
+.allOptionsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.optionList::-webkit-scrollbar-track,
+.allOptionsList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.optionList::-webkit-scrollbar-thumb,
+.allOptionsList::-webkit-scrollbar-thumb {
+    background: var(--color-primary-200);
+    border-radius: 10px;
+}
+
+.optionList::-webkit-scrollbar-thumb:hover,
+.allOptionsList::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-400);
 }
 
 .optionItem {
-    padding: var(--space-4);
-    background-color: var(--color-gray-50);
-    border-radius: var(--radius-lg);
-}
-
-.optionHeader {
     display: flex;
     justify-content: space-between;
-    margin-bottom: var(--space-3);
-    font-weight: 600;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background-color: var(--color-primary-50);
+    border: 1px solid var(--color-primary-100);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
 }
 
-.optionDetailList {
+.optionItem:hover {
+    background-color: var(--color-primary-100);
+}
+
+.optionInfo {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-2);
+    align-items: center;
     flex-wrap: wrap;
 }
 
-.optionDetailBadge {
-    padding: var(--space-1) var(--space-3);
-    background: white;
-    border: 1px solid var(--color-gray-200);
-    border-radius: var(--radius-md);
+.optionName {
+    font-weight: 600;
+    color: var(--color-primary-700);
+    font-size: var(--text-xs);
+}
+
+.optionValue {
+    color: var(--color-gray-900);
+    font-weight: 500;
     font-size: var(--text-sm);
-    color: var(--color-gray-600);
+}
+
+.optionPrice {
+    font-size: 10px;
+    color: var(--color-primary-600);
+    background: white;
+    padding: 1px 4px;
+    border-radius: 4px;
+    border: 1px solid var(--color-primary-100);
+}
+
+.removeBtn {
+    background-color: #fff;
+    color: var(--color-danger-500);
+    border: 1px solid var(--color-danger-200);
+    border-radius: var(--radius-md);
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.removeBtn:hover {
+    background-color: var(--color-danger-500);
+    color: white;
+    border-color: var(--color-danger-500);
+}
+
+.emptyState {
+    text-align: center;
+    padding: var(--space-6);
+    color: var(--color-gray-400);
+    font-size: var(--text-sm);
+    border: 2px dashed var(--color-gray-100);
+    border-radius: var(--radius-xl);
+}
+
+.managementSection {
+    margin-top: var(--space-6);
+    background-color: #fcfcfc;
+    padding: var(--space-4);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-gray-100);
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--color-gray-200);
+    margin-bottom: var(--space-4);
+}
+
+.subTitle {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.allOptionsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: var(--space-2);
+}
+
+.globalOptionItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background-color: white;
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-md);
+    font-size: 11px;
+}
+
+.globalActions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.addBtn {
+    background-color: var(--color-primary-600);
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 10px;
+}
+
+.deleteGlobalBtn {
+    background: none;
+    border: none;
+    color: var(--color-danger-300);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 10px;
+}
+
+.createSection {
+    background-color: var(--color-gray-50);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-gray-200);
+}
+
+.inputGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.inputGroup input {
+    flex: 1;
+    min-width: 60px;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: 12px;
 }

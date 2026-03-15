@@ -17,9 +17,11 @@ public class FileStorageService implements FileStorageUseCase {
 
     private final Path fileStorageLocation;
 
-    public FileStorageService() {
-        // base directory is the project root, storage in backend/uploads
-        this.fileStorageLocation = Paths.get("backend/uploads").toAbsolutePath().normalize();
+    public FileStorageService(@org.springframework.beans.factory.annotation.Value("${upload.path}") String uploadPath) {
+        // Ensure the path points to the 'images' subdirectory which is served by /images/**
+        String baseLocation = uploadPath.endsWith("/") ? uploadPath + "images" : uploadPath + "/images";
+        this.fileStorageLocation = Paths.get(baseLocation).toAbsolutePath().normalize();
+        
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
@@ -47,7 +49,8 @@ public class FileStorageService implements FileStorageUseCase {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return "/uploads/" + fileName;
+            // Return path starting with /images/ so it's consistent with existing images
+            return "/images/" + fileName;
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
@@ -55,12 +58,13 @@ public class FileStorageService implements FileStorageUseCase {
 
     @Override
     public void deleteFile(String filePath) {
-        if (filePath == null || !filePath.startsWith("/uploads/")) {
+        if (filePath == null) {
             return;
         }
 
         try {
-            String fileName = filePath.replace("/uploads/", "");
+            // Get filename from path (could be /images/uuid.png or /uploads/uuid.png)
+            String fileName = Paths.get(filePath).getFileName().toString();
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.deleteIfExists(targetLocation);
         } catch (IOException ex) {

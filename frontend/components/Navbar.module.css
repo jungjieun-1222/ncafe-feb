@@ -1,20 +1,41 @@
-/* Header updated for a more premium ivory glass feel */
 .nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 95px;
-    /* Slightly more spacious */
     z-index: 200;
     display: flex;
     align-items: center;
-    background: rgba(247, 243, 238, 0.95);
-    /* Heritage Ivory with slight glass */
+    background: #1C252E; /* Dark Charcoal Navy */
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(181, 155, 109, 0.15);
-    /* Heritage gold border */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.patternLine {
+    width: 100%;
+    height: 8px;
+    background: #1C252E;
+    overflow: hidden;
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.dancheongPattern {
+    width: 200%;
+    height: 100%;
+    opacity: 0.85;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='8' viewBox='0 0 80 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 4H25M35 4H45M55 4H80' stroke='%23B59B6D' stroke-width='1'/%3E%3Crect x='25' y='1' width='10' height='6' rx='1' fill='%238B110B'/%3E%3Crect x='45' y='1' width='10' height='6' rx='1' fill='%23164D33'/%3E%3Ccircle cx='40' cy='4' r='2' fill='%23B59B6D'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    animation: slidePattern 40s linear infinite;
+}
+
+@keyframes slidePattern {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
 }
 
 .container {
@@ -25,7 +46,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 60px;
-    /* More horizontal padding */
+    flex: 1; /* Take up space above the pattern line */
 }
 
 .logo {
@@ -36,12 +57,10 @@
 .logoLink {
     font-size: 2.85rem;
     font-weight: 400;
-    color: var(--k-clay);
+    color: #FFFFFF; /* Pure White */
     letter-spacing: -0.01em;
-    /* font-family: var(--font-calligraphy), cursive !important; */
     font-family: inherit;
-    /* Let global .calligraphy class handle this */
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     display: inline-flex;
     align-items: center;
 }
@@ -71,10 +90,11 @@
 .link {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #4A443F;
+    color: rgba(255, 255, 255, 0.85); /* Light gray-white */
     letter-spacing: 0.05em;
     position: relative;
     padding: 8px 0;
+    transition: color 0.3s ease;
 }
 
 .link::after {
@@ -88,12 +108,8 @@
     transition: all 0.3s ease;
 }
 
-.link:hover::after, .active::after {
-    width: 100%;
-}
-
-.active {
-    color: var(--k-clay);
+.link:hover, .active {
+    color: #FFFFFF;
 }
 
 .actionLink, .cartActionBtn, .adminActionLink {
@@ -109,13 +125,13 @@
 }
 
 .actionLink {
-    color: #5D544F;
-    background: rgba(181, 155, 109, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .actionLink:hover, .activeAction {
-    background: rgba(181, 155, 109, 0.15);
-    color: var(--k-clay);
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
     transform: translateY(-1px);
 }
 
@@ -148,7 +164,7 @@
     display: flex;
     gap: 12px;
     align-items: center;
-    border-left: 1px solid rgba(181, 155, 109, 0.15);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
     padding-left: 20px;
 }
 
@@ -213,9 +229,15 @@
 .userInfo {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #4A443F;
+    color: rgba(255, 255, 255, 0.9);
     margin-right: 8px;
     font-family: var(--font-serif);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.userInfo:hover {
+    color: #FFFFFF;
 }
 
 @media (max-width: 768px) {

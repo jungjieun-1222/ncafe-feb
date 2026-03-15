@@ -14,19 +14,44 @@ import { ShoppingBag, ClipboardList, Settings } from 'lucide-react';
 const Navbar = () => {
     const pathname = usePathname();
     const { user, isAuthenticated, logout } = useAuthStore();
-    const { openCart } = useCartStore();
+    const { openCart, refreshTrigger } = useCartStore();
+    const [cartCount, setCartCount] = React.useState(0);
     const router = useRouter();
+
+    React.useEffect(() => {
+        const fetchCartCount = async () => {
+            const cartId = localStorage.getItem('cartId');
+            if (!cartId) {
+                setCartCount(0);
+                return;
+            }
+            try {
+                const res = await fetch(`/api/v1/carts/${cartId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const count = data.items?.reduce((acc: number, item: any) => acc + item.quantity, 0) || 0;
+                    setCartCount(count);
+                } else {
+                    setCartCount(0);
+                }
+            } catch (err) {
+                setCartCount(0);
+            }
+        };
+        fetchCartCount();
+    }, [refreshTrigger]);
 
     const handleLogout = async () => {
         await logout();
+        localStorage.removeItem('cartId'); // 장바구니 ID 초기화
         toast.success('로그아웃 되었습니다.');
         router.push('/');
     };
 
-    const isAdmin = user?.role === 'ROLE_ADMIN' || user?.role === 'ADMIN';
+    const isAdmin = user?.role?.includes('ADMIN') || user?.role?.includes('MASTER') || user?.role?.includes('STAFF');
 
     return (
-        <nav className={`${styles.nav} glass-warm`}>
+        <nav className={styles.nav}>
             <div className={styles.container}>
                 <div className={styles.logo}>
                     <Link href="/" className={`${styles.logoLink} calligraphy`}>
@@ -50,16 +75,45 @@ const Navbar = () => {
                         </Link>
                     ) : (
                         <>
-                            <Link href="/orders" className={`${styles.actionLink} ${pathname === '/orders' ? styles.activeAction : ''}`}>
-                                <ClipboardList size={20} />
-                                <span>내 주문</span>
-                            </Link>
+                            {isAuthenticated ? (
+                                <Link href="/mypage" className={`${styles.actionLink} ${pathname === '/mypage' ? styles.activeAction : ''}`}>
+                                    <ClipboardList size={20} />
+                                    <span>나의 이용기록</span>
+                                </Link>
+                            ) : (
+                                <Link href="/orders" className={`${styles.actionLink} ${pathname === '/orders' ? styles.activeAction : ''}`}>
+                                    <ClipboardList size={20} />
+                                    <span>주문 내역</span>
+                                </Link>
+                            )}
                             <button 
                                 onClick={openCart} 
                                 className={styles.cartActionBtn}
                             >
-                                <ShoppingBag size={20} />
-                                <span>장바구니</span>
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <ShoppingBag size={20} />
+                                    {cartCount > 0 && (
+                                        <span style={{
+                                            position: 'absolute',
+                                            top: '-8px',
+                                            right: '-8px',
+                                            background: 'var(--k-crimson)',
+                                            color: 'white',
+                                            borderRadius: '50%',
+                                            width: '18px',
+                                            height: '18px',
+                                            fontSize: '10px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontWeight: 'bold',
+                                            border: '2px solid var(--k-clay)'
+                                        }}>
+                                            {cartCount}
+                                        </span>
+                                    )}
+                                </div>
+                                <span style={{ marginLeft: cartCount > 0 ? '8px' : '0' }}>장바구니</span>
                             </button>
                         </>
                     )}
@@ -68,7 +122,11 @@ const Navbar = () => {
                 <div className={styles.actions}>
                     {isAuthenticated ? (
                         <>
-                            <span className={styles.userInfo}>{user?.username}님</span>
+                            {isAdmin ? (
+                                <span className={styles.userInfo}>{user?.username} 관리자님 🏮</span>
+                            ) : (
+                                <Link href="/mypage" className={styles.userInfo}>{user?.username} 나리 🏮</Link>
+                            )}
                             <button
                                 onClick={handleLogout}
                                 className={styles.loginBtn}
@@ -84,13 +142,18 @@ const Navbar = () => {
                             로그인
                         </Link>
                     )}
-                    <Link
-                        href="/reservations"
-                        className={styles.reserveBtn}
-                    >
-                        자리 예약
-                    </Link>
+                    {!isAdmin && (
+                        <Link
+                            href="/reservations"
+                            className={styles.reserveBtn}
+                        >
+                            자리 예약
+                        </Link>
+                    )}
                 </div>
+            </div>
+            <div className={styles.patternLine}>
+                <div className={styles.dancheongPattern}></div>
             </div>
         </nav>
     );

@@ -19,9 +19,10 @@ public class UserMenuController {
     @GetMapping
     public List<UserMenuWebModel> getAvailableMenus(
             @RequestParam(required = false) Integer categoryId,
-            @RequestParam(required = false) String searchQuery) {
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) String sortBy) {
         
-        return browseMenuUseCase.getAvailableMenus(categoryId, searchQuery).stream()
+        return browseMenuUseCase.getAvailableMenus(categoryId, searchQuery, sortBy).stream()
                 .map(this::mapToWebModel)
                 .collect(Collectors.toList());
     }
@@ -45,6 +46,8 @@ public class UserMenuController {
                 .isAvailable(menu.isAvailable())
                 .allergyInfo(menu.getAllergyInfo())
                 .images(menu.getImages())
+                .options(menu.getOptions())
+                .curationTags(menu.getCurationTags())
                 .build();
     }
 }

@@ -25,6 +25,9 @@ public class GetMenuDetailResult {
     private String primaryImageSrc;
     private Integer costPrice;
     private String adminMemo;
+    private java.util.List<com.new_cafe.app.backend.cart.domain.Option> options;
+    private java.util.List<String> curationTags;
+    private Integer sortOrder;
 
     public static GetMenuDetailResult from(AdminMenu menu) {
         return GetMenuDetailResult.builder()
@@ -44,6 +47,9 @@ public class GetMenuDetailResult {
                 .primaryImageSrc(menu.getPrimaryImageSrc())
                 .costPrice(menu.getCostPrice())
                 .adminMemo(menu.getAdminMemo())
+                .options(menu.getOptions())
+                .curationTags(menu.getCurationTags())
+                .sortOrder(menu.getSortOrder())
                 .build();
     }
 }

@@ -14,11 +14,29 @@ import tabStyles from './_components/CategoryTabs/CategoryTabs.module.css';
 export default function MenuListPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined);
+    const [sortBy, setSortBy] = useState('default');
+
+    console.log("Current State - Category:", selectedCategory, "Sort:", sortBy);
 
     return (
         <div className={styles.container}>
             <PageHeader title="메뉴 관리" subtitle="카페의 소중한 메뉴들을 관리하는 공간입니다.">
                 <div className={tabStyles.actionSection}>
+                    <div className={tabStyles.sortWrapper}>
+                        <select 
+                            className={tabStyles.sortSelect}
+                            value={sortBy}
+                            onChange={(e) => {
+                                console.log("Sort changed to:", e.target.value);
+                                setSortBy(e.target.value);
+                            }}
+                        >
+                            <option value="default">기본순</option>
+                            <option value="latest">최신순</option>
+                            <option value="recommended">추천순</option>
+                        </select>
+                    </div>
+
                     <div className={tabStyles.searchWrapper}>
                         <Search size={18} className={tabStyles.searchIcon} />
                         <input
@@ -47,6 +65,7 @@ export default function MenuListPage() {
             <MenuList
                 selectedCategory={selectedCategory}
                 searchQuery={searchQuery}
+                sortBy={sortBy}
             />
         </div>
     );

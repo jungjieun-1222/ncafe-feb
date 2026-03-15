@@ -218,6 +218,13 @@ const CartDrawer = () => {
                                 주문하기
                             </button>
                         </div>
+                        <button 
+                            className={styles.continueShoppingBtn} 
+                            onClick={() => { closeCart(); router.push('/menus'); }}
+                        >
+                            <span className="material-icons">add_shopping_cart</span>
+                            <span>메뉴 더 담으러 가기</span>
+                        </button>
                     </footer>
                 )}
             </div>

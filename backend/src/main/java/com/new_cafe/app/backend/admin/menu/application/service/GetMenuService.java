@@ -24,8 +24,8 @@ public class GetMenuService implements GetMenuUseCase {
     private final LoadMenuImagePort loadMenuImagePort;
 
     @Override
-    public List<GetMenuListResult> getAllMenus(Integer categoryId, String searchQuery) {
-        return loadAdminMenuPort.loadAllAdminMenusByCategoryIdAndSearchQuery(categoryId, searchQuery).stream()
+    public List<GetMenuListResult> getAllMenus(Integer categoryId, String searchQuery, String sortBy) {
+        return loadAdminMenuPort.loadAllAdminMenusByCategoryIdAndSearchQuery(categoryId, searchQuery, sortBy).stream()
                 .peek(this::enrichAdminMenu)
                 .map(GetMenuListResult::from)
                 .collect(Collectors.toList());
@@ -41,8 +41,16 @@ public class GetMenuService implements GetMenuUseCase {
 
     @Override
     public GetMenuDetailResult getMenuBySlug(String slug) {
-        AdminMenu menu = loadAdminMenuPort.loadAdminMenuBySlug(slug)
-                .orElseThrow(() -> new RuntimeException("Menu not found"));
+        java.util.Optional<AdminMenu> menuOpt = loadAdminMenuPort.loadAdminMenuBySlug(slug);
+        
+        // If not found by slug, try lookup by ID for better robustness (frontend might still send ID)
+        if (menuOpt.isEmpty() && slug.matches("\\d+")) {
+            try {
+                menuOpt = loadAdminMenuPort.loadAdminMenuById(Long.parseLong(slug));
+            } catch (NumberFormatException ignored) {}
+        }
+        
+        AdminMenu menu = menuOpt.orElseThrow(() -> new RuntimeException("Menu not found: " + slug));
         enrichAdminMenu(menu);
         return GetMenuDetailResult.from(menu);
     }
@@ -53,7 +61,11 @@ public class GetMenuService implements GetMenuUseCase {
     }
 
     private void enrichAdminMenu(AdminMenu menu) {
-        menu.setCategoryName(loadCategoryPort.getNameById(menu.getCategoryId().intValue()));
+        if (menu.getCategoryId() != null) {
+            menu.setCategoryName(loadCategoryPort.getNameById(menu.getCategoryId().intValue()));
+        } else {
+            menu.setCategoryName("미분류");
+        }
         List<String> images = loadMenuImagePort.getImageUrlsByMenuId(menu.getId());
         menu.setPrimaryImageSrc(images.isEmpty() ? "blank.png" : images.get(0));
     }

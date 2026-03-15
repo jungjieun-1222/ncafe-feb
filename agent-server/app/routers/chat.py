@@ -87,47 +87,78 @@ async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
                         return {"content": clean_text, "menu_cards": cards}
                     
                     candidate = response.candidates[0]
-                    tool_calls = []
-                    search_call = None
+                    internal_tool_call = None
+                    external_tool_calls = []
                     
                     for part in candidate.content.parts:
                         if part.function_call:
-                            if part.function_call.name == "search_menu_by_slug":
-                                search_call = part.function_call
+                            fn = part.function_call
+                            if fn.name in ["search_menu_by_slug", "find_match", "create_inyeon_card", "respond_match"]:
+                                internal_tool_call = fn
+                                break # Only handle one internal tool at a time for simplicity
                             else:
-                                tool_calls.append({
-                                    "name": part.function_call.name,
-                                    "args": part.function_call.args
+                                external_tool_calls.append({
+                                    "name": fn.name,
+                                    "args": fn.args
                                 })
                     
-                    if search_call:
-                        # Execute search and return to LLM
-                        from app.services.gemini import search_menus
-                        search_results = search_menus(search_call.args.get("keyword", ""))
+                    if internal_tool_call:
+                        # Execute internal tool
+                        fn = internal_tool_call
+                        tool_response = None
                         
-                        # Add tool call and response to history
-                        gemini_messages.append(candidate.content)
-                        gemini_messages.append(types.Content(
-                            role="user",
-                            parts=[types.Part(
-                                function_response=types.FunctionResponse(
-                                    name=search_call.name,
-                                    response={"results": search_results}
-                                )
-                            )]
-                        ))
-                        continue # Re-invoke Gemini with search results
+                        if fn.name == "search_menu_by_slug":
+                            from app.services.gemini import search_menus
+                            tool_response = {"results": search_menus(fn.args.get("keyword", ""))}
+                        elif fn.name == "create_inyeon_card" and request.user_id:
+                            from app.services.matching_service import create_or_update_inyeon_card
+                            create_or_update_inyeon_card(db, request.user_id, fn.args.get("interests", []), fn.args.get("mood", ""), fn.args.get("greeting", ""))
+                            tool_response = {"status": "success", "message": "인연 카드가 등록되었소."}
+                        elif fn.name == "find_match" and request.user_id:
+                            from app.services.matching_service import find_top_matches, create_match_attempt
+                            matches = find_top_matches(db, request.user_id)
+                            if matches:
+                                m = matches[0] # Top 1
+                                other = m["card"]
+                                # Create a pending match record
+                                create_match_attempt(db, request.user_id, other.user_id, m["score"], "")
+                                tool_response = {
+                                    "found": True,
+                                    "match_id": other.user_id, # Using user_id as identifier for now
+                                    "nickname": f"손님_{other.user_id[:4]}",
+                                    "interests": other.interests,
+                                    "mood": other.mood,
+                                    "greeting": other.greeting,
+                                    "match_score": m["score"]
+                                }
+                            else:
+                                tool_response = {"found": False, "message": "아직 어울리는 인연을 찾지 못했소."}
+                        elif fn.name == "respond_match" and request.user_id:
+                            # Placeholder logic: in real app we update the Match record
+                            tool_response = {"status": "success", "action": fn.args.get("action")}
+
+                        if tool_response:
+                            # Add tool call and response to history
+                            gemini_messages.append(candidate.content)
+                            gemini_messages.append(types.Content(
+                                role="user",
+                                parts=[types.Part(
+                                    function_response=types.FunctionResponse(
+                                        name=fn.name,
+                                        response=tool_response
+                                    )
+                                )]
+                            ))
+                            continue # Re-invoke Gemini
                     
-                    if tool_calls:
-                        # Return UI tools to frontend
-                        # Collect text if present
+                    if external_tool_calls:
+                        # Return UI tools to frontend (add_to_cart, Maps_to)
                         text_parts = [p.text for p in candidate.content.parts if p.text]
                         content = " ".join(text_parts) if text_parts else "도구를 사용합니다."
-                        clean_text, _ = extract_menu_cards(content) # Still clean markers if any
-                        
+                        clean_text, _ = extract_menu_cards(content)
                         return {
                             "content": clean_text,
-                            "tool_calls": tool_calls # Return as list
+                            "tool_calls": external_tool_calls
                         }
                     
                     # No tools, just text
@@ -152,51 +183,78 @@ async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
                     # We start streaming
                     async for token in chat_stream(current_messages):
                         if isinstance(token, dict) and "function_call" in token:
-                            has_tool_call = True
                             fn = token["function_call"]
                             
-                            if fn["name"] == "search_menu_by_slug":
-                                is_search = True
-                                # Execute search
-                                from app.services.gemini import search_menus, types
-                                search_results = search_menus(fn["args"].get("keyword", ""))
+                            # Internal tools list
+                            internal_tools = ["search_menu_by_slug", "find_match", "create_inyeon_card", "respond_match"]
+                            
+                            if fn["name"] in internal_tools:
+                                has_tool_call = True
+                                is_internal = True
                                 
-                                # Add to history
-                                # Note: chat_stream currently doesn't give us the full Assistant content part to put back in history easily
-                                # We might need to adjust chat_stream to return the full part if we want to support multi-turn in stream
-                                # For now, let's assume we can reconstruct it or just handle it.
-                                
-                                # Reconstruct Content part for history
-                                assistant_content = types.Content(
-                                    role="model",
-                                    parts=[types.Part(
-                                        function_call=types.FunctionCall(
-                                            name=fn["name"],
-                                            args=fn["args"]
-                                        )
-                                    )]
-                                )
-                                current_messages.append(assistant_content)
-                                current_messages.append(types.Content(
-                                    role="user",
-                                    parts=[types.Part(
-                                        function_response=types.FunctionResponse(
-                                            name=fn["name"],
-                                            response={"results": search_results}
-                                        )
-                                    )]
-                                ))
-                                break # Exit the current token stream to re-invoke
+                                # Execute internal tool
+                                tool_response = None
+                                if fn["name"] == "search_menu_by_slug":
+                                    from app.services.gemini import search_menus
+                                    tool_response = {"results": search_menus(fn["args"].get("keyword", ""))}
+                                elif fn["name"] == "create_inyeon_card" and request.user_id:
+                                    from app.services.matching_service import create_or_update_inyeon_card
+                                    create_or_update_inyeon_card(db, request.user_id, fn["args"].get("interests", []), fn["args"].get("mood", ""), fn["args"].get("greeting", ""))
+                                    tool_response = {"status": "success", "message": "인연 카드가 등록되었소."}
+                                elif fn["name"] == "find_match" and request.user_id:
+                                    from app.services.matching_service import find_top_matches, create_match_attempt
+                                    matches = find_top_matches(db, request.user_id)
+                                    if matches:
+                                        m = matches[0]
+                                        other = m["card"]
+                                        create_match_attempt(db, request.user_id, other.user_id, m["score"], "")
+                                        tool_response = {
+                                            "found": True,
+                                            "match_id": other.user_id,
+                                            "nickname": f"손님_{other.user_id[:4]}",
+                                            "interests": other.interests,
+                                            "mood": other.mood,
+                                            "greeting": other.greeting,
+                                            "match_score": m["score"]
+                                        }
+                                    else:
+                                        tool_response = {"found": False, "message": "아직 어울리는 인연을 찾지 못했소."}
+                                elif fn["name"] == "respond_match" and request.user_id:
+                                    tool_response = {"status": "success", "action": fn["args"].get("action")}
+
+                                if tool_response:
+                                    # Add to history and re-invoke
+                                    from google.genai import types
+                                    assistant_content = types.Content(
+                                        role="model",
+                                        parts=[types.Part(
+                                            function_call=types.FunctionCall(
+                                                name=fn["name"],
+                                                args=fn["args"]
+                                            )
+                                        )]
+                                    )
+                                    current_messages.append(assistant_content)
+                                    current_messages.append(types.Content(
+                                        role="user",
+                                        parts=[types.Part(
+                                            function_response=types.FunctionResponse(
+                                                name=fn["name"],
+                                                response=tool_response
+                                            )
+                                        )]
+                                    ))
+                                    break # Exit stream to restart with tool response
                             else:
-                                # UI tool call - send to frontend
+                                # UI tool call - send to frontend (add_to_cart, Maps_to)
                                 yield {"data": json.dumps({"function_call": fn}, ensure_ascii=False)}
                         else:
                             # Text token
                             accumulated += token
                             yield {"data": json.dumps({"content": token}, ensure_ascii=False)}
                     
-                    if not is_search:
-                        # If it wasn't a search turn that needs re-invocation, we are done
+                    if not has_tool_call or not locals().get('is_internal', False):
+                        # If no internal tool was called, we are finished
                         break
                 
                 # 답변 완료 후 메뉴 카드 정보 추출 및 전송

@@ -34,7 +34,7 @@ export default function EditMenuPage({ params }: Props) {
                     description: data.description || '',
                     price: data.price,
                     category: {
-                        id: String(data.categoryId),
+                        id: data.categoryId ? String(data.categoryId) : '1',
                         korName: data.categoryName || '기타',
                         engName: '',
                         sortOrder: 0
@@ -47,8 +47,13 @@ export default function EditMenuPage({ params }: Props) {
                     }] : [],
                     isAvailable: data.isAvailable,
                     isSoldOut: !data.isAvailable,
-                    sortOrder: 0,
+                    sortOrder: data.sortOrder || 0,
                     options: [], // Options not supported by backend yet
+                    curationTags: data.curationTags || [],
+                    slug: data.slug || '',
+                    altText: data.altText || '',
+                    costPrice: data.costPrice || 0,
+                    adminMemo: data.adminMemo || '',
                     createdAt: new Date(data.createdAt),
                     updatedAt: new Date(data.updatedAt)
                 };

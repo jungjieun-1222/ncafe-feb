@@ -6,7 +6,7 @@ import java.time.LocalTime;
 
 @Data
 public class ReservationRequest {
-    private Long userId;
+    private String userId;
     private String guestName;
     private String guestPhone;
     private LocalDate reserveDate;

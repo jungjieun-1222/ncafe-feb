@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LoadAdminMenuPort {
-    List<AdminMenu> loadAllAdminMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery);
+    List<AdminMenu> loadAllAdminMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery, String sortBy);
     Optional<AdminMenu> loadAdminMenuById(Long id);
     Optional<AdminMenu> loadAdminMenuBySlug(String slug);
 }

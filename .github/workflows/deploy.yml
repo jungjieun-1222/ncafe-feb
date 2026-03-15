@@ -51,8 +51,7 @@ jobs:
           echo "COMPOSE_PROFILES=with-db" >> .env
           echo "AGENT_SERVER_PORT=${AGENT_SERVER_PORT}" >> .env
           echo "AGENT_SERVER_IMAGE=${AGENT_SERVER_IMAGE}" >> .env
-          echo "REDIS_HOST=${REDIS_HOST}" >> .env
-          echo "REDIS_PORT=${REDIS_PORT}" >> .env
+
           echo "GEMINI_API_KEY=${GEMINI_API_KEY}" >> .env
           echo "AGENT_SERVER_URL=http://agent-server:8000" >> .env
           # 서버 실제 데이터 경로 명시
@@ -73,15 +72,14 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           AGENT_SERVER_PORT: ${{ vars.AGENT_SERVER_PORT }}
           AGENT_SERVER_IMAGE: ${{ vars.AGENT_SERVER_IMAGE }}
-          REDIS_HOST: ${{ vars.REDIS_HOST }}
-          REDIS_PORT: ${{ vars.REDIS_PORT }}
+
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Force Clean Conflicting Containers
         run: |
           echo "Cleaning up conflicting containers..."
           # docker compose down might fail if names conflict with other projects, so we force-kill by names
-          docker rm -f ${USER_ID}-db ${USER_ID}-backend ${USER_ID}-frontend ${USER_ID}-agent-server ${USER_ID}-redis || true
+          docker rm -f ${USER_ID}-db ${USER_ID}-backend ${USER_ID}-frontend ${USER_ID}-agent-server || true
           docker network prune -f || true
         env:
           USER_ID: ${{ vars.USER_ID }}

@@ -1,8 +1,7 @@
+from app.models.base import Base
 from sqlalchemy import Column, Integer, Text
-from sqlalchemy.ext.declarative import declarative_base
 from pgvector.sqlalchemy import Vector
 
-Base = declarative_base()
 
 class Knowledge(Base):
     __tablename__ = "knowledge"

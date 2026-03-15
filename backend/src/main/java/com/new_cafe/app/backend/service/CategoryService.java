@@ -13,4 +13,9 @@ public interface CategoryService {
      */
     public List<Category> getAll();
 
+    /**
+     * 카테고리 순서를 재정의하는 서비스 기능
+     */
+    public void reorder(List<Long> categoryIds);
+
 }

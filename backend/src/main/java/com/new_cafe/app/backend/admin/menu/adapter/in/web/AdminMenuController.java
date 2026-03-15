@@ -10,6 +10,7 @@ import com.new_cafe.app.backend.admin.menu.application.port.in.DeleteMenuUseCase
 import com.new_cafe.app.backend.admin.menu.application.port.in.GetMenuUseCase;
 import com.new_cafe.app.backend.admin.menu.application.port.in.UpdateMenuUseCase;
 import com.new_cafe.app.backend.admin.menu.application.port.in.AddMenuImageUseCase;
+import com.new_cafe.app.backend.admin.menu.application.port.in.UpdateMenuOptionsUseCase;
 import com.new_cafe.app.backend.common.storage.application.port.in.FileStorageUseCase;
 import com.new_cafe.app.backend.admin.menu.application.result.GetMenuDetailResult;
 import com.new_cafe.app.backend.admin.menu.application.result.GetMenuListResult;
@@ -30,14 +31,26 @@ public class AdminMenuController {
     private final UpdateMenuUseCase updateMenuUseCase;
     private final DeleteMenuUseCase deleteMenuUseCase;
     private final AddMenuImageUseCase addMenuImageUseCase;
+    private final UpdateMenuOptionsUseCase updateMenuOptionsUseCase;
     private final FileStorageUseCase fileStorageUseCase;
+
+    @PostMapping("/{id}/options/{optionId}")
+    public void addOptionToMenu(@PathVariable Long id, @PathVariable Long optionId) {
+        updateMenuOptionsUseCase.addOptionToMenu(id, optionId);
+    }
+
+    @DeleteMapping("/{id}/options/{optionId}")
+    public void removeOptionFromMenu(@PathVariable Long id, @PathVariable Long optionId) {
+        updateMenuOptionsUseCase.removeOptionFromMenu(id, optionId);
+    }
 
     @GetMapping
     public AdminMenuListResponse getAllMenus(
             @RequestParam(required = false) Integer categoryId,
-            @RequestParam(required = false) String searchQuery) {
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(defaultValue = "default") String sortBy) {
         
-        List<AdminMenuWebModel> models = getMenuUseCase.getAllMenus(categoryId, searchQuery).stream()
+        List<AdminMenuWebModel> models = getMenuUseCase.getAllMenus(categoryId, searchQuery, sortBy).stream()
                 .map(this::mapListToWebModel)
                 .collect(Collectors.toList());
         
@@ -93,6 +106,11 @@ public class AdminMenuController {
         updateMenuUseCase.updateMenuAvailability(id, isAvailable);
     }
 
+    @PutMapping("/reorder")
+    public void reorderMenus(@RequestBody java.util.List<Long> menuIds) {
+        updateMenuUseCase.reorderMenus(menuIds);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteMenu(@PathVariable Long id) {
         deleteMenuUseCase.deleteMenu(id);
@@ -128,6 +146,11 @@ public class AdminMenuController {
         addMenuImageUseCase.deleteImage(imageId);
     }
 
+    @PostMapping("/{id}/images/{imageId}/primary")
+    public void setPrimaryImage(@PathVariable Long id, @PathVariable Long imageId) {
+        addMenuImageUseCase.setPrimaryImage(id, imageId);
+    }
+
     private AdminMenuWebModel mapListToWebModel(GetMenuListResult menu) {
         return AdminMenuWebModel.builder()
                 .id(menu.getId())
@@ -141,8 +164,11 @@ public class AdminMenuController {
                 .imageSrc(menu.getPrimaryImageSrc())
                 .isAvailable(menu.isAvailable())
                 .isSoldOut(menu.isSoldOut())
+                .altText(menu.getAltText())
                 .createdAt(menu.getCreatedAt())
                 .updatedAt(menu.getUpdatedAt())
+                .curationTags(menu.getCurationTags())
+                .sortOrder(menu.getSortOrder())
                 .build();
     }
 
@@ -161,8 +187,12 @@ public class AdminMenuController {
                 .isSoldOut(menu.isSoldOut())
                 .createdAt(menu.getCreatedAt())
                 .updatedAt(menu.getUpdatedAt())
+                .altText(menu.getAltText())
                 .costPrice(menu.getCostPrice())
                 .adminMemo(menu.getAdminMemo())
+                .options(menu.getOptions())
+                .curationTags(menu.getCurationTags())
+                .sortOrder(menu.getSortOrder())
                 .build();
     }
 
@@ -179,6 +209,8 @@ public class AdminMenuController {
                 .costPrice(request.getCostPrice())
                 .adminMemo(request.getAdminMemo())
                 .imageSrc(request.getImageSrc())
+                .curationTags(request.getCurationTags())
+                .sortOrder(request.getSortOrder())
                 .build();
     }
 
@@ -196,6 +228,8 @@ public class AdminMenuController {
                 .costPrice(request.getCostPrice())
                 .adminMemo(request.getAdminMemo())
                 .imageSrc(request.getImageSrc())
+                .curationTags(request.getCurationTags())
+                .sortOrder(request.getSortOrder())
                 .build();
     }
 }

@@ -23,6 +23,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final SignupUseCase signupUseCase;
+    private final com.new_cafe.app.backend.auth.adapter.out.persistence.repository.UserRepository userRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
@@ -69,7 +70,10 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("message", "Not logged in"));
         }
         
+        var user = userRepository.findByNickname(authentication.getName()).orElse(null);
+        
         return ResponseEntity.ok(Map.of(
+            "id", user != null ? user.getId() : "",
             "username", authentication.getName(),
             "role", authentication.getAuthorities().stream()
                     .map(a -> a.getAuthority())

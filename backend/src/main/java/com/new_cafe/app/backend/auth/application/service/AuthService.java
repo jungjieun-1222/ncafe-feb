@@ -39,9 +39,11 @@ public class AuthService implements LoginUseCase, SignupUseCase {
         }
 
         Account account = Account.of(
+                null,
                 request.getUsername(),
                 passwordEncoder.encode(request.getPassword()),
-                request.getUsername()
+                request.getUsername(),
+                "ROLE_USER"
         );
 
         saveAccountPort.saveAccount(account);

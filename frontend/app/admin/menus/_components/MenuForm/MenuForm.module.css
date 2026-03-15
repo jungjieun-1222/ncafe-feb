@@ -210,3 +210,78 @@
     cursor: pointer;
     border: none;
 }
+
+/* Curation Tag Styles */
+.tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    background: white;
+    min-height: 45px;
+}
+
+.tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-600);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tagRemove {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-primary-400);
+    display: flex;
+    align-items: center;
+}
+
+.tagRemove:hover {
+    color: var(--color-error);
+}
+
+.tagInput {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+    font-size: 14px;
+}
+
+.commonTags {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.commonTagBtn {
+    padding: 4px 10px;
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.commonTagBtn:hover {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-300);
+}
+
+.commonTagBtn.selected {
+    background: var(--color-primary-500);
+    color: white;
+    border-color: var(--color-primary-500);
+}

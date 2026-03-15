@@ -2,7 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 from app.config import SQLALCHEMY_DATABASE_URL
-from app.models.knowledge import Base
+from app.models.base import Base
+import app.models.knowledge
+import app.models.matching
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

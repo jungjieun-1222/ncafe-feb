@@ -2,7 +2,7 @@ import { getIronSession, SessionOptions } from 'iron-session';
 import { cookies } from 'next/headers';
 
 export interface SessionUser {
-    id: number;
+    id: string;
     email: string;
     nickname: string;
     role: string;

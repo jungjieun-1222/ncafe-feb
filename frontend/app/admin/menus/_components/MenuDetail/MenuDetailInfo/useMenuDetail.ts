@@ -12,6 +12,12 @@ export interface MenuDetail {
     createdAt: string;
     updatedAt: string;
     available: boolean;
+    options: Array<{
+        id: number;
+        name: string;
+        value: string;
+        price: number;
+    }>;
 }
 
 export function useMenuDetail(slug: string | undefined) {
@@ -31,7 +37,8 @@ export function useMenuDetail(slug: string | undefined) {
                 // Backend returns isAvailable, mapping to available as requested
                 const mappedData: MenuDetail = {
                     ...data,
-                    available: data.available !== undefined ? data.available : data.isAvailable
+                    available: data.available !== undefined ? data.available : data.isAvailable,
+                    options: data.options || []
                 };
 
                 setMenu(mappedData);

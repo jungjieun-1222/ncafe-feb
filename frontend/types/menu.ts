@@ -11,6 +11,11 @@ export interface Menu {
     isSoldOut: boolean;
     sortOrder: number;
     options: MenuOption[];
+    curationTags?: string[];
+    slug?: string;
+    altText?: string;
+    costPrice?: number;
+    adminMemo?: string;
     createdAt: Date;
     updatedAt: Date;
 }

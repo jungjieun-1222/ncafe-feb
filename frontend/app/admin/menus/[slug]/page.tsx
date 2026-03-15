@@ -26,7 +26,7 @@ export default function MenuDetailPage({ params }: { params: Promise<{ slug: str
                         <MenuDetailInfo slug={slug} />
                     </section>
                     <section className={styles.optionsSection}>
-                        <MenuDetailOptions />
+                        <MenuDetailOptions slug={slug} />
                     </section>
                 </div>
             </div>

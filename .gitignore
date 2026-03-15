@@ -15,3 +15,5 @@ data/
 upload/
 bin/
 out/
+ncafe-data/
+*.sql

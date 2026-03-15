@@ -3,6 +3,7 @@
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Menu } from '@/types/menu';
 import styles from './MenuForm.module.css';
+import { X } from 'lucide-react';
 import Button from '@/components/common/Button/Button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -31,6 +32,8 @@ interface FormValues {
     altText?: string;
     imageSrc?: string;
     slug: string;
+    curationTags: string[];
+    sortOrder: number;
 }
 
 export default function MenuForm({ initialData, mode }: MenuFormProps) {
@@ -39,8 +42,11 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [tagInput, setTagInput] = useState('');
 
-    const { register, control, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({
+    const commonTags = ['월화선생 추천', 'MZ인기메뉴', '이달의 신메뉴', 'Best Seller', '비건 프렌들리'];
+
+    const { register, control, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormValues>({
         defaultValues: {
             korName: initialData?.korName || '',
             engName: initialData?.engName || '',
@@ -48,13 +54,38 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
             price: initialData?.price || 0,
             categoryId: initialData?.category?.id ? Number(initialData.category.id) : 1,
             isAvailable: initialData?.isAvailable ?? true,
-            costPrice: (initialData as any)?.costPrice || 0,
-            adminMemo: (initialData as any)?.adminMemo || '',
-            altText: (initialData as any)?.altText || '',
+            costPrice: initialData?.costPrice || 0,
+            adminMemo: initialData?.adminMemo || '',
+            altText: initialData?.altText || '',
             imageSrc: (initialData as any)?.imageSrc || initialData?.images?.[0]?.url || '',
-            slug: (initialData as any)?.slug || ''
+            slug: initialData?.slug || '',
+            curationTags: initialData?.curationTags || [],
+            sortOrder: initialData?.sortOrder || 0
         }
     });
+
+    const curationTags = watch('curationTags') || [];
+
+    const handleAddTag = (tag: string) => {
+        const trimmedTag = tag.trim();
+        if (trimmedTag && !curationTags.includes(trimmedTag)) {
+            setValue('curationTags', [...curationTags, trimmedTag], { shouldDirty: true });
+        }
+    };
+
+    const handleRemoveTag = (index: number) => {
+        const newTags = curationTags.filter((_, i) => i !== index);
+        setValue('curationTags', newTags, { shouldDirty: true });
+    };
+
+    const toggleCommonTag = (tag: string) => {
+        if (curationTags.includes(tag)) {
+            const index = curationTags.indexOf(tag);
+            handleRemoveTag(index);
+        } else {
+            handleAddTag(tag);
+        }
+    };
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -95,7 +126,8 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
                 price: Number(data.price),
                 categoryId: Number(data.categoryId),
                 costPrice: data.costPrice ? Number(data.costPrice) : null,
-                isAvailable: String(data.isAvailable) === 'true' // Select value is string
+                isAvailable: String(data.isAvailable) === 'true', // Select value is string
+                sortOrder: Number(data.sortOrder)
             };
 
             const formData = new FormData();
@@ -217,13 +249,74 @@ export default function MenuForm({ initialData, mode }: MenuFormProps) {
                         </select>
                     </div>
                 </div>
+                <div className={styles.row}>
+                    <div className={styles.col}>
+                        <label className={styles.label}>관리자 메모</label>
+                        <input
+                            {...register('adminMemo')}
+                            className={styles.input}
+                            placeholder="내부 관리용 메모"
+                        />
+                    </div>
+                    <div className={styles.col}>
+                        <label className={styles.label}>정렬 순서 (낮을수록 앞)</label>
+                        <input
+                            type="number"
+                            {...register('sortOrder')}
+                            className={styles.input}
+                            placeholder="0"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            {/* 큐레이션 태그 정보 */}
+            <section className={styles.section}>
+                <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>큐레이션 태그</h2>
+                </div>
                 <div className={styles.col}>
-                    <label className={styles.label}>관리자 메모</label>
-                    <input
-                        {...register('adminMemo')}
-                        className={styles.input}
-                        placeholder="내부 관리용 메모"
-                    />
+                    <label className={styles.label}>태그 설정 (추천 배지)</label>
+                    <div className={styles.tagContainer}>
+                        {curationTags.map((tag, index) => (
+                            <span key={index} className={styles.tag}>
+                                {tag}
+                                <button
+                                    type="button"
+                                    className={styles.tagRemove}
+                                    onClick={() => handleRemoveTag(index)}
+                                >
+                                    <X size={14} />
+                                </button>
+                            </span>
+                        ))}
+                        <input
+                            type="text"
+                            className={styles.tagInput}
+                            placeholder="태그 입력 후 Enter..."
+                            value={tagInput}
+                            onChange={(e) => setTagInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleAddTag(tagInput);
+                                    setTagInput('');
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className={styles.commonTags}>
+                        {commonTags.map(tag => (
+                            <button
+                                key={tag}
+                                type="button"
+                                className={`${styles.commonTagBtn} ${curationTags.includes(tag) ? styles.selected : ''}`}
+                                onClick={() => toggleCommonTag(tag)}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </section>
 

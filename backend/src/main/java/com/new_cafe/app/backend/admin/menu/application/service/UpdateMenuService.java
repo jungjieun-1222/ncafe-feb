@@ -40,6 +40,9 @@ public class UpdateMenuService implements UpdateMenuUseCase {
                 .primaryImageSrc(command.getImageSrc())
                 .createdAt(existingMenu.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
+                .options(existingMenu.getOptions())
+                .curationTags(command.getCurationTags())
+                .sortOrder(command.getSortOrder())
                 .build();
         saveAdminMenuPort.save(updatedMenu);
     }
@@ -54,5 +57,16 @@ public class UpdateMenuService implements UpdateMenuUseCase {
         existingMenu.setUpdatedAt(LocalDateTime.now());
         
         saveAdminMenuPort.save(existingMenu);
+    }
+
+    @Override
+    public void reorderMenus(java.util.List<Long> menuIds) {
+        for (int i = 0; i < menuIds.size(); i++) {
+            Long id = menuIds.get(i);
+            AdminMenu menu = loadAdminMenuPort.loadAdminMenuById(id)
+                    .orElseThrow(() -> new RuntimeException("Menu not found with id: " + id));
+            menu.setSortOrder(i + 1);
+            saveAdminMenuPort.save(menu);
+        }
     }
 }

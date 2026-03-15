@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { Calendar, Clock, Users, Phone, User as UserIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const TIME_SLOTS = [
     '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
@@ -19,6 +20,7 @@ export default function ReservationPage() {
     const [userName, setUserName] = useState(user?.username || '');
     const [contact, setContact] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     if (!isAuthenticated) {
         return (
@@ -60,9 +62,7 @@ export default function ReservationPage() {
 
             if (res.ok) {
                 toast.success('예약 신청이 완료되었습니다! 관리자 승인 후 확정됩니다.');
-                // Reset form optionally
-                setStartTime('');
-                setContact('');
+                router.push('/mypage');
             } else {
                 const errorMsg = await res.text();
                 toast.error(errorMsg || '예약에 실패했습니다.');

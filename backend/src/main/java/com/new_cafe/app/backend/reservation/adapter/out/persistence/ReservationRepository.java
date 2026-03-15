@@ -11,9 +11,10 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
 
     List<ReservationEntity> findByReserveDateAndReserveTime(
-            @Param("date") LocalDate date,
-            @Param("time") LocalTime time
+            LocalDate reserveDate,
+            LocalTime reserveTime
     );
 
+    List<ReservationEntity> findByUserIdOrderByReserveDateDesc(String userId);
     long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }

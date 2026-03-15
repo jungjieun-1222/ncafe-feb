@@ -36,6 +36,16 @@
     display: none;
 }
 
+.draggableTabs {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.dragging {
+    opacity: 0.8;
+    z-index: 1000;
+}
+
 .tab {
     display: flex;
     align-items: center;
@@ -63,6 +73,10 @@
     color: white !important;
     border-color: var(--cafe-wood) !important;
     box-shadow: 0 4px 10px rgba(93, 64, 55, 0.1);
+}
+
+.tabActive .tabIcon {
+    stroke: white;
 }
 
 .tabIcon {
@@ -147,4 +161,26 @@
         display: none;
         /* 모바일에선 텍스트 숨기고 아이콘만 */
     }
+}
+
+.sortWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.sortSelect {
+    padding: 10px 16px;
+    border: 1px solid var(--cafe-clay);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    background-color: white;
+    color: var(--cafe-wood);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.sortSelect:focus {
+    outline: none;
+    border-color: var(--cafe-wood);
 }

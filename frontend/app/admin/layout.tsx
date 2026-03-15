@@ -13,13 +13,16 @@ export default async function AdminLayout({
 }) {
     const session = await getSession();
 
-    if (!session.user || (session.user.role !== 'ROLE_ADMIN' && session.user.role !== 'ADMIN')) {
+    const user = session.user;
+    const role = user?.role;
+
+    if (!user || (!role.includes('ADMIN') && !role.includes('MASTER') && !role.includes('STAFF'))) {
         redirect('/');
     }
 
     return (
         <div className={styles.layout}>
-            <AdminSidebar />
+            <AdminSidebar user={user} />
             <div className={styles.content}>
                 <AdminHeader />
                 <main className={styles.main}>

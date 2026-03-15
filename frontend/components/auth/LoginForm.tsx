@@ -6,11 +6,13 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
     const setUser = useAuthStore(state => state.setUser);
 
@@ -27,15 +29,38 @@ export default function LoginForm() {
 
             const data = await response.json();
 
-            if (response.ok) {
+            if (response.ok && data.user) {
                 toast.success('로그인 성공');
-                setUser({
+                const loggedInUser = {
                     id: data.user.id,
-                    username: data.user.nickname,
+                    username: data.user.nickname || data.user.username,
                     role: data.user.role || 'ROLE_USER'
-                });
+                };
+                setUser(loggedInUser);
+
+                // 장바구니 병합 로직
+                const guestCartId = localStorage.getItem('cartId');
+                const userCartId = `user-${loggedInUser.id}`;
+                
+                if (guestCartId && guestCartId !== userCartId) {
+                    try {
+                        await fetch(`/api/v1/carts/merge?guestCartId=${guestCartId}&userCartId=${userCartId}`, {
+                            method: 'POST'
+                        });
+                    } catch (err) {
+                        console.error('Cart merge failed:', err);
+                    }
+                }
+                
+                // localStorage 갱신
+                localStorage.setItem('cartId', userCartId);
+
                 window.dispatchEvent(new Event('login'));
-                router.push('/admin');
+                
+                // 리다이렉트 처리: 기존에 가려던 페이지가 있으면 그쪽으로, 없으면 관리자 또는 메인으로
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect');
+                router.push(redirect || '/'); 
             } else {
                 toast.error(data.message || '로그인 실패');
             }
@@ -61,14 +86,36 @@ export default function LoginForm() {
             </div>
             <div className={styles.inputGroup}>
                 <label htmlFor="password">비밀번호</label>
-                <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="비밀번호를 입력하세요"
-                    required
-                />
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="비밀번호를 입력하세요"
+                        required
+                        style={{ paddingRight: '3rem', width: '100%' }}
+                    />
+                    <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ 
+                            position: 'absolute', 
+                            right: '1rem', 
+                            top: '50%', 
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#64748b',
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '0'
+                        }}
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
             </div>
             <button type="submit" className={styles.submitBtn} disabled={isLoading}>
                 {isLoading ? '로그인 중...' : '로그인'}

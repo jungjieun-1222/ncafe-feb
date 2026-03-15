@@ -18,13 +18,7 @@ public class MenuImagePersistenceAdapter implements LoadMenuImagePort {
     @Override
     public List<String> getImageUrlsByMenuId(Long menuId) {
         return menuImageRepository.findAllByMenuIdOrderBySortOrderAsc(menuId).stream()
-                .map(entity -> {
-                    String url = entity.getSrcUrl();
-                    if (url != null && url.contains("/")) {
-                        return url.substring(url.lastIndexOf("/") + 1);
-                    }
-                    return url;
-                })
+                .map(MenuImageEntity::getSrcUrl)
                 .collect(Collectors.toList());
     }
 

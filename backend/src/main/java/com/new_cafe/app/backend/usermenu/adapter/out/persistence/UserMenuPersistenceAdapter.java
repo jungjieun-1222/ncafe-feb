@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
@@ -18,8 +19,33 @@ public class UserMenuPersistenceAdapter implements LoadUserMenuPort {
     private final UserMenuRepository userMenuRepository;
 
     @Override
-    public List<UserMenu> loadAllUserMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery) {
-        return userMenuRepository.findAllByCategoryIdAndSearchQuery(categoryId, searchQuery).stream()
+    public List<UserMenu> loadAllUserMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery, String sortBy) {
+        List<UserMenuEntity> entities = userMenuRepository.findAllByCategoryIdAndSearchQuery(categoryId, searchQuery);
+        
+        // Dynamic sorting in memory for simplicity, or we could use Specification/Sort
+        Stream<UserMenuEntity> stream = entities.stream();
+        
+        if ("latest".equalsIgnoreCase(sortBy)) {
+            stream = stream.sorted(java.util.Comparator.comparing(UserMenuEntity::getId).reversed());
+        } else if ("recommended".equalsIgnoreCase(sortBy)) {
+            // Sort by whether curationTags exist, then by ID
+            stream = stream.sorted((e1, e2) -> {
+                int t1 = (e1.getCurationTags() != null && !e1.getCurationTags().isEmpty()) ? 1 : 0;
+                int t2 = (e2.getCurationTags() != null && !e2.getCurationTags().isEmpty()) ? 1 : 0;
+                if (t1 != t2) return Integer.compare(t2, t1);
+                return Long.compare(e2.getId(), e1.getId());
+            });
+        } else {
+            // Default: Admin defined sort_order (ascending), then ID descending
+            stream = stream.sorted((e1, e2) -> {
+                int s1 = e1.getSortOrder() != null ? e1.getSortOrder() : Integer.MAX_VALUE;
+                int s2 = e2.getSortOrder() != null ? e2.getSortOrder() : Integer.MAX_VALUE;
+                if (s1 != s2) return Integer.compare(s1, s2);
+                return Long.compare(e2.getId(), e1.getId());
+            });
+        }
+
+        return stream
                 .map(this::mapToUserDomain)
                 .collect(Collectors.toList());
     }
@@ -40,6 +66,16 @@ public class UserMenuPersistenceAdapter implements LoadUserMenuPort {
                 .categoryId(entity.getCategoryId() != null ? (long) entity.getCategoryId() : 0L)
                 .isAvailable(entity.getIsAvailable() != null ? entity.getIsAvailable() : false)
                 .allergyInfo(entity.getAllergyInfo())
+                .options(entity.getOptions().stream()
+                        .map(o -> com.new_cafe.app.backend.cart.domain.Option.builder()
+                                .id(o.getId())
+                                .name(o.getName())
+                                .value(o.getValue())
+                                .price(o.getPrice())
+                                .build())
+                        .collect(java.util.stream.Collectors.toList()))
+                .curationTags(new java.util.ArrayList<>(entity.getCurationTags()))
+                .sortOrder(entity.getSortOrder())
                 .build();
-    }
+}
 }

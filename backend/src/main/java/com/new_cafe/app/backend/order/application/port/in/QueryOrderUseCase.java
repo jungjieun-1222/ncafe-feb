@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface QueryOrderUseCase {
     List<OrderEntity> getAllOrders();
-    List<OrderEntity> getOrdersByUserId(Long userId);
+    List<OrderEntity> getOrdersByUserId(String userId);
     List<OrderEntity> getOrdersByCartId(String cartId);
 }

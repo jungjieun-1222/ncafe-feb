@@ -20,4 +20,7 @@ public class UserMenuWebModel {
     private boolean isAvailable;
     private String allergyInfo;
     private java.util.List<String> images;
+    private java.util.List<com.new_cafe.app.backend.cart.domain.Option> options;
+    private java.util.List<String> curationTags;
+    private Integer sortOrder;
 }

@@ -40,4 +40,19 @@ public class AddMenuImageService implements AddMenuImageUseCase {
             menuImageRepository.deleteById(imageId);
         });
     }
+
+    @Override
+    public void setPrimaryImage(Long menuId, Long imageId) {
+        List<MenuImageEntity> images = menuImageRepository.findAllByMenuIdOrderBySortOrderAsc(menuId);
+        int order = 2; // Start from 2 for non-primary images
+        
+        for (MenuImageEntity img : images) {
+            if (img.getId().equals(imageId)) {
+                img.setSortOrder(1); // Primary image gets sortOrder 1
+            } else {
+                img.setSortOrder(order++);
+            }
+        }
+        menuImageRepository.saveAll(images);
+    }
 }

@@ -37,11 +37,21 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
                 .altText(menu.getAltText())
                 .costPrice(menu.getCostPrice())
                 .adminMemo(menu.getAdminMemo())
+                .options(menu.getOptions().stream()
+                        .map(o -> com.new_cafe.app.backend.cart.adapter.out.persistence.entity.MenuOptionEntity.builder()
+                                .id(o.getId())
+                                .name(o.getName())
+                                .value(o.getValue())
+                                .price(o.getPrice())
+                                .build())
+                        .collect(Collectors.toList()))
+                .curationTags(new java.util.ArrayList<>(menu.getCurationTags()))
+                .sortOrder(menu.getSortOrder())
                 .build();
         AdminMenuEntity savedEntity = adminMenuRepository.save(entity);
 
         // Handle Image
-        if (menu.getPrimaryImageSrc() != null && !menu.getPrimaryImageSrc().isEmpty()) {
+        if (menu.getPrimaryImageSrc() != null && !menu.getPrimaryImageSrc().isEmpty() && !menu.getPrimaryImageSrc().equals("blank.png")) {
             var existingImages = menuImageRepository.findAllByMenuIdOrderBySortOrderAsc(savedEntity.getId());
             if (existingImages.isEmpty()) {
                 menuImageRepository.save(com.new_cafe.app.backend.usermenu.adapter.out.persistence.entity.MenuImageEntity.builder()
@@ -73,8 +83,18 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
     }
 
     @Override
-    public List<AdminMenu> loadAllAdminMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery) {
-        return adminMenuRepository.findAllByCategoryIdAndSearchQuery(categoryId, searchQuery).stream()
+    public List<AdminMenu> loadAllAdminMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery, String sortBy) {
+        org.springframework.data.domain.Sort sort;
+        if ("latest".equals(sortBy)) {
+            sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt");
+        } else if ("recommended".equals(sortBy)) {
+            sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"); // Mocking recommended
+        } else {
+            sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "sortOrder")
+                    .and(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
+        }
+
+        return adminMenuRepository.findAllByCategoryIdAndSearchQuery(categoryId, searchQuery, sort).stream()
                 .map(this::mapToAdminDomain)
                 .collect(Collectors.toList());
     }
@@ -106,6 +126,16 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
                 .altText(entity.getAltText())
                 .costPrice(entity.getCostPrice())
                 .adminMemo(entity.getAdminMemo())
+                .options(entity.getOptions().stream()
+                        .map(o -> com.new_cafe.app.backend.cart.domain.Option.builder()
+                                .id(o.getId())
+                                .name(o.getName())
+                                .value(o.getValue())
+                                .price(o.getPrice())
+                                .build())
+                        .collect(java.util.stream.Collectors.toList()))
+                .curationTags(new java.util.ArrayList<>(entity.getCurationTags()))
+                .sortOrder(entity.getSortOrder())
                 .build();
     }
 }

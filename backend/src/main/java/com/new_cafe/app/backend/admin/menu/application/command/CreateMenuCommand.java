@@ -17,4 +17,6 @@ public class CreateMenuCommand {
     private Integer costPrice;
     private String adminMemo;
     private String imageSrc;
+    private java.util.List<String> curationTags;
+    private Integer sortOrder;
 }

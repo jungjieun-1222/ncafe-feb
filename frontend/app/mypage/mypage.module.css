@@ -1,0 +1,227 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 140px 1rem 2rem; /* Increased to avoid overlap with nav */
+    min-height: 100vh;
+    background-color: #fcfcfc;
+}
+
+.header {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%);
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.greeting {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.subGreeting {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background-color: #f0f0f0;
+    padding: 0.4rem;
+    border-radius: 16px;
+}
+
+.tab {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    background: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #5d4037;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.activeTab {
+    background-color: #fff;
+    color: #3e2723;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Section Content */
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #3e2723;
+    margin-bottom: 1rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.status_PENDING { background-color: #fff3e0; color: #ef6c00; }
+.status_CONFIRMED { background-color: #e8f5e9; color: #2e7d32; }
+.status_CANCELLED { background-color: #ffebee; color: #c62828; }
+.status_COMPLETED { background-color: #e3f2fd; color: #1565c0; }
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #3e2723;
+}
+
+.cardInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #6d4c41;
+    font-size: 0.9rem;
+}
+
+.cancelBtn {
+    margin-top: 1.2rem;
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 12px;
+    background-color: #fcebeb;
+    color: #c62828;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid #fecaca;
+    transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+    background-color: #fee2e2;
+    transform: translateY(-1px);
+}
+
+.infoItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Cart Specific */
+.cartFooter {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.totalPrice {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #3e2723;
+}
+
+.orderBtn {
+    background-color: #4e342e;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.orderBtn:hover {
+    background-color: #3e2723;
+}
+
+/* Empty State */
+.emptyState {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: white;
+    border-radius: 24px;
+    border: 2px dashed #e0e0e0;
+}
+
+.emptyIcon {
+    margin-bottom: 1rem;
+    color: #bdbdbd;
+}
+
+.emptyText {
+    color: #757575;
+    margin-bottom: 1.5rem;
+}
+
+.ctaLink {
+    display: inline-block;
+    color: #4e342e;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* Loading */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #4e342e;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(78, 52, 46, 0.1);
+    border-top-color: #4e342e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}

@@ -214,3 +214,33 @@
     background-color: #FFF5F5;
     color: var(--cafe-error);
 }
+
+.dragHandle {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gray-500);
+    cursor: grab;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dragHandle:hover {
+    background: white;
+    color: var(--cafe-accent);
+    transform: scale(1.05);
+}
+
+.dragHandle:active {
+    cursor: grabbing;
+}

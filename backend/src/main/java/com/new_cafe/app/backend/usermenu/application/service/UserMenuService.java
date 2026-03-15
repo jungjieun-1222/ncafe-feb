@@ -23,8 +23,8 @@ public class UserMenuService implements BrowseMenuUseCase {
     private final LoadMenuImagePort loadMenuImagePort;
 
     @Override
-    public List<UserMenuResult> getAvailableMenus(Integer categoryId, String searchQuery) {
-        return loadUserMenuPort.loadAllUserMenusByCategoryIdAndSearchQuery(categoryId, searchQuery).stream()
+    public List<UserMenuResult> getAvailableMenus(Integer categoryId, String searchQuery, String sortBy) {
+        return loadUserMenuPort.loadAllUserMenusByCategoryIdAndSearchQuery(categoryId, searchQuery, sortBy).stream()
                 .peek(this::enrichUserMenu)
                 .map(UserMenuResult::from)
                 .collect(Collectors.toList());

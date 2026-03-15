@@ -50,6 +50,10 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    public List<ReservationEntity> getReservationsByUserId(String userId) {
+        return reservationRepository.findByUserIdOrderByReserveDateDesc(userId);
+    }
+
     public List<ReservationEntity> getAllReservations() {
         return reservationRepository.findAll();
     }
@@ -60,5 +64,13 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다."));
         reservation.setStatus(status);
         reservationRepository.save(reservation);
+    }
+
+    @Transactional
+    public void deleteReservation(Long id) {
+        if (!reservationRepository.existsById(id)) {
+            throw new IllegalArgumentException("예약을 찾을 수 없습니다.");
+        }
+        reservationRepository.deleteById(id);
     }
 }

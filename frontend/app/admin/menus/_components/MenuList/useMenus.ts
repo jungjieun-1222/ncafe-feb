@@ -14,6 +14,7 @@ export interface MenuResponse {
     isAvailable: boolean;
     isSoldOut: boolean;
     sortOrder: number;
+    curationTags: string[];
     createdAt: string;
     updatedAt: string;
 }
@@ -23,7 +24,7 @@ export interface MenuListResponse {
     total: number;
 }
 
-export function useMenus(selectedCategory: number | undefined, searchQuery: string | undefined) {
+export function useMenus(selectedCategory: number | undefined, searchQuery: string | undefined, sortBy: string = 'default') {
     const [menus, setMenus] = useState<MenuResponse[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -34,6 +35,7 @@ export function useMenus(selectedCategory: number | undefined, searchQuery: stri
             const params = url.searchParams;
             if (selectedCategory) params.set('categoryId', selectedCategory.toString());
             if (searchQuery) params.set('searchQuery', searchQuery);
+            if (sortBy !== 'default') params.set('sortBy', sortBy);
 
             try {
                 console.log(selectedCategory);
@@ -83,7 +85,7 @@ export function useMenus(selectedCategory: number | undefined, searchQuery: stri
         };
 
         fetchMenus();
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery, sortBy]);
 
     return { menus, isLoading, setMenus };
 }

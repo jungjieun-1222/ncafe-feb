@@ -7,6 +7,7 @@ import { getImageUrl } from '@/utils/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { sendMessageStream } from '@/app/lib/aiAgent';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface Message {
     id: string;
@@ -39,6 +40,7 @@ const INITIAL_MESSAGES: Message[] = [
 
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
+    const user = useAuthStore(state => state.user);
     const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
     const [inputValue, setInputValue] = useState('');
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
@@ -93,6 +95,8 @@ export default function ChatWidget() {
 
                         if (res.ok) {
                             console.log('✅ Successfully added to cart via slug');
+                            const { triggerRefresh } = (await import('@/stores/useCartStore')).useCartStore.getState();
+                            triggerRefresh();
                             toast.success(`${args.menu_slug} 장바구니에 담았소!`, {
                                 icon: '🧺',
                                 style: { background: '#f5f5dc', color: '#5d4037', border: '1px solid #d7ccc8' }
@@ -186,7 +190,7 @@ export default function ChatWidget() {
         try {
             let accumulatedContent = '';
 
-            for await (const data of sendMessageStream(messageHistory)) {
+            for await (const data of sendMessageStream(messageHistory, user?.id)) {
                 if (data.content) {
                     setIsThinking(false);
                     accumulatedContent += (data.content as string);
@@ -239,6 +243,10 @@ export default function ChatWidget() {
     };
 
     const handleQuickReply = (text: string) => {
+        if (text === '인연 찾아줘' && !user) {
+            toast.error('인연을 찾으시려면 먼저 로그인이 필요하오!', { icon: '🔐' });
+            return;
+        }
         setInputValue(text);
         setTimeout(() => {
             const sendBtn = document.getElementById('chat-send-btn');

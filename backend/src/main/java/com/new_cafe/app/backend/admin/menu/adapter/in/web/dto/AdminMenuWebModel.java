@@ -31,4 +31,8 @@ public class AdminMenuWebModel {
     // 관리자 전용 필드
     private Integer costPrice;
     private String adminMemo;
+    private String altText;
+    private java.util.List<com.new_cafe.app.backend.cart.domain.Option> options;
+    private java.util.List<String> curationTags;
+    private Integer sortOrder;
 }

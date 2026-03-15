@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ImageIcon, Pencil, Trash2 } from 'lucide-react';
+import { ImageIcon, Pencil, Trash2, GripVertical } from 'lucide-react';
 import { getImageUrl } from '@/utils/image';
 import { MenuResponse } from '../MenuList/useMenus';
 import styles from './MenuCard.module.css';
@@ -12,9 +12,10 @@ interface MenuCardProps {
     menu: MenuResponse;
     onToggleSoldOut: (id: number, nextIsAvailable: boolean) => Promise<void>;
     onDelete: (id: number) => void;
+    dragHandleProps?: any;
 }
 
-export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardProps) {
+export default function MenuCard({ menu, onToggleSoldOut, onDelete, dragHandleProps }: MenuCardProps) {
     const [isAvailable, setIsAvailable] = useState(menu.isAvailable);
     const [isSoldOut, setIsSoldOut] = useState(menu.isSoldOut);
     const [imgError, setImgError] = useState(false);
@@ -54,6 +55,11 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
         <div className={`${styles.card} ${isSoldOut ? styles.isSoldOutCard : ''}`}>
             <Link href={`/admin/menus/${menu.slug}`} className={styles.cardLink}>
                 <div className={styles.imageWrapper}>
+                    {dragHandleProps && (
+                        <div {...dragHandleProps} className={styles.dragHandle}>
+                            <GripVertical size={20} />
+                        </div>
+                    )}
                     {(menu.imageSrc && !imgError) ? (
                         <Image
                             src={getImageUrl(menu.imageSrc)}
@@ -100,7 +106,7 @@ export default function MenuCard({ menu, onToggleSoldOut, onDelete }: MenuCardPr
 
                 <div className={styles.actions}>
                     <Link
-                        href={`/admin/menus/${menu.id}/edit`}
+                        href={`/admin/menus/${menu.slug}/edit`}
                         className={styles.actionBtn}
                         aria-label="수정"
                         onClick={(e) => e.stopPropagation()}

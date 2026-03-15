@@ -6,7 +6,7 @@ import com.new_cafe.app.backend.admin.menu.application.result.GetMenuListResult;
 import java.util.List;
 
 public interface GetMenuUseCase {
-    List<GetMenuListResult> getAllMenus(Integer categoryId, String searchQuery);
+    List<GetMenuListResult> getAllMenus(Integer categoryId, String searchQuery, String sortBy);
     GetMenuDetailResult getMenu(Long id);
     GetMenuDetailResult getMenuBySlug(String slug);
     List<com.new_cafe.app.backend.usermenu.adapter.out.persistence.entity.MenuImageEntity> getMenuImages(Long id);

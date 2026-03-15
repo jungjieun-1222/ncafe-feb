@@ -2,38 +2,64 @@ package com.new_cafe.app.backend.auth.adapter.out.persistence;
 
 import com.new_cafe.app.backend.auth.adapter.out.persistence.entity.UserEntity;
 import com.new_cafe.app.backend.auth.adapter.out.persistence.repository.UserRepository;
+import com.new_cafe.app.backend.auth.application.port.out.DeleteAccountPort;
 import com.new_cafe.app.backend.auth.application.port.out.LoadAccountPort;
+import com.new_cafe.app.backend.auth.application.port.out.LoadAllAccountsPort;
 import com.new_cafe.app.backend.auth.application.port.out.SaveAccountPort;
 import com.new_cafe.app.backend.auth.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPort {
+public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPort, LoadAllAccountsPort, DeleteAccountPort {
 
     private final UserRepository userRepository;
 
     @Override
     public Optional<Account> loadAccount(String username) {
         return userRepository.findByNickname(username)
-                .map(user -> Account.of(
-                        user.getNickname(),
-                        user.getPassword(),
-                        user.getNickname()
-                ));
+                .map(this::mapToDomain);
+    }
+
+    @Override
+    public List<Account> loadAllAccounts() {
+        return userRepository.findAll().stream()
+                .map(this::mapToDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteAccount(String id) {
+        userRepository.deleteById(id);
     }
 
     @Override
     public void saveAccount(Account account) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(UUID.randomUUID().toString());
+        UserEntity userEntity = userRepository.findById(account.getId() != null ? account.getId() : "")
+                .orElse(new UserEntity());
+        
+        if (userEntity.getId() == null) {
+            userEntity.setId(account.getId() != null ? account.getId() : UUID.randomUUID().toString());
+        }
         userEntity.setNickname(account.getUsername());
         userEntity.setPassword(account.getPassword());
-        userEntity.setRole("ROLE_USER"); // Default role
+        userEntity.setRole(account.getRole() != null ? account.getRole() : "ROLE_USER");
         userRepository.save(userEntity);
+    }
+
+    private Account mapToDomain(UserEntity user) {
+        return Account.of(
+                user.getId(),
+                user.getNickname(),
+                user.getPassword(),
+                user.getNickname(),
+                user.getRole()
+        );
     }
 }

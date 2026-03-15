@@ -263,6 +263,27 @@
     cursor: pointer;
 }
 
+.continueShoppingBtn {
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.8rem;
+    background: transparent;
+    color: var(--color-primary-600);
+    border: 1.5px solid var(--color-primary-600);
+    border-radius: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.continueShoppingBtn:hover {
+    background: rgba(93, 64, 55, 0.05);
+    transform: translateY(-1px);
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }

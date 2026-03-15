@@ -25,7 +25,7 @@ public class CartController {
             @PathVariable String cartId,
             @RequestBody AddCartItemRequest request) {
         
-        if (request.getOptionIds() != null && !request.getOptionIds().isEmpty()) {
+        if (request.getMenuId() != null) {
             return ResponseEntity.ok(cartUseCase.addCartItemWithIds(cartId, request.getMenuId(), request.getQuantity(), request.getOptionIds()));
         }
 
