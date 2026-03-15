@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './ChatWidget.module.css';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessageCircle, X, Send, Moon, Sparkles, User as UserIcon } from 'lucide-react';
 import { getImageUrl } from '@/utils/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
@@ -37,6 +37,25 @@ const INITIAL_MESSAGES: Message[] = [
         content: ''
     }
 ];
+
+const Avatar = ({ role, gender, size = 'small' }: { role: 'assistant' | 'user', gender?: 'male' | 'female' | null, size?: 'small' | 'large' }) => {
+    const isBot = role === 'assistant';
+    const className = size === 'large' ? styles.avatarLarge : (isBot ? styles.botAvatarIcon : styles.userAvatarIcon);
+
+    if (isBot) {
+        return (
+            <div className={className}>
+                <Moon size={size === 'large' ? 24 : 18} fill="currentColor" />
+            </div>
+        );
+    }
+
+    return (
+        <div className={className} style={{ backgroundColor: gender === 'male' ? '#e3f2fd' : '#fce4ec', color: gender === 'male' ? '#1976d2' : '#c2185b' }}>
+            <UserIcon size={size === 'large' ? 24 : 18} />
+        </div>
+    );
+};
 
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -249,25 +268,11 @@ export default function ChatWidget() {
         return (
             <div key={msg.id} className={`${styles.messageWrapper} ${isBot ? styles.bot : styles.user}`}>
                 {isBot && msg.type !== 'gender_select' && (
-                    <img
-                        src={getImageUrl('wolha.png')}
-                        alt="월하선생"
-                        className={styles.botAvatarImage}
-                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?q=80&w=40px&auto=format&fit=crop';
-                        }}
-                    />
+                    <Avatar role="assistant" />
                 )}
 
                 {msg.role === 'user' && (
-                    <img
-                        src={getImageUrl(gender === 'male' ? 'user_male.png' : 'user_female.png')}
-                        alt="사용자"
-                        className={styles.userAvatarImage}
-                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                            console.error("사용자 아바타 로딩 실패!", (e.target as HTMLImageElement).src);
-                        }}
-                    />
+                    <Avatar role="user" gender={gender} />
                 )}
 
                 <div style={{ flex: 1 }}>
@@ -312,7 +317,7 @@ export default function ChatWidget() {
                 <div className={styles.chatWindow}>
                     <div className={styles.header}>
                         <div className={styles.headerInfo}>
-                            <img src={getImageUrl('wolha.png')} alt="월하선생 프로필" className={styles.avatarImage} />
+                            <Avatar role="assistant" size="large" />
                             <div>
                                 <h3 className={styles.title}>월하선생</h3>
                                 <p className={styles.subtitle}>엔카페 터줏대감 중매쟁이</p>
@@ -327,14 +332,7 @@ export default function ChatWidget() {
                         {messages.map(renderMessage)}
                         {isThinking && (
                             <div className={`${styles.messageWrapper} ${styles.bot}`}>
-                                <img
-                                    src={getImageUrl('wolha.png')}
-                                    alt="월하선생"
-                                    className={styles.botAvatarImage}
-                                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                                        console.error('이미지 로딩 실패');
-                                    }}
-                                />
+                                <Avatar role="assistant" />
                                 <div className={styles.thinkingBubble}>
                                     <span className={styles.thinkingText}>월하선생님께서 생각중이오</span>
                                     <div className={styles.dot}></div>
