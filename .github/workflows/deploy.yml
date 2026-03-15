@@ -53,10 +53,10 @@ jobs:
           echo "AGENT_SERVER_IMAGE=${AGENT_SERVER_IMAGE}" >> .env
 
           echo "GEMINI_API_KEY=${GEMINI_API_KEY}" >> .env
-          # 브라우저에서 챗봇이 접속할 공개 URL
-          echo "AGENT_URL=https://mochijj.newlecture.com/api/agent" >> .env
+          # 프론트엔드 서버 내부에서 접속할 주소 (도커 서비스 이름 사용)
+          echo "AGENT_URL=http://agent-server:8000" >> .env
           
-          # 서버 실제 데이터 경로 (절대 경로로 다시 복구)
+          # 서버 실제 데이터 경로 (절대 경로 고정)
           echo "UPLOAD_PATH=/home/jungjieun-1222/dist/ncafe-upload" >> .env
           echo "DB_DATA_PATH=/home/jungjieun-1222/dist/ncafe-data" >> .env
         env:

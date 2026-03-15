@@ -37,7 +37,7 @@ services:
     environment:
       - API_BASE_URL=http://backend:8081
       - BACKEND_URL=http://backend:8081
-      - AGENT_URL=https://mochijj.newlecture.com/api/agent
+      - AGENT_URL=http://agent-server:8000
       - SESSION_SECRET=${SESSION_SECRET}
     depends_on:
       - backend
