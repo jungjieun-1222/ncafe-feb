@@ -11,7 +11,7 @@ services:
       - "8081"
     volumes:
       - ${UPLOAD_PATH:-../ncafe-upload}:/app/upload
-      - ./frontend/public:/app/extra-static:ro
+      - ./frontend/public/images:/app/extra-static:ro
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
@@ -19,6 +19,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - UPLOAD_PATH=/app/upload/
+      - SPRING_MVC_STATIC_PATH_PATTERN=/images/**
       - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/app/upload/,file:/app/extra-static/,classpath:/static/
     restart: unless-stopped
     depends_on:
@@ -51,7 +52,7 @@ services:
       context: ./agent-server
       dockerfile: Dockerfile
     container_name: ${USER_ID:-mochijj}-agent-server
-    profiles: ["with-db"]
+    # profiles: ["with-db"] # Remove profile to ensure it starts by default
     # ports:
     #   - "${AGENT_SERVER_PORT:-8112}:8000"
     expose:
@@ -69,7 +70,7 @@ services:
 
   db:
     image: pgvector/pgvector:pg17
-    profiles: ["with-db", "agent"]
+    # profiles: ["with-db", "agent"] # Always run db by default
     container_name: ${USER_ID:-mochijj}-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-ncafedb}
@@ -93,5 +94,5 @@ services:
 
 networks:
   ncafe-network:
-    name: ${USER_ID:-mochijj}_ncafe_default
+#    name: ${USER_ID:-mochijj}_ncafe_default
     driver: bridge
