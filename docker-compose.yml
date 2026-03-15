@@ -11,6 +11,7 @@ services:
       - "8081"
     volumes:
       - ${UPLOAD_PATH:-../ncafe-upload}:/app/upload
+      - ./frontend/public/images:/app/public-images:ro
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
@@ -18,6 +19,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - UPLOAD_PATH=/app/upload/
+      - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/app/upload/,file:/app/public-images/,classpath:/static/
     restart: unless-stopped
     depends_on:
       - db
@@ -30,8 +32,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: ${USER_ID:-mochijj}-frontend
-    volumes:
-      - ./frontend/public:/app/public
     ports:
       - "${FRONTEND_PORT:-3012}:3000"
     environment:
@@ -50,6 +50,7 @@ services:
       context: ./agent-server
       dockerfile: Dockerfile
     container_name: ${USER_ID:-mochijj}-agent-server
+    profiles: ["agent", "with-db"]
     # ports:
     #   - "${AGENT_SERVER_PORT:-8112}:8000"
     expose:
@@ -67,7 +68,7 @@ services:
 
   db:
     image: pgvector/pgvector:pg17
-    #profiles: [ "with-db" ]
+    profiles: ["with-db", "agent"]
     container_name: ${USER_ID:-mochijj}-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-ncafedb}
