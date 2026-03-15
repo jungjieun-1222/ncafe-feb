@@ -14,7 +14,6 @@ const Footer = () => {
                 <div className={styles.footerContent}>
                     <div className={styles.footerBrand}>
                         <h3>{settings?.name || '엔카페'} <span>.</span></h3>
-                        <p>{settings?.announcement || '한 잔의 커피에 정성을 담아, 당신의 일상에 쉼표를 찍습니다.'}</p>
                     </div>
                     <div className={styles.footerInfo}>
                         <div className={styles.contactInfo}>

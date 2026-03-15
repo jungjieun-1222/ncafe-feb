@@ -20,7 +20,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - UPLOAD_PATH=/app/upload/
       - SPRING_MVC_STATIC_PATH_PATTERN=/images/**
-      - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/app/upload/,file:/app/extra-static/,classpath:/static/
+      - SPRING_WEB_RESOURCES_STATIC_LOCATIONS=file:/app/upload/,file:/app/upload/images/,file:/app/extra-static/,file:/app/extra-static/images/,classpath:/static/
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=10MB
       - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=10MB
     restart: unless-stopped

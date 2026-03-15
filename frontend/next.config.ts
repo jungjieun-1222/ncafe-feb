@@ -8,11 +8,15 @@ const nextConfig = {
 
     return [
       {
-        // 모든 이미지 요청(/images/...)을 백엔드로 넘겨서 통합 서빙합니다.
-        // 백엔드는 업로드 폴더와 정적 이미지 폴더를 모두 알고 있습니다.
+        // 모든 이미지(/images/...) 직접 요청을 백엔드로 넘겨서 통합 서빙합니다.
         source: '/images/:path*',
         destination: `${backendUrl}/images/:path*`,
       },
+      {
+        // API 요청들 처리 (v1 경로 등)
+        source: '/api/v1/:path*',
+        destination: `${backendUrl}/api/v1/:path*`,
+      }
     ];
   },
   images: {
