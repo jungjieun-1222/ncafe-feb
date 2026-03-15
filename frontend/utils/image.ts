@@ -1,23 +1,24 @@
 export const STATIC_IMAGES = ['wolha.png', 'user_male.png', 'user_female.png', 'map.png', 'blank.png'];
 
 export const getImageUrl = (url: string | null | undefined) => {
-    // 1. URL이 없으면 기본 이미지
+    // 1. URL이 없으면 기본 이미지 (프론트엔드 public/images 에 있는 blank.png 사용)
     if (!url || url === '' || url === 'blank.png') return '/images/blank.png';
 
     // 2. 외부 링크는 그대로 반환
     if (url.startsWith('http')) return url;
 
-    // 3. 이미 /images/ 로 시작하면 그대로 반환
-    if (url.startsWith('/images/')) return url;
-
-    // 4. /api/images/ -> /images/ (BFF 대응 및 통합)
-    if (url.startsWith('/api/images/')) {
-        return url.replace('/api/images/', '/images/');
+    // 3. 고유 정적 이미지들은 프론트엔드 public/images에서 직접 서빙 (이미지 주소 지원)
+    const fileName = url.split('/').pop() || '';
+    if (STATIC_IMAGES.includes(fileName)) {
+        return `/images/${fileName}`;
     }
 
-    // 5. 모든 이미지를 /images/ 경로로 통합 (계층 구조/폴더명 보존!!)
-    // 이 요청은 Next.js rewrite를 통해 백엔드로 전달되고, 
-    // 백엔드는 upload 폴더와 extra-static(public) 폴더에서 파일을 찾습니다.
+    // 4. DB에서 온 메뉴 이미지 등은 BFF(/api/images/...)를 통해 백엔드에서 가져옴
+    // 이 경로는 app/api/[...path]/route.ts 가 처리하여 백엔드의 /images/... 로 보냅니다.
     const cleanPath = url.startsWith('/') ? url.slice(1) : url;
-    return `/images/${cleanPath}`;
+    
+    // 이미 /api/images/ 로 시작하면 그대로 반환
+    if (url.startsWith('/api/images/')) return url;
+    
+    return `/api/images/${cleanPath}`;
 };
