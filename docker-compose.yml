@@ -28,7 +28,7 @@ services:
       - ncafe-network
 
   frontend:
-    image: ${FRONTEND_IMAGE:mochijj-frontend:latest}
+    image: ${FRONTEND_IMAGE:-mochijj-frontend:latest}
     build:
       context: ./frontend
       dockerfile: Dockerfile
