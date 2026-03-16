@@ -37,9 +37,12 @@ public class AdminAccountService implements ManageAccountUseCase {
         Account staff = Account.of(
                 null,
                 username,
-                passwordEncoder.encode(password),
                 name,
-                "ROLE_STAFF"
+                name,
+                email,
+                "",
+                passwordEncoder.encode(password),
+                "ROLE_STAFF",
         );
         saveAccountPort.saveAccount(staff);
     }
@@ -62,9 +65,12 @@ public class AdminAccountService implements ManageAccountUseCase {
         Account updated = Account.of(
                 account.getId(),
                 account.getUsername(),
-                passwordEncoder.encode(trimmedPassword),
                 account.getName(),
-                account.getRole()
+                account.getNickname(),
+                account.getEmail(),
+                account.getPhone(),
+                passwordEncoder.encode(trimmedPassword),
+                account.getRole(),
         );
         saveAccountPort.saveAccount(updated);
         log.info("Successfully updated password for user: {}", username);

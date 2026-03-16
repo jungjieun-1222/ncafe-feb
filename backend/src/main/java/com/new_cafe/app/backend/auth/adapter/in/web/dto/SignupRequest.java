@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SignupRequest {
+    private String username;
     private String name;
     private String nickname;
     private String phone;

@@ -34,12 +34,13 @@ public class AuthService implements LoginUseCase, SignupUseCase {
     @Override
     public void signup(SignupRequest request) {
         // Check if user already exists
-        if (loadAccountPort.loadAccount(request.getEmail()).isPresent()) {
-            throw new RuntimeException("이미 등록된 이메일입니다.");
+        if (loadAccountPort.loadAccount(request.getUsername()).isPresent()) {
+            throw new RuntimeException("이미 사용 중인 아이디입니다.");
         }
 
         Account account = Account.of(
                 null,
+                request.getUsername(),
                 request.getName(),
                 request.getNickname(),
                 request.getEmail(),

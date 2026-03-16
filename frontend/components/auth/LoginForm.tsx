@@ -79,13 +79,13 @@ export default function LoginForm() {
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.inputGroup}>
-                <label htmlFor="username">이메일</label>
+                <label htmlFor="username">아이디</label>
                 <input
                     id="username"
-                    type="email"
+                    type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="등록하신 이메일을 입력하세요"
+                    placeholder="아이디를 입력하세요"
                     required
                 />
             </div>

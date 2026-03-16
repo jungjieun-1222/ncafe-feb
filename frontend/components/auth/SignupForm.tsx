@@ -7,16 +7,38 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function SignupForm() {
+    const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [nickname, setNickname] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isUsernameChecked, setIsUsernameChecked] = useState(false);
     const [isNicknameChecked, setIsNicknameChecked] = useState(false);
     const [isEmailChecked, setIsEmailChecked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+
+    const checkUsername = async () => {
+        if (!username) {
+            toast.error('아이디를 입력해주세요.');
+            return;
+        }
+        try {
+            const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
+            const data = await res.json();
+            if (data.exists) {
+                toast.error('이미 사용 중인 아이디입니다.');
+                setIsUsernameChecked(false);
+            } else {
+                toast.success('사용 가능한 아이디입니다.');
+                setIsUsernameChecked(true);
+            }
+        } catch (err) {
+            toast.error('중복 확인 중 오류가 발생했습니다.');
+        }
+    };
 
     const checkNickname = async () => {
         if (!nickname) {
@@ -66,6 +88,11 @@ export default function SignupForm() {
             return;
         }
 
+        if (!isUsernameChecked) {
+            toast.error('아이디 중복 확인이 필요합니다.');
+            return;
+        }
+
         if (!isNicknameChecked) {
             toast.error('닉네임 중복 확인이 필요합니다.');
             return;
@@ -82,7 +109,7 @@ export default function SignupForm() {
             const response = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, nickname, phone, email, password }),
+                body: JSON.stringify({ username, name, nickname, phone, email, password }),
             });
 
             const data = await response.json();
@@ -102,6 +129,26 @@ export default function SignupForm() {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.inputGroup}>
+                <label htmlFor="username">아이디</label>
+                <div className={styles.row}>
+                    <input
+                        id="username"
+                        type="text"
+                        value={username}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            setIsUsernameChecked(false);
+                        }}
+                        placeholder="사용하실 아이디를 입력하세요"
+                        required
+                    />
+                    <button type="button" onClick={checkUsername} className={styles.checkBtn}>
+                        중복 확인
+                    </button>
+                </div>
+            </div>
+
             <div className={styles.inputGroup}>
                 <label htmlFor="name">성함</label>
                 <input

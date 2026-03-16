@@ -13,6 +13,9 @@ public class UserEntity {
     @Id
     private String id; // DB가 UUID를 사용하므로 String으로 매핑
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
     @Column(nullable = false)
     private String name;
 

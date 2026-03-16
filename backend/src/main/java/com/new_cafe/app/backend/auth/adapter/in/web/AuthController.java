@@ -70,12 +70,12 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("message", "Not logged in"));
         }
         
-        // Load user by email (principal name in jwt/security context)
-        var user = userRepository.findByEmail(authentication.getName()).orElse(null);
+        // Load user by username (principal name in jwt/security context)
+        var user = userRepository.findByUsername(authentication.getName()).orElse(null);
         
         return ResponseEntity.ok(Map.of(
             "id", user != null ? user.getId() : "",
-            "username", user != null ? user.getEmail() : authentication.getName(),
+            "username", user != null ? user.getUsername() : authentication.getName(),
             "nickname", user != null ? user.getNickname() : authentication.getName(),
             "role", authentication.getAuthorities().stream()
                     .map(a -> a.getAuthority())
@@ -84,6 +84,12 @@ public class AuthController {
                     .map(a -> a.getAuthority())
                     .collect(Collectors.toList())
         ));
+    }
+
+    @GetMapping("/check-username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username) {
+        boolean exists = userRepository.existsByUsername(username);
+        return ResponseEntity.ok(Map.of("exists", exists));
     }
 
     @GetMapping("/check-nickname")
