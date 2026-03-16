@@ -41,6 +41,10 @@ export default function SignupForm() {
             toast.error('아이디를 입력해주세요.');
             return;
         }
+        if (!/^[a-zA-Z0-9]+$/.test(username)) {
+            toast.error('아이디는 영문과 숫자만 사용 가능합니다.');
+            return;
+        }
         try {
             const res = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username)}`);
             const data = await res.json();
@@ -153,7 +157,8 @@ export default function SignupForm() {
                         type="text"
                         value={username}
                         onChange={(e) => {
-                            setUsername(e.target.value);
+                            const val = e.target.value.replace(/[^a-zA-Z0-9]/g, ''); // 영문/숫자 외 제거
+                            setUsername(val);
                             setIsUsernameChecked(false);
                         }}
                         placeholder="사용하실 아이디를 입력하세요"

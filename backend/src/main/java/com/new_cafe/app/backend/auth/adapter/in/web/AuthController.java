@@ -53,10 +53,28 @@ public class AuthController {
 
             String jwt = tokenProvider.createToken(authentication);
 
+            var user = userRepository.findByUsername(authentication.getName()).orElse(null);
+
             log.info("Login success for user: {}", request.getUsername());
-            return ResponseEntity.ok(Map.of(
+            
+            java.util.Map<String, Object> userMap = new java.util.HashMap<>();
+            if (user != null) {
+                userMap.put("id", user.getId());
+                userMap.put("username", user.getUsername());
+                userMap.put("nickname", user.getNickname());
+                userMap.put("name", user.getName());
+                userMap.put("phone", user.getPhone());
+                userMap.put("email", user.getEmail());
+            } else {
+                userMap.put("username", authentication.getName());
+            }
+            userMap.put("role", authentication.getAuthorities().stream()
+                    .map(a -> a.getAuthority())
+                    .findFirst().orElse("ROLE_USER"));
+
+            return ResponseEntity.ok(java.util.Map.of(
                 "token", jwt,
-                "username", authentication.getName()
+                "user", userMap
             ));
         } catch (org.springframework.security.core.AuthenticationException e) {
             log.warn("Login failed for user {}: {}", request.getUsername(), e.getMessage());
@@ -67,8 +85,8 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+    @GetMapping("/session")
+    public ResponseEntity<?> getSession(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body(Map.of("message", "Not logged in"));
         }
@@ -76,18 +94,25 @@ public class AuthController {
         // Load user by username (principal name in jwt/security context)
         var user = userRepository.findByUsername(authentication.getName()).orElse(null);
         
-        return ResponseEntity.ok(Map.of(
-            "id", user != null ? user.getId() : "",
-            "username", user != null ? user.getUsername() : authentication.getName(),
-            "nickname", user != null ? user.getNickname() : "",
-            "name", user != null ? user.getName() : "",
-            "role", authentication.getAuthorities().stream()
-                    .map(a -> a.getAuthority())
-                    .findFirst().orElse("ROLE_USER"),
-            "roles", authentication.getAuthorities().stream()
-                    .map(a -> a.getAuthority())
-                    .collect(Collectors.toList())
-        ));
+        java.util.Map<String, Object> userMap = new java.util.HashMap<>();
+        if (user != null) {
+            userMap.put("id", user.getId());
+            userMap.put("username", user.getUsername());
+            userMap.put("nickname", user.getNickname());
+            userMap.put("name", user.getName());
+            userMap.put("phone", user.getPhone());
+            userMap.put("email", user.getEmail());
+        } else {
+            userMap.put("username", authentication.getName());
+        }
+        userMap.put("role", authentication.getAuthorities().stream()
+                .map(a -> a.getAuthority())
+                .findFirst().orElse("ROLE_USER"));
+        userMap.put("roles", authentication.getAuthorities().stream()
+                .map(a -> a.getAuthority())
+                .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(Map.of("user", userMap));
     }
 
     @GetMapping("/check-username")

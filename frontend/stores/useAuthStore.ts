@@ -5,6 +5,8 @@ interface User {
     username: string; // login ID
     nickname: string; // display name
     name: string;     // real name (fallback)
+    phone: string;
+    email: string;
     role: string;
 }
 
@@ -34,6 +36,8 @@ export const useAuthStore = create<AuthState>((set) => ({
                         username: data.user.username,
                         nickname: data.user.nickname,
                         name: data.user.name,
+                        phone: data.user.phone,
+                        email: data.user.email,
                         role: data.user.role
                     },
                     isAuthenticated: true,

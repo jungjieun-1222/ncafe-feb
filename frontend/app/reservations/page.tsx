@@ -17,9 +17,24 @@ export default function ReservationPage() {
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [headcount, setHeadcount] = useState(2);
-    const [userName, setUserName] = useState(user?.username || '');
-    const [contact, setContact] = useState('');
+    const [userName, setUserName] = useState(user?.name || user?.username || '');
+    const [contact, setContact] = useState(user?.phone || '');
     const [isLoading, setIsLoading] = useState(false);
+
+    // 전화번호 포맷팅 함수 (010-0000-0000 형식)
+    const formatPhone = (value: string) => {
+        const cleaned = value.replace(/\D/g, ''); // 숫자만 남김
+        const truncated = cleaned.slice(0, 11); // 최대 11자리
+        
+        if (truncated.length <= 3) return truncated;
+        if (truncated.length <= 7) return `${truncated.slice(0, 3)}-${truncated.slice(3)}`;
+        return `${truncated.slice(0, 3)}-${truncated.slice(3, 7)}-${truncated.slice(7)}`;
+    };
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhone(e.target.value);
+        setContact(formatted);
+    };
     const router = useRouter();
 
     if (!isAuthenticated) {
@@ -105,8 +120,9 @@ export default function ReservationPage() {
                             type="tel" 
                             className={styles.input} 
                             value={contact}
-                            onChange={(e) => setContact(e.target.value)}
+                            onChange={handlePhoneChange}
                             placeholder="010-0000-0000"
+                            maxLength={13}
                         />
                     </div>
 

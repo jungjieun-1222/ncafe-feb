@@ -36,6 +36,8 @@ export default function LoginForm() {
                     username: data.user.username || data.user.nickname,
                     nickname: data.user.nickname,
                     name: data.user.name,
+                    phone: data.user.phone,
+                    email: data.user.email,
                     role: data.user.role || 'ROLE_USER'
                 };
                 setUser(loggedInUser);

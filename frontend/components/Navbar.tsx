@@ -192,9 +192,13 @@ const Navbar = () => {
                     {isAuthenticated ? (
                         <>
                             {isAdmin ? (
-                                <span className={styles.userInfo}>{user?.nickname || user?.name || user?.username} 관리자님 🏮</span>
+                                <span className={styles.userInfo}>
+                                    {(user?.nickname && user.nickname.trim() !== '') ? user.nickname : (user?.name && user.name.trim() !== '' ? user.name : user?.username)} 관리자님 🏮
+                                </span>
                             ) : (
-                                <Link href="/mypage" className={styles.userInfo}>{user?.nickname || user?.name || user?.username}나리 🏮</Link>
+                                <Link href="/mypage" className={styles.userInfo}>
+                                    {(user?.nickname && user.nickname.trim() !== '') ? user.nickname : (user?.name && user.name.trim() !== '' ? user.name : user?.username)}나리 🏮
+                                </Link>
                             )}
                             <button
                                 onClick={handleLogout}
