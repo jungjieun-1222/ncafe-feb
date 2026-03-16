@@ -35,6 +35,7 @@ export default function LoginForm() {
                     id: data.user.id,
                     username: data.user.username || data.user.nickname,
                     nickname: data.user.nickname,
+                    name: data.user.name,
                     role: data.user.role || 'ROLE_USER'
                 };
                 setUser(loggedInUser);
@@ -46,7 +47,7 @@ export default function LoginForm() {
                     guestCartId = guestCartId.split(':')[0];
                 }
                 const userCartId = `user-${loggedInUser.id}`;
-                
+
                 if (guestCartId && guestCartId !== userCartId) {
                     try {
                         await fetch(`/api/v1/carts/merge?guestCartId=${guestCartId}&userCartId=${userCartId}`, {
@@ -56,16 +57,16 @@ export default function LoginForm() {
                         console.error('Cart merge failed:', err);
                     }
                 }
-                
+
                 // localStorage 갱신
                 localStorage.setItem('cartId', userCartId);
 
                 window.dispatchEvent(new Event('login'));
-                
+
                 // 리다이렉트 처리: 기존에 가려던 페이지가 있으면 그쪽으로, 없으면 관리자 또는 메인으로
                 const urlParams = new URLSearchParams(window.location.search);
                 const redirect = urlParams.get('redirect');
-                router.push(redirect || '/'); 
+                router.push(redirect || '/');
             } else {
                 toast.error(data.message || '로그인 실패');
             }
@@ -101,13 +102,13 @@ export default function LoginForm() {
                         required
                         style={{ paddingRight: '3rem', width: '100%' }}
                     />
-                    <button 
+                    <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        style={{ 
-                            position: 'absolute', 
-                            right: '1rem', 
-                            top: '50%', 
+                        style={{
+                            position: 'absolute',
+                            right: '1rem',
+                            top: '50%',
                             transform: 'translateY(-50%)',
                             background: 'none',
                             border: 'none',
