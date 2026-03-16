@@ -11,6 +11,7 @@ import com.new_cafe.app.backend.auth.adapter.in.web.dto.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.new_cafe.app.backend.auth.application.port.in.SignupUseCase;
 
 @Service
 @RequiredArgsConstructor
