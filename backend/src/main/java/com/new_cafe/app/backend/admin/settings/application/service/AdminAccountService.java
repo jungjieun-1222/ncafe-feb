@@ -39,10 +39,10 @@ public class AdminAccountService implements ManageAccountUseCase {
                 username,
                 name,
                 name,
-                email,
+                "",
                 "",
                 passwordEncoder.encode(password),
-                "ROLE_STAFF",
+                "ROLE_STAFF"
         );
         saveAccountPort.saveAccount(staff);
     }
@@ -70,7 +70,7 @@ public class AdminAccountService implements ManageAccountUseCase {
                 account.getEmail(),
                 account.getPhone(),
                 passwordEncoder.encode(trimmedPassword),
-                account.getRole(),
+                account.getRole()
         );
         saveAccountPort.saveAccount(updated);
         log.info("Successfully updated password for user: {}", username);
