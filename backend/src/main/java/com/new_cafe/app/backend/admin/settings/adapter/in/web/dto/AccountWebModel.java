@@ -9,5 +9,6 @@ public class AccountWebModel {
     private String id;
     private String username;
     private String name;
+    private String nickname;
     private String role;
 }

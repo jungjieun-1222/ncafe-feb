@@ -1,0 +1,12 @@
+package com.new_cafe.app.backend.auth.adapter.in.web.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class WithdrawRequest {
+    private String password;
+}

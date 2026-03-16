@@ -2,8 +2,9 @@ import { create } from 'zustand';
 
 interface User {
     id: string;
-    username: string; // This is the login identity (email)
-    nickname: string; // This is the display name
+    username: string; // login ID
+    nickname: string; // display name
+    name: string;     // real name (fallback)
     role: string;
 }
 
@@ -30,8 +31,9 @@ export const useAuthStore = create<AuthState>((set) => ({
                 set({
                     user: {
                         id: data.user.id,
-                        username: data.user.username || data.user.nickname,
+                        username: data.user.username,
                         nickname: data.user.nickname,
+                        name: data.user.name,
                         role: data.user.role
                     },
                     isAuthenticated: true,

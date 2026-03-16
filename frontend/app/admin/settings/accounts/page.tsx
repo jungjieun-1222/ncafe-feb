@@ -10,6 +10,7 @@ interface Account {
     id: string;
     username: string;
     name: string;
+    nickname: string;
     role: string;
 }
 
@@ -193,8 +194,8 @@ export default function AccountSettingsPage() {
                 <table className={styles.accountTable}>
                     <thead>
                         <tr>
-                            <th>이름 (닉네임)</th>
-                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>닉네임</th>
                             <th>권한</th>
                             <th>관리</th>
                         </tr>
@@ -203,7 +204,7 @@ export default function AccountSettingsPage() {
                         {filteredAccounts.map(account => (
                             <tr key={account.id}>
                                 <td>{account.name}</td>
-                                <td>{account.username}</td>
+                                <td>{account.nickname || account.name}</td>
                                 <td>
                                     <span className={`
                                         ${styles.roleBadge} 

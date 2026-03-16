@@ -21,11 +21,12 @@ import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/stores/useCartStore';
+import { authAPI } from '@/app/lib/api';
 
 type TabType = 'reservation' | 'cart' | 'order';
 
 export default function MyPage() {
-    const { user, isAuthenticated, isLoading: isAuthLoading } = useAuthStore();
+    const { user, isAuthenticated, logout, isLoading: isAuthLoading } = useAuthStore();
     const { refreshTrigger } = useCartStore();
     const [activeTab, setActiveTab] = useState<TabType>('reservation');
     const [reservations, setReservations] = useState<any[]>([]);
@@ -129,6 +130,23 @@ export default function MyPage() {
         }
     };
 
+    const handleWithdraw = async () => {
+        const confirmed = window.confirm('정말로 탈퇴하시겠습니까? 모든 기록이 삭제됩니다.');
+        if (!confirmed) return;
+
+        const password = window.prompt('보안을 위해 비밀번호를 다시 한 번 입력해주세요.');
+        if (!password) return;
+
+        try {
+            await authAPI.withdraw(password);
+            toast.success('회원 탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.');
+            await logout();
+            router.push('/');
+        } catch (error: any) {
+            toast.error(error.message || '탈퇴 처리 중 오류가 발생했습니다.');
+        }
+    };
+
     if (isAuthLoading || (isLoading && reservations.length === 0 && !cart && orders.length === 0)) {
         return (
             <div className={styles.container}>
@@ -143,7 +161,7 @@ export default function MyPage() {
         <div className={styles.container}>
             <header className={styles.header}>
                 <div className={styles.greeting}>
-                    {user?.username}님, 어서오세요! 🏮
+                    {user?.nickname || user?.name || user?.username}나리, 어서오세요! 🏮
                 </div>
                 <div className={styles.subGreeting}>
                     나리의 발걸음이 머무는 곳, 엔카페에서의 기록입니다.
@@ -297,6 +315,14 @@ export default function MyPage() {
                     </section>
                 )}
             </main>
+
+            <footer className={styles.dangerZone}>
+                <h3 className={styles.dangerTitle}>계정 관리</h3>
+                <p className={styles.dangerDesc}>탈퇴 시 모든 예약 및 주문 기록이 영구적으로 삭제되며 복구할 수 없습니다.</p>
+                <button className={styles.withdrawBtn} onClick={handleWithdraw}>
+                    회원 탈퇴하기
+                </button>
+            </footer>
         </div>
     );
 }

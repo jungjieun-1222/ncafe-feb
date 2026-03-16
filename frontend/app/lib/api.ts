@@ -45,4 +45,10 @@ export const authAPI = {
         fetchAPI('/auth/logout', { method: 'POST' }),
 
     getSession: () => fetchAPI('/auth/session'),
+    
+    withdraw: (password: string) =>
+        fetchAPI('/auth/withdraw', {
+            method: 'POST',
+            body: JSON.stringify({ password }),
+        }),
 };

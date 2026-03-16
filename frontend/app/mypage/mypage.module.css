@@ -225,3 +225,42 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
+
+/* Danger Zone */
+.dangerZone {
+    margin-top: 4rem;
+    padding: 2rem;
+    background-color: #fff8f8;
+    border: 1px solid #fee2e2;
+    border-radius: 20px;
+}
+
+.dangerTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #c62828;
+    margin-bottom: 0.5rem;
+}
+
+.dangerDesc {
+    font-size: 0.9rem;
+    color: #ef5350;
+    margin-bottom: 1.5rem;
+}
+
+.withdrawBtn {
+    padding: 0.6rem 1.2rem;
+    background-color: transparent;
+    color: #c62828;
+    border: 1px solid #c62828;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.withdrawBtn:hover {
+    background-color: #c62828;
+    color: white;
+}

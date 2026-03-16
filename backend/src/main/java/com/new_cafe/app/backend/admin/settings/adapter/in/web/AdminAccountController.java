@@ -25,6 +25,7 @@ public class AdminAccountController {
                         .id(account.getId())
                         .username(account.getUsername())
                         .name(account.getName())
+                        .nickname(account.getNickname())
                         .role(account.getRole())
                         .build())
                 .collect(Collectors.toList());

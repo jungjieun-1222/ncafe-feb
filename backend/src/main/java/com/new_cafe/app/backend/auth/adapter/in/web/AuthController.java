@@ -2,7 +2,9 @@ package com.new_cafe.app.backend.auth.adapter.in.web;
 
 import com.new_cafe.app.backend.auth.adapter.in.web.dto.LoginRequest;
 import com.new_cafe.app.backend.auth.adapter.in.web.dto.SignupRequest;
+import com.new_cafe.app.backend.auth.adapter.in.web.dto.WithdrawRequest;
 import com.new_cafe.app.backend.auth.application.port.in.SignupUseCase;
+import com.new_cafe.app.backend.auth.application.port.in.WithdrawUseCase;
 import com.new_cafe.app.backend.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final SignupUseCase signupUseCase;
+    private final WithdrawUseCase withdrawUseCase;
     private final com.new_cafe.app.backend.auth.adapter.out.persistence.repository.UserRepository userRepository;
 
     @PostMapping("/signup")
@@ -76,7 +79,8 @@ public class AuthController {
         return ResponseEntity.ok(Map.of(
             "id", user != null ? user.getId() : "",
             "username", user != null ? user.getUsername() : authentication.getName(),
-            "nickname", user != null ? user.getNickname() : authentication.getName(),
+            "nickname", user != null ? user.getNickname() : "",
+            "name", user != null ? user.getName() : "",
             "role", authentication.getAuthorities().stream()
                     .map(a -> a.getAuthority())
                     .findFirst().orElse("ROLE_USER"),
@@ -109,5 +113,19 @@ public class AuthController {
         // Stateless JWT doesn't need server-side logout, 
         // but BFF will destroy the session cookie.
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<?> withdraw(@RequestBody WithdrawRequest request, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(Map.of("message", "Not logged in"));
+        }
+
+        try {
+            withdrawUseCase.withdraw(authentication.getName(), request.getPassword());
+            return ResponseEntity.ok(Map.of("message", "Account withdrawn successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 }
