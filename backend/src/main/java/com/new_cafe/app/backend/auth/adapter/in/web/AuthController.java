@@ -3,6 +3,8 @@ package com.new_cafe.app.backend.auth.adapter.in.web;
 import com.new_cafe.app.backend.auth.adapter.in.web.dto.LoginRequest;
 import com.new_cafe.app.backend.auth.adapter.in.web.dto.SignupRequest;
 import com.new_cafe.app.backend.auth.adapter.in.web.dto.WithdrawRequest;
+import com.new_cafe.app.backend.auth.application.command.LoginCommand;
+import com.new_cafe.app.backend.auth.application.port.in.LoginUseCase;
 import com.new_cafe.app.backend.auth.application.port.in.SignupUseCase;
 import com.new_cafe.app.backend.auth.application.port.in.WithdrawUseCase;
 import com.new_cafe.app.backend.config.JwtTokenProvider;
@@ -24,6 +26,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final LoginUseCase loginUseCase;
     private final SignupUseCase signupUseCase;
     private final WithdrawUseCase withdrawUseCase;
     private final com.new_cafe.app.backend.auth.adapter.out.persistence.repository.UserRepository userRepository;
