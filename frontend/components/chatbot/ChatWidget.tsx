@@ -46,14 +46,17 @@ const Avatar = ({ role, gender, size = 'small' }: { role: 'assistant' | 'user', 
     if (isBot) {
         return (
             <div className={className}>
-                <Moon size={size === 'large' ? 24 : 18} fill="currentColor" />
+                <img src="/wolha.png" alt="월하선생" />
             </div>
         );
     }
 
+    const userImg = gender === 'female' ? '/user_female.png' : '/user_male.png';
+    const altText = gender === 'female' ? '아씨' : '선비';
+
     return (
-        <div className={className} style={{ backgroundColor: gender === 'male' ? '#e3f2fd' : '#fce4ec', color: gender === 'male' ? '#1976d2' : '#c2185b' }}>
-            <UserIcon size={size === 'large' ? 24 : 18} />
+        <div className={className}>
+            <img src={userImg} alt={altText} />
         </div>
     );
 };

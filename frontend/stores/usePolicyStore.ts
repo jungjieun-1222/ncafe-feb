@@ -24,7 +24,7 @@ export const usePolicyStore = create<PolicyState>((set) => ({
                 const data = await response.json();
                 set({ 
                     policy: {
-                        orderReceptionOpen: data.orderReceptionOpen ?? true,
+                        orderReceptionOpen: (data.orderReceptionOpen !== undefined ? data.orderReceptionOpen : data.isOrderReceptionOpen) ?? true,
                         soldOutHandling: data.soldOutHandling || 'LABEL',
                         rewardRate: data.rewardRate ?? 0,
                         welcomeBenefit: data.welcomeBenefit || ''

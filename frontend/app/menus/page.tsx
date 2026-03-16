@@ -147,7 +147,7 @@ export default function UserMenuPage() {
         };
         const timer = setTimeout(fetchMenus, 300); // 디바운스
         return () => clearTimeout(timer);
-    }, [selectedCategory, searchQuery, sortBy]);
+    }, [selectedCategory, searchQuery, sortBy, policy?.soldOutHandling]);
 
     return (
         <div className={styles.container}>

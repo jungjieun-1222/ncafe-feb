@@ -65,7 +65,7 @@ export default function LocationContent() {
                                 <div className={styles.infoTitle}>주차 안내</div>
                                 <div className={styles.infoDesc}>
                                     대문 앞 빈터에 차를 세우셔도 좋으나, 네 발 달린 친구들과 산책하는 이들이 많으니 천천히 드나드시게. 🕯️
-                                    e</div>
+                                </div>
                             </div>
                         </div>
 
@@ -89,7 +89,7 @@ export default function LocationContent() {
                 <div className={`${styles.rightColumn} animate-in`}>
                     <div className={styles.imageWrapper}>
                         <Image
-                            src="map.png"
+                            src="/map.png"
                             alt="Antique Hanok Location Map"
                             fill
                             className={styles.locationImage}

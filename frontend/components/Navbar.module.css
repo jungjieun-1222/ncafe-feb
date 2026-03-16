@@ -72,8 +72,8 @@
 
 .groupA {
     display: flex;
-    gap: 40px;
-    margin-left: 60px;
+    gap: 60px; /* Increased from 40px */
+    margin-left: 120px; /* Increased from 60px */
 }
 
 .spacer {

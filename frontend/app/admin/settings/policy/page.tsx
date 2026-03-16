@@ -33,7 +33,7 @@ export default function PolicySettingsPage() {
             if (res.ok) {
                 const data = await res.json();
                 setSettings({
-                    orderReceptionOpen: data.orderReceptionOpen ?? true,
+                    orderReceptionOpen: (data.orderReceptionOpen !== undefined ? data.orderReceptionOpen : data.isOrderReceptionOpen) ?? true,
                     soldOutHandling: data.soldOutHandling || 'LABEL',
                     rewardRate: data.rewardRate ?? 0,
                     welcomeBenefit: data.welcomeBenefit || ''

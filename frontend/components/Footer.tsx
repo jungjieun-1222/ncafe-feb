@@ -18,7 +18,7 @@ const Footer = () => {
                     <div className={styles.footerInfo}>
                         <div className={styles.contactInfo}>
                             {settings?.address && <span>{settings.address}</span>}
-                            {settings?.phoneNumber && <span> | T. {settings.phoneNumber}</span>}
+                            {settings?.phoneNumber && <span className={styles.phone}> | T. {settings.phoneNumber}</span>}
                             {settings?.operatingHours && <p className={styles.hours}>{settings.operatingHours}</p>}
                         </div>
                         <p>&copy; {new Date().getFullYear()} NCafe Heritage. 모든 권리는 엔카페(NCafe)에 있습니다.</p>

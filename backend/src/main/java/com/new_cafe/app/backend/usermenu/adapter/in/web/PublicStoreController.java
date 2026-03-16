@@ -1,9 +1,12 @@
 package com.new_cafe.app.backend.usermenu.adapter.in.web;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.new_cafe.app.backend.admin.settings.application.port.in.GetSettingsUseCase;
 import com.new_cafe.app.backend.admin.settings.domain.StoreSettings;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,8 +54,12 @@ public class PublicStoreController {
 
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PublicPolicySettingsResponse {
+        @JsonProperty("orderReceptionOpen")
         private boolean isOrderReceptionOpen;
+        
         private String soldOutHandling;
     }
 }
