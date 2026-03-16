@@ -16,7 +16,7 @@ public class UserEntity {
     @Column(unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(unique = true)
@@ -25,7 +25,7 @@ public class UserEntity {
     @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String phone;
 
     @Column(nullable = false)
