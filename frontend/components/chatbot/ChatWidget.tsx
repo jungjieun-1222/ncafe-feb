@@ -58,15 +58,41 @@ const Avatar = ({ role, gender, size = 'small' }: { role: 'assistant' | 'user', 
     );
 };
 
+import { useNotificationStore } from '@/stores/useNotificationStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
+
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
-    const user = useAuthStore(state => state.user);
+    const [showBubble, setShowBubble] = useState(false);
+    const router = useRouter();
+    const { user, isAuthenticated } = useAuthStore();
+    const { settings } = useSettingsStore();
+    const { checkIsRead } = useNotificationStore();
+
     const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
     const [inputValue, setInputValue] = useState('');
     const [gender, setGender] = useState<'male' | 'female' | null>(null);
     const [isThinking, setIsThinking] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
+
+    // Proactive bubble logic
+    useEffect(() => {
+        if (!isOpen && settings?.announcement && !checkIsRead(settings.announcement)) {
+            const timer = setTimeout(() => {
+                setShowBubble(true);
+            }, 3000);
+            return () => clearTimeout(timer);
+        } else {
+            setShowBubble(false);
+        }
+    }, [isOpen, settings?.announcement, checkIsRead]);
+
+    // Reset chat when user changes (login/logout)
+    useEffect(() => {
+        setMessages(INITIAL_MESSAGES);
+        setGender(null);
+        setIsThinking(false);
+    }, [user?.id]);
 
     const handleToolCall = async (toolCall: { name: string, args: Record<string, any> }) => {
         console.log('🤖 AI Tool Call:', toolCall);
@@ -201,7 +227,7 @@ export default function ChatWidget() {
         try {
             let accumulatedContent = '';
 
-            for await (const data of sendMessageStream(messageHistory, user?.id)) {
+            for await (const data of sendMessageStream(messageHistory, user?.id, user?.role)) {
                 if (data.content) {
                     setIsThinking(false);
                     accumulatedContent += (data.content as string);
@@ -408,10 +434,23 @@ export default function ChatWidget() {
             )}
 
             {!isOpen && (
-                <button className={styles.floatingBtn} onClick={() => setIsOpen(true)}>
-                    <MessageCircle size={28} />
-                    <span className={styles.badge}>N</span>
-                </button>
+                <div style={{ position: 'relative' }}>
+                    {showBubble && (
+                        <div className={styles.proactiveBubble} onClick={() => setIsOpen(true)}>
+                            <button className={styles.bubbleClose} onClick={(e) => { e.stopPropagation(); setShowBubble(false); }}>×</button>
+                            <p className={styles.proactiveText}>
+                                <Sparkles size={16} className={styles.proactiveIcon} />
+                                나리, 새로운 소식이 당도하였사옵니다! 🏮
+                            </p>
+                        </div>
+                    )}
+                    <button className={styles.floatingBtn} onClick={() => setIsOpen(true)}>
+                        <MessageCircle size={28} />
+                        {settings?.announcement && !checkIsRead(settings.announcement) && (
+                            <span className={styles.badge}>N</span>
+                        )}
+                    </button>
+                </div>
             )}
         </div>
     );

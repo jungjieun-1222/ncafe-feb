@@ -67,7 +67,8 @@ async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
 
         # 2. 시스템 프롬프트 및 지식 기반 프롬프트 생성 (RAG 데이터 포함)
         from app.services.gemini import MENU_DATA
-        rag_prompt = build_rag_prompt(last_user_message, context, menu_data=MENU_DATA)
+        user_role = request.user_role or "GUEST"
+        rag_prompt = build_rag_prompt(last_user_message, context, user_role=user_role, menu_data=MENU_DATA)
         
         # 마지막 메시지를 RAG 프롬프트로 교체
         gemini_messages = to_gemini_messages(request.messages)

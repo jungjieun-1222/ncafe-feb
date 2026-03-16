@@ -1,6 +1,7 @@
 export async function* sendMessageStream(
     messageHistory: { role: string; content: string }[],
-    userId: string | number | null = null
+    userId: string | number | null = null,
+    userRole: string | null = "GUEST"
 ): AsyncGenerator<any, void, unknown> {
     const response = await fetch('/api/agent/chat', {
         method: 'POST',
@@ -9,6 +10,7 @@ export async function* sendMessageStream(
         },
         body: JSON.stringify({
             user_id: userId ? String(userId) : null,
+            user_role: userRole || "GUEST",
             messages: messageHistory,
             stream: true,
         }),

@@ -6,18 +6,35 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useCartStore } from '@/stores/useCartStore';
+import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useCartStore } from '@/stores/useCartStore';
-import { ShoppingBag, ClipboardList, Settings, Bell } from 'lucide-react';
-import { useSettingsStore } from '@/stores/useSettingsStore';
+import { useNotificationStore } from '@/stores/useNotificationStore';
+import { ShoppingBag, ClipboardList, Settings, Bell, X, Megaphone } from 'lucide-react';
 
 const Navbar = () => {
     const pathname = usePathname();
     const { user, isAuthenticated, logout } = useAuthStore();
     const { openCart, refreshTrigger } = useCartStore();
     const [cartCount, setCartCount] = React.useState(0);
+    const [showNotifications, setShowNotifications] = React.useState(false);
+    const notificationRef = React.useRef<HTMLDivElement>(null);
     const router = useRouter();
+
+    const { settings } = useSettingsStore();
+    const { markAsRead, checkIsRead } = useNotificationStore();
+    const isRead = checkIsRead(settings?.announcement);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setShowNotifications(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     React.useEffect(() => {
         const fetchCartCount = async () => {
@@ -47,9 +64,7 @@ const Navbar = () => {
             }
         };
         fetchCartCount();
-    }, [refreshTrigger]);
-
-    const { settings } = useSettingsStore();
+    }, [refreshTrigger, isAuthenticated, user?.id]);
 
     const handleLogout = async () => {
         await logout();
@@ -58,18 +73,10 @@ const Navbar = () => {
         router.push('/');
     };
 
-    const handleShowAnnouncement = () => {
-        if (settings?.announcement) {
-            toast(settings.announcement, {
-                icon: '📢',
-                duration: 5000,
-                style: {
-                    background: 'var(--k-clay)',
-                    color: '#F7F3EE',
-                    border: '1px solid var(--k-gold)',
-                    fontFamily: 'var(--font-myeongjo)'
-                }
-            });
+    const handleToggleNotifications = () => {
+        setShowNotifications(!showNotifications);
+        if (!showNotifications && settings?.announcement) {
+            markAsRead(settings.announcement);
         }
     };
 
@@ -146,16 +153,41 @@ const Navbar = () => {
 
                 <div className={styles.actions}>
                     {settings?.announcement && (
-                        <button 
-                            onClick={handleShowAnnouncement}
-                            className={styles.notificationBtn}
-                            title="공지사항"
-                        >
-                            <div style={{ position: 'relative' }}>
-                                <Bell size={20} />
-                                <span className={styles.notificationBadge} />
-                            </div>
-                        </button>
+                        <div className={styles.notificationWrapper} ref={notificationRef}>
+                            <button 
+                                onClick={handleToggleNotifications}
+                                className={styles.notificationBtn}
+                                title="공지사항"
+                            >
+                                <div style={{ position: 'relative' }}>
+                                    <Bell size={20} />
+                                    {!isRead && <span className={styles.notificationBadge} />}
+                                </div>
+                            </button>
+
+                            {showNotifications && (
+                                <div className={styles.notificationDropdown}>
+                                    <div className={styles.dropdownHeader}>
+                                        <span>🏮 서신함</span>
+                                        <button className={styles.closeDropdownBtn} onClick={() => setShowNotifications(false)}>닫기</button>
+                                    </div>
+                                    <div className={styles.dropdownContent}>
+                                        <div className={styles.announcementCard}>
+                                            <div className={styles.announcementTitle}>
+                                                <Megaphone size={16} />
+                                                <span>새로운 소식</span>
+                                            </div>
+                                            <div className={styles.announcementBody}>
+                                                {settings.announcement}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={styles.dropdownFooter}>
+                                        <span style={{ fontSize: '0.75rem', color: '#888' }}>월하선생 올림</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     )}
                     {isAuthenticated ? (
                         <>

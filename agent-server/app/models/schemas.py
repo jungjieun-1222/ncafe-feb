@@ -7,5 +7,6 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     user_id: str | None = None
+    user_role: str | None = "GUEST"
     messages: List[Message]
     stream: bool = True
