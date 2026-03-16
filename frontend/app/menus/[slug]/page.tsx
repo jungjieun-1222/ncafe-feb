@@ -22,10 +22,13 @@ interface MenuDetail {
     options: MenuOption[];
 }
 
+import { usePolicyStore } from '@/stores/usePolicyStore';
+
 export default function MenuDetailPage() {
     const { slug } = useParams();
     const router = useRouter();
     const { openCart, triggerRefresh } = useCartStore();
+    const { policy, fetchPolicy } = usePolicyStore();
     
     const [menu, setMenu] = useState<MenuDetail | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -80,6 +83,10 @@ export default function MenuDetailPage() {
         };
         if (slug) fetchMenuDetail();
     }, [slug]);
+
+    useEffect(() => {
+        fetchPolicy();
+    }, [fetchPolicy]);
 
     const handleSelectOption = (group: OptionGroup, opt: MenuOption) => {
         if (group.type === 'radio') {
@@ -245,18 +252,18 @@ export default function MenuDetailPage() {
                     <button 
                         className={styles.cartBtn}
                         onClick={handleAddToCart}
-                        disabled={isAdding || !menu.isAvailable}
+                        disabled={isAdding || !menu.isAvailable || policy?.orderReceptionOpen === false}
                     >
                         <ShoppingCart size={20} />
-                        {isAdding ? '담는 중...' : '장바구니 담기'}
+                        {policy?.orderReceptionOpen === false ? '준비중' : (isAdding ? '담는 중...' : '장바구니 담기')}
                     </button>
                     
                     <button 
                         className={styles.orderBtn}
                         onClick={() => alert('바로 주문 기능은 준비 중입니다.')}
-                        disabled={!menu.isAvailable}
+                        disabled={!menu.isAvailable || policy?.orderReceptionOpen === false}
                     >
-                        바로 주문
+                        {policy?.orderReceptionOpen === false ? '준비중' : '바로 주문'}
                     </button>
                 </div>
             </footer>

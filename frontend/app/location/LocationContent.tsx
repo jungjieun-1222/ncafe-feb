@@ -40,10 +40,10 @@ export default function LocationContent() {
                     </h1>
 
                     <p className={styles.description}>
-                        이보게, 우리 카페는 복잡한 도심에서 살짝 벗어나 <br/>
+                        이보게, 우리 카페는 복잡한 도심에서 살짝 벗어나 <br />
                         달그림자와 안개가 가장 먼저 몸을 섞는 산자락에 숨어있다네. ✨
                     </p>
-                    
+
                     <p className={styles.addressMain}>
                         주소: {settings?.address || '경기도 달빛마을 서당길 12 (깊은 산자락)'}
                     </p>
@@ -65,7 +65,7 @@ export default function LocationContent() {
                                 <div className={styles.infoTitle}>주차 안내</div>
                                 <div className={styles.infoDesc}>
                                     대문 앞 빈터에 차를 세우셔도 좋으나, 네 발 달린 친구들과 산책하는 이들이 많으니 천천히 드나드시게. 🕯️
-                                e</div>
+                                    e</div>
                             </div>
                         </div>
 
@@ -89,7 +89,7 @@ export default function LocationContent() {
                 <div className={`${styles.rightColumn} animate-in`}>
                     <div className={styles.imageWrapper}>
                         <Image
-                            src="/images/map.png"
+                            src="map.png"
                             alt="Antique Hanok Location Map"
                             fill
                             className={styles.locationImage}

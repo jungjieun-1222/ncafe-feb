@@ -29,6 +29,15 @@ public class PublicStoreController {
                 .build();
     }
 
+    @GetMapping("/policy")
+    public PublicPolicySettingsResponse getPolicySettings() {
+        var settings = getSettingsUseCase.getPolicySettings();
+        return PublicPolicySettingsResponse.builder()
+                .isOrderReceptionOpen(settings.isOrderReceptionOpen())
+                .soldOutHandling(settings.getSoldOutHandling())
+                .build();
+    }
+
     @Getter
     @Builder
     public static class PublicStoreSettingsResponse {
@@ -38,5 +47,12 @@ public class PublicStoreController {
         private String address;
         private String operatingHours;
         private String announcement;
+    }
+
+    @Getter
+    @Builder
+    public static class PublicPolicySettingsResponse {
+        private boolean isOrderReceptionOpen;
+        private String soldOutHandling;
     }
 }

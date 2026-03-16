@@ -7,6 +7,7 @@ import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useCartStore } from '@/stores/useCartStore';
 import { getImageUrl } from '@/utils/image';
+import { usePolicyStore } from '@/stores/usePolicyStore';
 
 interface Menu {
     id: number;
@@ -29,6 +30,7 @@ interface Category {
 
 export default function UserMenuPage() {
     const { openCart, triggerRefresh } = useCartStore();
+    const { policy, fetchPolicy } = usePolicyStore();
     const [menus, setMenus] = useState<Menu[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -98,6 +100,11 @@ export default function UserMenuPage() {
         }
     };
 
+    // 정책 로드
+    useEffect(() => {
+        fetchPolicy();
+    }, [fetchPolicy]);
+
     // 카테고리 로드
     useEffect(() => {
         const fetchCategories = async () => {
@@ -125,7 +132,13 @@ export default function UserMenuPage() {
                 const res = await fetch(url.toString());
                 if (!res.ok) throw new Error('Failed to fetch');
                 const data = await res.json();
-                setMenus(data);
+                
+                // 품절 메뉴 숨김 정책 처리
+                if (policy?.soldOutHandling === 'HIDE') {
+                    setMenus(data.filter((m: Menu) => m.isAvailable));
+                } else {
+                    setMenus(data);
+                }
             } catch (err) {
                 console.error(err);
             } finally {
@@ -225,9 +238,9 @@ export default function UserMenuPage() {
                                             <button
                                                 className={styles.addBtn}
                                                 onClick={(e) => handleAddToCart(e, menu)}
-                                                disabled={addingMenuId === menu.id || !menu.isAvailable}
+                                                disabled={addingMenuId === menu.id || !menu.isAvailable || policy?.orderReceptionOpen === false}
                                             >
-                                                {!menu.isAvailable ? '품절' : addingMenuId === menu.id ? '담는 중...' : '담기'}
+                                                {policy?.orderReceptionOpen === false ? '준비중' : (!menu.isAvailable ? '품절' : addingMenuId === menu.id ? '담는 중...' : '담기')}
                                             </button>
                                         </div>
                                     </div>

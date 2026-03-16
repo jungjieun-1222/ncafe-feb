@@ -70,17 +70,12 @@
 .categoryTabs {
     display: flex;
     justify-content: flex-start;
-    flex-wrap: nowrap;
-    gap: 12px;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    overflow-x: auto;
-    padding: 10px 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+    max-width: 100%;
+    margin: 0;
+    padding: 5px 0;
 }
 
 .categoryTabs::-webkit-scrollbar {
@@ -89,7 +84,7 @@
 
 .tab {
     flex-shrink: 0;
-    padding: 12px 28px;
+    padding: 10px 22px;
     border-radius: 50px;
     border: 1px solid #efe8e1;
     background: white;
@@ -97,7 +92,7 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-align: center;
 }
 

@@ -47,6 +47,24 @@ export default function PolicySettingsPage() {
         }
     };
 
+    const updateSingleSetting = async (key: string, value: any) => {
+        const newSettings = { ...settings, [key]: value };
+        setSettings(newSettings);
+        
+        try {
+            const res = await fetch('/api/admin/settings/policy', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newSettings)
+            });
+            if (res.ok) {
+                toast.success('변경사항이 즉시 반영되었습니다.', { id: 'auto-save' });
+            }
+        } catch (error) {
+            console.error('Auto-save failed:', error);
+        }
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
@@ -57,7 +75,7 @@ export default function PolicySettingsPage() {
                 body: JSON.stringify(settings)
             });
             if (res.ok) {
-                toast.success('서비스 정책이 저장되었습니다.');
+                toast.success('정책 설정이 모두 저장되었습니다.');
             } else {
                 throw new Error('저장 실패');
             }
@@ -74,23 +92,26 @@ export default function PolicySettingsPage() {
         <div className={styles.container}>
             <PageHeader 
                 title="서비스 정책 설정" 
-                subtitle="주문 접수 상태와 포인트 적립 등 운영 서비스 정책을 관리합니다."
+                subtitle="주문 접수 상태와 품절 표시 정책 등을 실시간으로 관리합니다."
             />
 
             <form onSubmit={handleSave}>
                 <div className={styles.card}>
-                    <h3 className={styles.sectionTitle}><ShoppingBag size={20} /> 주문 및 품절 설정</h3>
+                    <h3 className={styles.sectionTitle}><ShoppingBag size={20} /> 주문 및 품절 설정 (즉시 반영)</h3>
                     
                     <div className={styles.policyRow}>
                         <div className={styles.policyInfo}>
                             <h4>주문 접수 활성화</h4>
                             <p>OFF로 설정하면 고객이 메뉴를 장바구니에 담거나 주문할 수 없습니다.</p>
                         </div>
-                        <input 
-                            type="checkbox"
-                            checked={settings.orderReceptionOpen}
-                            onChange={e => setSettings({...settings, orderReceptionOpen: e.target.checked})}
-                        />
+                        <label className={styles.switch}>
+                            <input 
+                                type="checkbox"
+                                checked={settings.orderReceptionOpen}
+                                onChange={e => updateSingleSetting('orderReceptionOpen', e.target.checked)}
+                            />
+                            <span className={styles.slider}></span>
+                        </label>
                     </div>
 
                     <div className={styles.field}>
@@ -98,7 +119,7 @@ export default function PolicySettingsPage() {
                         <select 
                             className={styles.input}
                             value={settings.soldOutHandling}
-                            onChange={e => setSettings({...settings, soldOutHandling: e.target.value})}
+                            onChange={e => updateSingleSetting('soldOutHandling', e.target.value)}
                         >
                             <option value="LABEL">품절 배지 표시 (목록 노출)</option>
                             <option value="HIDE">목록에서 즉시 숨김</option>
