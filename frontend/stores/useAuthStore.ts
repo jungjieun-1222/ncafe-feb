@@ -2,7 +2,8 @@ import { create } from 'zustand';
 
 interface User {
     id: string;
-    username: string;
+    username: string; // This is the login identity (email)
+    nickname: string; // This is the display name
     role: string;
 }
 
@@ -29,7 +30,8 @@ export const useAuthStore = create<AuthState>((set) => ({
                 set({
                     user: {
                         id: data.user.id,
-                        username: data.user.nickname,
+                        username: data.user.username || data.user.nickname,
+                        nickname: data.user.nickname,
                         role: data.user.role
                     },
                     isAuthenticated: true,

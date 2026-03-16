@@ -22,8 +22,8 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
     private final UserRepository userRepository;
 
     @Override
-    public Optional<Account> loadAccount(String username) {
-        return userRepository.findByNickname(username)
+    public Optional<Account> loadAccount(String email) {
+        return userRepository.findByEmail(email)
                 .map(this::mapToDomain);
     }
 
@@ -47,7 +47,10 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
         if (userEntity.getId() == null) {
             userEntity.setId(account.getId() != null ? account.getId() : UUID.randomUUID().toString());
         }
-        userEntity.setNickname(account.getUsername());
+        userEntity.setName(account.getName());
+        userEntity.setNickname(account.getNickname());
+        userEntity.setEmail(account.getEmail());
+        userEntity.setPhone(account.getPhone());
         userEntity.setPassword(account.getPassword());
         userEntity.setRole(account.getRole() != null ? account.getRole() : "ROLE_USER");
         userRepository.save(userEntity);
@@ -56,9 +59,11 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
     private Account mapToDomain(UserEntity user) {
         return Account.of(
                 user.getId(),
+                user.getName(),
                 user.getNickname(),
+                user.getEmail(),
+                user.getPhone(),
                 user.getPassword(),
-                user.getNickname(),
                 user.getRole()
         );
     }

@@ -90,3 +90,25 @@
     text-decoration: underline;
     opacity: 0.8;
 }
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+.checkBtn {
+    padding: 0 1.25rem;
+    white-space: nowrap;
+    background-color: var(--k-clay);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkBtn:hover {
+    background-color: var(--k-gold);
+}

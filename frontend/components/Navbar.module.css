@@ -55,14 +55,15 @@
 }
 
 .logoLink {
-    font-size: 2.85rem;
+    font-size: 2.2rem; /* Reduced from 2.85rem */
     font-weight: 400;
-    color: #FFFFFF; /* Pure White */
+    color: #FFFFFF;
     letter-spacing: -0.01em;
     font-family: inherit;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     display: inline-flex;
     align-items: center;
+    white-space: nowrap; /* Prevent logo wrapping */
 }
 
 .dot {
@@ -72,8 +73,8 @@
 
 .groupA {
     display: flex;
-    gap: 60px; /* Increased from 40px */
-    margin-left: 120px; /* Increased from 60px */
+    gap: 35px; /* Reduced from 60px */
+    margin-left: 40px; /* Reduced from 120px */
 }
 
 .spacer {
@@ -84,17 +85,18 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-right: 20px;
+    margin-right: 15px;
 }
 
 .link {
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.85); /* Light gray-white */
+    color: rgba(255, 255, 255, 0.85);
     letter-spacing: 0.05em;
     position: relative;
     padding: 8px 0;
     transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .link::after {

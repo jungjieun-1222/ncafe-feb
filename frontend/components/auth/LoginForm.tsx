@@ -33,7 +33,8 @@ export default function LoginForm() {
                 toast.success('로그인 성공');
                 const loggedInUser = {
                     id: data.user.id,
-                    username: data.user.nickname || data.user.username,
+                    username: data.user.username || data.user.nickname,
+                    nickname: data.user.nickname,
                     role: data.user.role || 'ROLE_USER'
                 };
                 setUser(loggedInUser);
@@ -78,13 +79,13 @@ export default function LoginForm() {
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.inputGroup}>
-                <label htmlFor="username">아이디</label>
+                <label htmlFor="username">이메일</label>
                 <input
                     id="username"
-                    type="text"
+                    type="email"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="아이디를 입력하세요"
+                    placeholder="등록하신 이메일을 입력하세요"
                     required
                 />
             </div>
