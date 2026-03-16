@@ -11,6 +11,22 @@ export default function SignupForm() {
     const [name, setName] = useState('');
     const [nickname, setNickname] = useState('');
     const [phone, setPhone] = useState('');
+    
+    // 전화번호 포맷팅 함수 (010-0000-0000 형식)
+    const formatPhone = (value: string) => {
+        const cleaned = value.replace(/\D/g, ''); // 숫자만 남김
+        const truncated = cleaned.slice(0, 11); // 최대 11자리
+        
+        if (truncated.length <= 3) return truncated;
+        if (truncated.length <= 7) return `${truncated.slice(0, 3)}-${truncated.slice(3)}`;
+        return `${truncated.slice(0, 3)}-${truncated.slice(3, 7)}-${truncated.slice(7)}`;
+    };
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhone(e.target.value);
+        setPhone(formatted);
+    };
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -187,8 +203,9 @@ export default function SignupForm() {
                     id="phone"
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={handlePhoneChange}
                     placeholder="010-0000-0000"
+                    maxLength={13}
                     required
                 />
             </div>
