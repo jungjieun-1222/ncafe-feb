@@ -40,7 +40,12 @@ public class Cart {
 
     public void addOrUpdateItem(CartItem newItem) {
         Optional<CartItem> existingItem = items.stream()
-                .filter(i -> i.getMenuId().equals(newItem.getMenuId()) && i.hasSameOptions(newItem.getOptions()))
+                .filter(i -> {
+                    if (i.getMenuId() == null || newItem.getMenuId() == null) {
+                        return i.getMenuId() == newItem.getMenuId();
+                    }
+                    return i.getMenuId().equals(newItem.getMenuId()) && i.hasSameOptions(newItem.getOptions());
+                })
                 .findFirst();
 
         if (existingItem.isPresent()) {

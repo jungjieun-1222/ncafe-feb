@@ -85,10 +85,12 @@ public class JpaCartAdapter implements LoadCartPort, SaveCartPort, DeleteCartPor
                     .collect(Collectors.toList());
             
             entity.updateOptions(optionEntities);
-            cartItemRepository.save(entity);
+            CartItemEntity savedEntity = cartItemRepository.saveAndFlush(entity);
             
             // 도메인 모델의 ID 업데이트 (신규 생성 시)
-            domainItem.setId(entity.getId().toString());
+            if (savedEntity.getId() != null) {
+                domainItem.setId(savedEntity.getId().toString());
+            }
         }
     }
 

@@ -16,6 +16,7 @@ interface Message {
     content: string;
     metadata?: {
         name: string;
+        slug: string;
         price: number;
         imageSrc: string;
         description: string;
@@ -217,6 +218,7 @@ export default function ChatWidget() {
                         content: '',
                         metadata: {
                             name: card.name,
+                            slug: card.slug,
                             price: card.price,
                             imageSrc: card.imageSrc,
                             description: card.description,
@@ -312,7 +314,7 @@ export default function ChatWidget() {
                                     <button 
                                         className={styles.cardPrimaryAction} 
                                         onClick={() => {
-                                            handleToolCall({ name: 'add_to_cart', args: { menu_slug: msg.metadata?.name, quantity: 1 } });
+                                            handleToolCall({ name: 'add_to_cart', args: { menu_slug: msg.metadata?.slug || msg.metadata?.name, quantity: 1 } });
                                             router.push('/cart');
                                         }}
                                     >
@@ -320,7 +322,7 @@ export default function ChatWidget() {
                                     </button>
                                     <button 
                                         className={styles.cardSecondaryAction} 
-                                        onClick={() => handleToolCall({ name: 'add_to_cart', args: { menu_slug: msg.metadata?.name, quantity: 1 } })}
+                                        onClick={() => handleToolCall({ name: 'add_to_cart', args: { menu_slug: msg.metadata?.slug || msg.metadata?.name, quantity: 1 } })}
                                     >
                                         장바구니 담기
                                     </button>

@@ -30,6 +30,7 @@ def extract_menu_cards(text: str):
         if menu:
             cards.append({
                 "name": menu.get("korName", name),
+                "slug": menu.get("slug", ""),
                 "price": menu.get("price", 0),
                 "imageSrc": menu.get("imageSrc", ""),
                 "description": menu.get("description", ""),
