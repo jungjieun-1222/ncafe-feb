@@ -18,17 +18,20 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(error, { status: loginRes.status });
     }
 
-    const tokenData = await loginRes.json();
-    const token = tokenData.token || 'mock-jwt-token';
+    const loginData = await loginRes.json();
+    const token = loginData.token || 'mock-jwt-token';
 
-    // 2. 사용자 정보 조회
-    const meRes = await fetch(`${API_BASE}/auth/me`, {
+    // 2. 사용자 정보 조회 (/auth/me -> /auth/session 으로 변경됨)
+    const sessionRes = await fetch(`${API_BASE}/auth/session`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 
-    let user = null;
-    if (meRes.ok) {
-        user = await meRes.json();
+    let user = loginData.user || null;
+    if (sessionRes.ok) {
+        const sessionData = await sessionRes.json();
+        if (sessionData.user) {
+            user = sessionData.user;
+        }
     }
 
     // 3. 세션에 저장 (httpOnly 쿠키로 암호화되어 저장됨)
@@ -38,15 +41,15 @@ export async function POST(req: NextRequest) {
         session.user = {
             id: user.id || '',
             email: user.email || '',
-            nickname: user.username || user.nickname || '',
+            nickname: user.nickname || user.username || 'User',
             role: user.role || 'ROLE_USER',
         };
     } else {
-        // Fallback if /auth/me fails or is still session based
+        // Fallback
         session.user = {
             id: '',
             email: '',
-            nickname: tokenData.username || 'User',
+            nickname: 'User',
             role: 'ROLE_USER'
         };
     }

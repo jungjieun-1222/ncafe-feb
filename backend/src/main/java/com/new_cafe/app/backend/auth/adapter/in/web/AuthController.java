@@ -53,7 +53,9 @@ public class AuthController {
 
             String jwt = tokenProvider.createToken(authentication);
 
-            var user = userRepository.findByUsername(authentication.getName()).orElse(null);
+            // Use loginUseCase to fetch full user details as requested
+            var user = loginUseCase.login(new LoginCommand(request.getUsername(), request.getPassword()))
+                                   .orElse(null);
 
             log.info("Login success for user: {}", request.getUsername());
             
@@ -65,12 +67,14 @@ public class AuthController {
                 userMap.put("name", user.getName());
                 userMap.put("phone", user.getPhone());
                 userMap.put("email", user.getEmail());
+                userMap.put("role", user.getRole());
             } else {
+                // Fallback to authentication authorities if service fails
                 userMap.put("username", authentication.getName());
+                userMap.put("role", authentication.getAuthorities().stream()
+                        .map(a -> a.getAuthority())
+                        .findFirst().orElse("ROLE_USER"));
             }
-            userMap.put("role", authentication.getAuthorities().stream()
-                    .map(a -> a.getAuthority())
-                    .findFirst().orElse("ROLE_USER"));
 
             return ResponseEntity.ok(java.util.Map.of(
                 "token", jwt,
@@ -102,15 +106,13 @@ public class AuthController {
             userMap.put("name", user.getName());
             userMap.put("phone", user.getPhone());
             userMap.put("email", user.getEmail());
+            userMap.put("role", user.getRole());
         } else {
             userMap.put("username", authentication.getName());
+            userMap.put("role", authentication.getAuthorities().stream()
+                    .map(a -> a.getAuthority())
+                    .findFirst().orElse("ROLE_USER"));
         }
-        userMap.put("role", authentication.getAuthorities().stream()
-                .map(a -> a.getAuthority())
-                .findFirst().orElse("ROLE_USER"));
-        userMap.put("roles", authentication.getAuthorities().stream()
-                .map(a -> a.getAuthority())
-                .collect(Collectors.toList()));
 
         return ResponseEntity.ok(Map.of("user", userMap));
     }

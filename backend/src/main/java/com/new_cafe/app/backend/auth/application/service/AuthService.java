@@ -2,6 +2,7 @@ package com.new_cafe.app.backend.auth.application.service;
 
 import com.new_cafe.app.backend.auth.application.command.LoginCommand;
 import com.new_cafe.app.backend.auth.application.port.in.LoginUseCase;
+import com.new_cafe.app.backend.auth.application.port.in.SignupUseCase;
 import com.new_cafe.app.backend.auth.application.port.in.WithdrawUseCase;
 import com.new_cafe.app.backend.auth.application.port.out.DeleteAccountPort;
 import com.new_cafe.app.backend.auth.application.port.out.LoadAccountPort;
@@ -11,7 +12,7 @@ import com.new_cafe.app.backend.auth.adapter.in.web.dto.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.new_cafe.app.backend.auth.application.port.in.SignupUseCase;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +25,14 @@ public class AuthService implements LoginUseCase, SignupUseCase, WithdrawUseCase
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean login(LoginCommand command) {
-        java.util.Optional<Account> account = loadAccountPort.loadAccount(command.getUsername());
+    public Optional<Account> login(LoginCommand command) {
+        Optional<Account> account = loadAccountPort.loadAccount(command.getUsername());
         
-        if (account.isEmpty()) {
-            return false;
+        if (account.isPresent() && passwordEncoder.matches(command.getPassword(), account.get().getPassword())) {
+            return account;
         }
 
-        return passwordEncoder.matches(command.getPassword(), account.get().getPassword());
+        return Optional.empty();
     }
 
     @Override

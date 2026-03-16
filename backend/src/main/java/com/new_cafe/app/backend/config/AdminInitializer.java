@@ -20,7 +20,7 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByNickname("admin").isEmpty() && userRepository.findByUsername("admin").isEmpty()) {
+        if (userRepository.findByUsername("admin").isEmpty() && userRepository.findByNickname("admin").isEmpty()) {
             UserEntity admin = new UserEntity();
             admin.setId(UUID.randomUUID().toString());
             admin.setUsername("admin");
@@ -35,18 +35,15 @@ public class AdminInitializer implements CommandLineRunner {
         } else {
             UserEntity existingAdmin = userRepository.findByUsername("admin")
                     .or(() -> userRepository.findByNickname("admin"))
-                    .get();
+                    .orElseThrow();
             
-            // 임시 비밀번호 재설정 (로그인 불가 상황 해결용)
+            existingAdmin.setUsername("admin");
+            existingAdmin.setNickname("admin");
             existingAdmin.setPassword(passwordEncoder.encode("1234"));
-            existingAdmin.setUsername("admin"); // Ensure username is set
+            existingAdmin.setRole("ROLE_MASTER");
             
-            if ("ROLE_ADMIN".equals(existingAdmin.getRole())) {
-                existingAdmin.setRole("ROLE_MASTER");
-                log.info("✅ Admin role updated to ROLE_MASTER");
-            }
             userRepository.save(existingAdmin);
-            log.info("⚠️ Admin password has been reset to 1234 for emergency access");
+            log.info("✅ Admin(ROLE_MASTER) info and password(1234) forced reset.");
         }
     }
 }
