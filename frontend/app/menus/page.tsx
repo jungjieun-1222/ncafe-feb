@@ -35,7 +35,7 @@ export default function UserMenuPage() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortBy, setSortBy] = useState('sales');
+    const [sortBy, setSortBy] = useState('default');
     const [isLoading, setIsLoading] = useState(true);
     const [addingMenuId, setAddingMenuId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -194,6 +194,7 @@ export default function UserMenuPage() {
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
                             >
+                                <option value="default">기본순(추천순)</option>
                                 <option value="sales">판매량순</option>
                                 <option value="latest">최신순</option>
                                 <option value="price_low">가격 낮은 순</option>
