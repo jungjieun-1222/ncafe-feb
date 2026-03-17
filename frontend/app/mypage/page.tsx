@@ -23,7 +23,7 @@ import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/stores/useCartStore';
 import { authAPI } from '@/app/lib/api';
 
-type TabType = 'reservation' | 'cart' | 'order';
+type TabType = 'reservation' | 'cart' | 'order' | 'account';
 
 export default function MyPage() {
     const { user, isAuthenticated, logout, isLoading: isAuthLoading } = useAuthStore();
@@ -187,6 +187,12 @@ export default function MyPage() {
                 >
                     <History size={20} /> 주문 내역
                 </button>
+                <button 
+                    className={`${styles.tab} ${activeTab === 'account' ? styles.activeTab : ''}`}
+                    onClick={() => setActiveTab('account')}
+                >
+                    <User size={20} /> 계정 관리
+                </button>
             </nav>
 
             <main>
@@ -314,15 +320,19 @@ export default function MyPage() {
                         )}
                     </section>
                 )}
+                {activeTab === 'account' && (
+                    <section>
+                        <h2 className={styles.sectionTitle}>계정 관리</h2>
+                        <div className={styles.card}>
+                            <h3 className={styles.dangerTitle} style={{color: '#c62828', marginBottom: '0.5rem'}}>회원 탈퇴</h3>
+                            <p className={styles.dangerDesc} style={{color: '#ef5350', marginBottom: '1.5rem', fontSize: '0.9rem'}}>탈퇴 시 모든 예약 및 주문 기록이 영구적으로 삭제되며 복구할 수 없습니다.</p>
+                            <button className={styles.withdrawBtn} onClick={handleWithdraw}>
+                                회원 탈퇴하기
+                            </button>
+                        </div>
+                    </section>
+                )}
             </main>
-
-            <footer className={styles.dangerZone}>
-                <h3 className={styles.dangerTitle}>계정 관리</h3>
-                <p className={styles.dangerDesc}>탈퇴 시 모든 예약 및 주문 기록이 영구적으로 삭제되며 복구할 수 없습니다.</p>
-                <button className={styles.withdrawBtn} onClick={handleWithdraw}>
-                    회원 탈퇴하기
-                </button>
-            </footer>
         </div>
     );
 }
