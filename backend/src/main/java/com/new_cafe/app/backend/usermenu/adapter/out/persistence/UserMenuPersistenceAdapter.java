@@ -25,18 +25,22 @@ public class UserMenuPersistenceAdapter implements LoadUserMenuPort {
         // Dynamic sorting in memory for simplicity, or we could use Specification/Sort
         Stream<UserMenuEntity> stream = entities.stream();
         
-        if ("latest".equalsIgnoreCase(sortBy)) {
-            stream = stream.sorted(java.util.Comparator.comparing(UserMenuEntity::getId).reversed());
-        } else if ("recommended".equalsIgnoreCase(sortBy)) {
-            // Sort by whether curationTags exist, then by ID
+        if ("sales".equalsIgnoreCase(sortBy)) {
+            // 판매량순: 현재는 추천 태그(curationTags)가 있는 메뉴를 상단에 배치하고 나머지는 ID 역순으로 정렬 (인기 메뉴 대용)
             stream = stream.sorted((e1, e2) -> {
                 int t1 = (e1.getCurationTags() != null && !e1.getCurationTags().isEmpty()) ? 1 : 0;
                 int t2 = (e2.getCurationTags() != null && !e2.getCurationTags().isEmpty()) ? 1 : 0;
                 if (t1 != t2) return Integer.compare(t2, t1);
                 return Long.compare(e2.getId(), e1.getId());
             });
+        } else if ("price_low".equalsIgnoreCase(sortBy)) {
+            // 가격 낮은 순: 가격 오름차순 정렬
+            stream = stream.sorted(java.util.Comparator.comparing(e -> e.getPrice() != null ? e.getPrice() : 0));
+        } else if ("latest".equalsIgnoreCase(sortBy)) {
+            // 최신순: ID 역순 정렬
+            stream = stream.sorted(java.util.Comparator.comparing(UserMenuEntity::getId).reversed());
         } else {
-            // Default: Admin defined sort_order (ascending), then ID descending
+            // 기본 정렬: 관리자가 설정한 정렬 순서(sort_order) 오름차순, 이후 ID 역순
             stream = stream.sorted((e1, e2) -> {
                 int s1 = e1.getSortOrder() != null ? e1.getSortOrder() : Integer.MAX_VALUE;
                 int s2 = e2.getSortOrder() != null ? e2.getSortOrder() : Integer.MAX_VALUE;

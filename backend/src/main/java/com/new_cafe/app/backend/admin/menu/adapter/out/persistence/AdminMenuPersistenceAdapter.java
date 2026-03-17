@@ -84,17 +84,42 @@ public class AdminMenuPersistenceAdapter implements LoadAdminMenuPort, SaveAdmin
 
     @Override
     public List<AdminMenu> loadAllAdminMenusByCategoryIdAndSearchQuery(Integer categoryId, String searchQuery, String sortBy) {
-        org.springframework.data.domain.Sort sort;
-        if ("latest".equals(sortBy)) {
-            sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createdAt");
-        } else if ("recommended".equals(sortBy)) {
-            sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"); // Mocking recommended
+        // 기본 데이터 조회 (DB에서는 필터링만 수행)
+        List<AdminMenuEntity> entities = adminMenuRepository.findAllByCategoryIdAndSearchQuery(
+                categoryId, searchQuery, org.springframework.data.domain.Sort.unsorted());
+        
+        java.util.stream.Stream<AdminMenuEntity> stream = entities.stream();
+        
+        // 정렬 및 필터링 로직
+        if ("profit".equalsIgnoreCase(sortBy)) {
+            // 수익률 높은 순 (판매가 - 원가)
+            stream = stream.sorted((e1, e2) -> {
+                int m1 = (e1.getPrice() != null ? e1.getPrice() : 0) - (e1.getCostPrice() != null ? e1.getCostPrice() : 0);
+                int m2 = (e2.getPrice() != null ? e2.getPrice() : 0) - (e2.getCostPrice() != null ? e2.getCostPrice() : 0);
+                return Integer.compare(m2, m1);
+            });
+        } else if ("modified".equalsIgnoreCase(sortBy)) {
+            // 수정일 순 (최근 수정된 순)
+            stream = stream.sorted(java.util.Comparator.comparing(
+                    AdminMenuEntity::getUpdatedAt, java.util.Comparator.nullsLast(java.util.Comparator.reverseOrder())));
+        } else if ("unavailable".equalsIgnoreCase(sortBy)) {
+            // 판매 중지 메뉴 (필터링)
+            stream = stream.filter(e -> e.getIsAvailable() != null && !e.getIsAvailable());
+        } else if ("latest".equalsIgnoreCase(sortBy)) {
+            // 최신순 (생성일 역순)
+            stream = stream.sorted(java.util.Comparator.comparing(
+                    AdminMenuEntity::getCreatedAt, java.util.Comparator.nullsLast(java.util.Comparator.reverseOrder())));
         } else {
-            sort = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "sortOrder")
-                    .and(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
+            // 기본 정렬: 정렬 순서(sortOrder) 오름차순, 이후 ID 역순
+            stream = stream.sorted((e1, e2) -> {
+                int s1 = e1.getSortOrder() != null ? e1.getSortOrder() : Integer.MAX_VALUE;
+                int s2 = e2.getSortOrder() != null ? e2.getSortOrder() : Integer.MAX_VALUE;
+                if (s1 != s2) return Integer.compare(s1, s2);
+                return Long.compare(e2.getId(), e1.getId());
+            });
         }
 
-        return adminMenuRepository.findAllByCategoryIdAndSearchQuery(categoryId, searchQuery, sort).stream()
+        return stream
                 .map(this::mapToAdminDomain)
                 .collect(Collectors.toList());
     }

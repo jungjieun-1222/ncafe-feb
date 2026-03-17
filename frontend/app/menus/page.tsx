@@ -35,7 +35,7 @@ export default function UserMenuPage() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortBy, setSortBy] = useState('default');
+    const [sortBy, setSortBy] = useState('sales');
     const [isLoading, setIsLoading] = useState(true);
     const [addingMenuId, setAddingMenuId] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -127,7 +127,7 @@ export default function UserMenuPage() {
                 const url = new URL('/api/menus', window.location.origin);
                 if (selectedCategory) url.searchParams.set('categoryId', selectedCategory.toString());
                 if (searchQuery) url.searchParams.set('searchQuery', searchQuery);
-                if (sortBy !== 'default') url.searchParams.set('sortBy', sortBy);
+                if (sortBy) url.searchParams.set('sortBy', sortBy);
 
                 const res = await fetch(url.toString());
                 if (!res.ok) throw new Error('Failed to fetch');
@@ -194,9 +194,9 @@ export default function UserMenuPage() {
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
                             >
-                                <option value="default">정렬 기준</option>
+                                <option value="sales">판매량순</option>
                                 <option value="latest">최신순</option>
-                                <option value="recommended">추천순</option>
+                                <option value="price_low">가격 낮은 순</option>
                             </select>
                         </div>
                     </div>

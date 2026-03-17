@@ -33,7 +33,9 @@ export default function MenuListPage() {
                         >
                             <option value="default">기본순</option>
                             <option value="latest">최신순</option>
-                            <option value="recommended">추천순</option>
+                            <option value="profit">수익률 높은 순</option>
+                            <option value="modified">수정일 순</option>
+                            <option value="unavailable">판매 중지 메뉴</option>
                         </select>
                     </div>
 
