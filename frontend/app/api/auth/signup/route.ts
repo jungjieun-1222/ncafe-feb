@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE = process.env.API_BASE_URL || 'http://localhost:8012';
+const API_BASE = process.env.API_BASE_URL || 'http://backend:8081';
 
 export async function POST(req: NextRequest) {
     const body = await req.json();

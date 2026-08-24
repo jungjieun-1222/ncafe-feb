@@ -19,7 +19,7 @@ export default function AdminDashboard() {
             <div className={styles.maxContainer}>
                 {/* Summary Cards */}
                 <DashboardSummary />
-                
+
                 {/* Main Content Grid */}
                 <div className={styles.mainLayout}>
                     {/* Sales Flow Chart */}
@@ -28,7 +28,7 @@ export default function AdminDashboard() {
                     {/* Quick Access Services */}
                     <div className={styles.quickMenuSection}>
                         <h2 className={styles.sectionTitle}>서비스 퀵 메뉴</h2>
-                        
+
                         <div className={styles.menuList}>
                             {[
                                 { href: "/admin/menus", title: "메뉴 관리", icon: <Coffee size={24} />, desc: "차림표 항목 및 품절 상태 관리" },
@@ -36,9 +36,9 @@ export default function AdminDashboard() {
                                 { href: "/admin/reservations", title: "공간 예약 관리", icon: <Calendar size={24} />, desc: "고객 자리 예약 현황 및 승인" },
                                 { href: "/admin/orders", title: "주문 내역 관리", icon: <ClipboardList size={24} />, desc: "실시간 조리 상태 및 결제 확인" },
                             ].map((item, idx) => (
-                                <Link 
+                                <Link
                                     key={idx}
-                                    href={item.href} 
+                                    href={item.href}
                                     className={styles.menuItem}
                                 >
                                     <div className={styles.smallIconBox}>
