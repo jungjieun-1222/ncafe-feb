@@ -11,7 +11,7 @@ import { useSettingsStore } from '@/stores/useSettingsStore';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useNotificationStore } from '@/stores/useNotificationStore';
-import { ShoppingBag, ClipboardList, Settings, Bell, X, Megaphone } from 'lucide-react';
+import { ShoppingBag, ClipboardList, Settings, Bell, X, Megaphone, Menu } from 'lucide-react';
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -19,6 +19,7 @@ const Navbar = () => {
     const { openCart, refreshTrigger } = useCartStore();
     const [cartCount, setCartCount] = React.useState(0);
     const [showNotifications, setShowNotifications] = React.useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
     const notificationRef = React.useRef<HTMLDivElement>(null);
     const router = useRouter();
 
@@ -66,10 +67,15 @@ const Navbar = () => {
         fetchCartCount();
     }, [refreshTrigger, isAuthenticated, user?.id]);
 
+    React.useEffect(() => {
+        setMobileMenuOpen(false);
+    }, [pathname]);
+
     const handleLogout = async () => {
         await logout();
         localStorage.removeItem('cartId'); // 장바구니 ID 초기화
         toast.success('로그아웃 되었습니다.');
+        setMobileMenuOpen(false);
         router.push('/');
     };
 
@@ -91,6 +97,7 @@ const Navbar = () => {
                     </Link>
                 </div>
 
+                {/* 데스크톱 메뉴 그룹 A */}
                 <div className={styles.groupA}>
                     <Link href="/menus" className={`${styles.link} ${pathname === '/menus' ? styles.active : ''}`}>차림표</Link>
                     <Link href="/story" className={`${styles.link} ${pathname === '/story' ? styles.active : ''}`}>이야기</Link>
@@ -99,6 +106,7 @@ const Navbar = () => {
 
                 <div className={styles.spacer}></div>
 
+                {/* 데스크톱 메뉴 그룹 B */}
                 <div className={styles.groupB}>
                     {isAdmin ? (
                         <Link href="/admin" className={`${styles.adminActionLink} ${pathname.startsWith('/admin') ? styles.activeAdmin : ''}`}>
@@ -151,6 +159,7 @@ const Navbar = () => {
                     )}
                 </div>
 
+                {/* 데스크톱 우측 액션 */}
                 <div className={styles.actions}>
                     {settings?.announcement && (
                         <div className={styles.notificationWrapper} ref={notificationRef}>
@@ -224,10 +233,94 @@ const Navbar = () => {
                         </Link>
                     )}
                 </div>
+
+                {/* 모바일 전용 상단 빠른 버튼 (장바구니 + 햄버거 버튼) */}
+                <div className={styles.mobileActions}>
+                    {!isAdmin && (
+                        <button onClick={openCart} className={styles.mobileCartBtn}>
+                            <ShoppingBag size={22} />
+                            {cartCount > 0 && (
+                                <span className={styles.mobileCartBadge}>{cartCount}</span>
+                            )}
+                        </button>
+                    )}
+                    <button 
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+                        className={styles.hamburgerBtn}
+                        aria-label="메뉴 열기"
+                    >
+                        {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+                    </button>
+                </div>
             </div>
+
+            {/* 단청 무늬 라인 */}
             <div className={styles.patternLine}>
                 <div className={styles.dancheongPattern}></div>
             </div>
+
+            {/* 모바일 네비게이션 드로어 */}
+            {mobileMenuOpen && (
+                <div className={styles.mobileMenuOverlay} onClick={() => setMobileMenuOpen(false)}>
+                    <div className={styles.mobileDrawer} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.mobileDrawerHeader}>
+                            <span className="calligraphy" style={{ fontSize: '1.4rem', color: '#fff' }}>🍵 엔카페</span>
+                            <button onClick={() => setMobileMenuOpen(false)} className={styles.closeDrawerBtn}>
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        {isAuthenticated && (
+                            <div className={styles.mobileUserBox}>
+                                <span>{(user?.nickname || user?.name || user?.username)}님 환영합니다 🏮</span>
+                            </div>
+                        )}
+
+                        <div className={styles.mobileNavLinks}>
+                            <Link href="/menus" className={`${styles.mobileNavLink} ${pathname === '/menus' ? styles.mobileActive : ''}`}>
+                                <span>📋</span> 차림표 (메뉴)
+                            </Link>
+                            <Link href="/story" className={`${styles.mobileNavLink} ${pathname === '/story' ? styles.mobileActive : ''}`}>
+                                <span>📖</span> 이야기
+                            </Link>
+                            <Link href="/location" className={`${styles.mobileNavLink} ${pathname === '/location' ? styles.mobileActive : ''}`}>
+                                <span>🗺️</span> 오시는 길
+                            </Link>
+                            {!isAdmin && (
+                                <Link href="/reservations" className={`${styles.mobileNavLink} ${pathname === '/reservations' ? styles.mobileActive : ''}`}>
+                                    <span>🪑</span> 자리 예약
+                                </Link>
+                            )}
+                            {isAuthenticated ? (
+                                <Link href="/mypage" className={`${styles.mobileNavLink} ${pathname === '/mypage' ? styles.mobileActive : ''}`}>
+                                    <span>🧾</span> 나의 이용기록
+                                </Link>
+                            ) : (
+                                <Link href="/orders" className={`${styles.mobileNavLink} ${pathname === '/orders' ? styles.mobileActive : ''}`}>
+                                    <span>🧾</span> 주문 내역 조회
+                                </Link>
+                            )}
+                            {isAdmin && (
+                                <Link href="/admin" className={`${styles.mobileNavLink} ${styles.mobileAdminLink}`}>
+                                    <span>⚙️</span> 관리자 모드
+                                </Link>
+                            )}
+                        </div>
+
+                        <div className={styles.mobileDrawerFooter}>
+                            {isAuthenticated ? (
+                                <button onClick={handleLogout} className={styles.mobileAuthBtn}>
+                                    로그아웃
+                                </button>
+                            ) : (
+                                <Link href="/login" className={styles.mobileAuthBtn}>
+                                    로그인 / 회원가입
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </nav>
     );
 };

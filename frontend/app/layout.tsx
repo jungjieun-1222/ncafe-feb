@@ -20,6 +20,12 @@ export const metadata: Metadata = {
   description: "가장 한국적인 공간에서 즐기는 평온한 순간",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 import { Toaster } from "react-hot-toast";
 import AuthInitializer from '@/components/auth/AuthInitializer';
 import SettingsInitializer from '@/components/SettingsInitializer';
