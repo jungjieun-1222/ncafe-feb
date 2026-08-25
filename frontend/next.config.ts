@@ -3,8 +3,7 @@
 const nextConfig = {
   output: 'standalone',
   async rewrites() {
-    // 도커 환경변수가 있으면 쓰고, 없으면 로컬 8081을 사용해요.
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8081';
+    const backendUrl = process.env.BACKEND_URL || 'http://backend:8081';
 
     return [
       {
