@@ -1,19 +1,35 @@
-from sentence_transformers import SentenceTransformer
-import torch
+import logging
+
+logger = logging.getLogger(__name__)
 
 class EmbeddingService:
     def __init__(self, model_name="intfloat/multilingual-e5-small"):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.model = SentenceTransformer(model_name, device=self.device)
+        self.model_name = model_name
+        self.model = None
+
+    def _load_model(self):
+        if self.model is None:
+            try:
+                logger.info(f"Loading embedding model: {self.model_name}...")
+                from sentence_transformers import SentenceTransformer
+                self.model = SentenceTransformer(self.model_name, device="cpu")
+                logger.info("Embedding model loaded successfully.")
+            except Exception as e:
+                logger.error(f"Failed to load embedding model: {e}")
 
     def get_embedding(self, text: str, is_query: bool = False):
-        # E5 model suggests "query: " prefix for queries and "passage: " for documents
-        prefix = "query: " if is_query else "passage: "
-        full_text = prefix + text
-        
-        # multilingual-e5-small produces 384 dimensional embeddings
-        embedding = self.model.encode(full_text)
-        return embedding.tolist()
+        try:
+            self._load_model()
+            if self.model:
+                prefix = "query: " if is_query else "passage: "
+                full_text = prefix + text
+                embedding = self.model.encode(full_text)
+                return embedding.tolist()
+        except Exception as e:
+            logger.error(f"Embedding error: {e}")
+            
+        # Fallback: return 384-dimensional zeros vector
+        return [0.0] * 384
 
-# Singleton instance to avoid reloading model on each request
+# Singleton instance with lazy loading
 embedding_service = EmbeddingService()
