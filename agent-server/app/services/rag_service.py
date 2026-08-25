@@ -9,35 +9,28 @@ logger = logging.getLogger(__name__)
 async def get_relevant_context(query: str, db: Session, top_k: int = 3, threshold: float = 0.3) -> str:
     """
     사용자의 질문과 관련된 지식을 추출하여 컨텍스트 문자열로 반환합니다.
-    
-    1. 질문 임베딩 생성 (query: 접두사 포함)
-    2. pgvector를 사용한 코사인 유사도 검색 (상위 N개)
-    3. 임계값(threshold) 이하의 거리(높은 유사도)만 필터링
-    4. 결과를 하나의 텍스트로 합침
     """
     try:
-        # 1. 생성된 벡터 추출 (embedding_service에서 "query: " 접두사 자동 처리)
-        query_embedding = embedding_service.get_embedding(query, is_query=True)
+        # 키워드 기반 지식 검색 (빠르고 경량)
+        keywords = [k for k in query.split() if len(k) > 1]
+        relevant_contents = []
         
-        # 2. pgvector 코사인 거리(<=>) 기반 검색
-        # distance = 1 - cosine_similarity
-        results = db.query(
-            Knowledge.content,
-            Knowledge.embedding.cosine_distance(query_embedding).label("distance")
-        ).order_by("distance").limit(top_k).all()
-        
-        # 3. 임계값(0.3) 이하인 유효 지식만 추출
-        relevant_contents = [
-            row.content for row in results if row.distance <= threshold
-        ]
+        if keywords:
+            for kw in keywords[:3]:
+                matches = db.query(Knowledge.content).filter(Knowledge.content.ilike(f"%{kw}%")).limit(top_k).all()
+                for m in matches:
+                    if m.content not in relevant_contents:
+                        relevant_contents.append(m.content)
         
         if not relevant_contents:
-            logger.info(f"No relevant knowledge found for query: {query} (threshold: {threshold})")
+            # 전체 등록된 기본 지식 상위 top_k개 로드
+            all_k = db.query(Knowledge.content).limit(top_k).all()
+            relevant_contents = [row.content for row in all_k]
+            
+        if not relevant_contents:
             return ""
             
-        # 4. 검색된 지식들을 하나의 컨텍스트로 묶음
-        context = "\n".join([f"- {content}" for content in relevant_contents])
-        return context
+        return "\n".join([f"- {content}" for content in relevant_contents[:top_k]])
         
     except Exception as e:
         logger.error(f"Error while retrieving context: {e}")
