@@ -74,11 +74,9 @@ export default function LocationContent() {
                             <div className={styles.textWrapper}>
                                 <div className={styles.infoTitle}>참고 및 영업 시간</div>
                                 <div className={styles.infoDesc}>
-                                    {settings?.operatingHours && (
-                                        <div style={{ marginBottom: '8px', fontWeight: 'bold', color: 'var(--k-gold)' }}>
-                                            영업: {settings.operatingHours}
-                                        </div>
-                                    )}
+                                    <div style={{ marginBottom: '8px', fontWeight: 'bold', color: 'var(--k-gold)' }}>
+                                        영업: {settings?.operatingHours && settings.operatingHours !== '{}' ? settings.operatingHours : '매일 09:00 - 22:00'}
+                                    </div>
                                     네 발 달린 식구들을 위한 시원한 물그릇이 항상 준비되어 있고, 비 오는 날에는 젖은 발을 닦을 비단 수건도 내어드린다네. 🐾✨
                                 </div>
                             </div>

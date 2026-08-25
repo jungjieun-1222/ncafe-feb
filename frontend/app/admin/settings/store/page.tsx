@@ -23,7 +23,7 @@ export default function StoreSettingsPage() {
         logoUrl: '',
         phoneNumber: '',
         address: '',
-        operatingHours: '{}',
+        operatingHours: '',
         announcement: ''
     });
     const [isLoading, setIsLoading] = useState(true);

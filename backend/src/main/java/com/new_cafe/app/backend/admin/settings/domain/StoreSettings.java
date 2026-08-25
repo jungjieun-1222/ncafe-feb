@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 public class StoreSettings {
     private Long id;
     private String name;
