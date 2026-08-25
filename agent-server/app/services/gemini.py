@@ -147,8 +147,7 @@ async def chat(messages: list, system_instruction: str = None) -> any:
             max_output_tokens=2048,
             temperature=0.7,
             safety_settings=SAFETY_SETTINGS,
-            tools=TOOLS,
-            thinking_config=types.ThinkingConfig(thinking_budget=0)
+            tools=TOOLS
         )
     )
     
@@ -175,8 +174,7 @@ async def chat_stream(messages: list, system_instruction: str = None) -> AsyncGe
             max_output_tokens=2048,
             temperature=0.7,
             safety_settings=SAFETY_SETTINGS,
-            tools=TOOLS,
-            thinking_config=types.ThinkingConfig(thinking_budget=0)
+            tools=TOOLS
         )
     )
     async for chunk in response:
