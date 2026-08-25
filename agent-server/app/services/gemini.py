@@ -147,7 +147,8 @@ async def chat(messages: list, system_instruction: str = None) -> any:
             max_output_tokens=2048,
             temperature=0.7,
             safety_settings=SAFETY_SETTINGS,
-            tools=TOOLS
+            tools=TOOLS,
+            thinking_config=types.ThinkingConfig(thinking_budget=0)
         )
     )
     
@@ -174,15 +175,18 @@ async def chat_stream(messages: list, system_instruction: str = None) -> AsyncGe
             max_output_tokens=2048,
             temperature=0.7,
             safety_settings=SAFETY_SETTINGS,
-            tools=TOOLS
+            tools=TOOLS,
+            thinking_config=types.ThinkingConfig(thinking_budget=0)
         )
     )
     async for chunk in response:
         if not chunk.candidates or not chunk.candidates[0].content or not chunk.candidates[0].content.parts:
             continue
             
-        # If any part has a function call, we yield it
         for part in chunk.candidates[0].content.parts:
+            # 생각(thought) 과정은 건너뛰고 최종 사용자 전달 텍스트만 실시간 스트리밍
+            if getattr(part, 'thought', False):
+                continue
             if part.function_call:
                 yield {"function_call": {
                     "name": part.function_call.name,
